@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { TestComponent, TestContainerComponent } from './test.component';
 
 import { NgvModule } from '../components';
 
@@ -14,8 +13,6 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { us
 
 @NgModule({
   declarations: [
-    TestComponent,
-    TestContainerComponent,
     AppComponent
   ],
   imports: [

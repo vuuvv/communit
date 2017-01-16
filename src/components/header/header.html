@@ -1,0 +1,14 @@
+<div class="ngv-header-left">
+  <a class="ngv-header-back ngv-header-button" *ngIf="showBack" (click)="back()">
+    <span>{{backText}}</span>
+    <div class="left-arrow"></div>
+  </a>
+  <ng-content select="[left]"></ng-content>
+</div>
+<div class="ngv-header-title">
+  <ng-content></ng-content>
+</div>
+<div class="ngv-header-right">
+  <a class="ngv-header-more ngv-header-button" *ngIf="showMore" (click)="more($event)"></a>
+  <ng-content select="[right]"></ng-content>
+</div>
