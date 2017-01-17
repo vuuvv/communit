@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 
 import { NgvModule } from '../components';
 
+import { SharedModule } from './shared';
+
 const appRoutes: Routes = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { useHash: true });
 
@@ -23,6 +25,7 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { us
     routing,
 
     NgvModule.forRoot(),
+    SharedModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]
