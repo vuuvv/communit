@@ -5,6 +5,7 @@ import { BadgeModule } from './badge';
 import { TabbarModule } from './tabbar';
 import { IconModule } from './icon';
 import { PageModule } from './page';
+import { DividerModule } from './divider';
 
 const MODULES = [
   HeaderModule,
@@ -12,6 +13,7 @@ const MODULES = [
   TabbarModule,
   IconModule,
   PageModule,
+  DividerModule,
 ];
 
 @NgModule({
