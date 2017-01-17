@@ -2,10 +2,12 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { HeaderModule } from './header';
 import { BadgeModule } from './badge';
+import { TabbarModule } from './tabbar';
 
 const MODULES = [
   HeaderModule,
   BadgeModule,
+  TabbarModule,
 ];
 
 @NgModule({

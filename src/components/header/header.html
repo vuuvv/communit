@@ -3,12 +3,12 @@
     <span>{{backText}}</span>
     <div class="left-arrow"></div>
   </a>
-  <ng-content select="[left]"></ng-content>
+  <ng-content select="[slot=left]"></ng-content>
 </div>
 <div class="ngv-header-title">
   <ng-content></ng-content>
 </div>
 <div class="ngv-header-right">
   <a class="ngv-header-more ngv-header-button" *ngIf="showMore" (click)="more($event)"></a>
-  <ng-content select="[right]"></ng-content>
+  <ng-content select="[slot=right]"></ng-content>
 </div>

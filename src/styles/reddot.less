@@ -1,0 +1,37 @@
+.ngv-reddot,.ngv-reddot-border,.ngv-reddot-s {
+  position: relative;
+}
+
+.ngv-reddot:after,.ngv-reddot-border:after,.ngv-reddot-s:after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 8px;
+  height: 8px;
+  background-color: #f74c31;
+  border-radius: 5px;
+  right: -3px;
+  top: 0;
+  background-clip: padding-box;
+}
+
+.ngv-reddot-border:before {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border-radius: 5px;
+  right: -4px;
+  top: -4px;
+  background-clip: padding-box;
+  padding: 1px;
+}
+
+.ngv-reddot-s:after {
+  width: 6px;
+  height: 6px;
+  top: -5px;
+  right: -5px;
+}

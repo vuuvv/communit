@@ -1,0 +1,16 @@
+v-tabbar {
+  display: block;
+}
+
+.weui-tabbar__icon {
+  position: relative;
+  margin: 0 auto;
+
+  & > sup {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translateX(-50%);
+    z-index: 101;
+  }
+}
