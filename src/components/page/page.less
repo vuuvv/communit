@@ -1,0 +1,56 @@
+@import '../../styles/variable';
+
+body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+v-page {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+.ngv-page-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 200;
+}
+
+.ngv-page-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow: auto;
+  background: @page-bg-color;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ngv-page-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+}
+
+.ngv-page-has-header {
+  top: @page-header-height;
+}
+
+.ngv-page-has-footer {
+  bottom: @page-footer-height;
+}

@@ -1,0 +1,9 @@
+<div class="ngv-page-header" #header>
+  <ng-content select="[slot=header]"></ng-content>
+</div>
+<div class="ngv-page-content" [class.ngv-page-has-header]="header.children.length > 0" [class.ngv-page-has-footer]="footer.children.length > 0">
+  <ng-content></ng-content>
+</div>
+<div class="ngv-page-footer" #footer>
+  <ng-content select="[slot=footer]"></ng-content>
+</div>
