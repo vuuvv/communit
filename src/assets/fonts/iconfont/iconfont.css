@@ -1,14 +1,14 @@
 
-@font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1484620929972'); /* IE9*/
-  src: url('iconfont.eot?t=1484620929972#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1484620929972') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1484620929972') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1484620929972#iconfont') format('svg'); /* iOS 4.1- */
+@font-face {font-family: "ngv-icon";
+  src: url('iconfont.eot?t=1484624219604'); /* IE9*/
+  src: url('iconfont.eot?t=1484624219604#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1484624219604') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1484624219604') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1484624219604#ngv-icon') format('svg'); /* iOS 4.1- */
 }
 
-.iconfont {
-  font-family:"iconfont" !important;
+.ngv-icon {
+  font-family:"ngv-icon" !important;
   font-size:16px;
   font-style:normal;
   -webkit-font-smoothing: antialiased;

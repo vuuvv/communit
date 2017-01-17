@@ -3,11 +3,13 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { HeaderModule } from './header';
 import { BadgeModule } from './badge';
 import { TabbarModule } from './tabbar';
+import { IconModule } from './icon';
 
 const MODULES = [
   HeaderModule,
   BadgeModule,
   TabbarModule,
+  IconModule,
 ];
 
 @NgModule({
