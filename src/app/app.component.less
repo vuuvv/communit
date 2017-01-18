@@ -1,0 +1,57 @@
+@import '../styles/variable';
+
+v-tabbar-item.active {
+  color: @main-color;
+}
+
+.banner {
+  height: 200px;
+  width: 100%;
+  background-image: url(http://www.zonenear.com/upload/2016/1124/2016112417045914809.jpg?v=05071212);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+quickentry {
+  padding: 12px 14px 0;
+}
+
+.quickentry-nav {
+  padding-bottom: 10px;
+  background-color: #fff;
+}
+
+.news {
+  background: #fff;
+  height: 48px;
+  display: flex;
+  align-items: center;
+
+  .news-item {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  .title {
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 18px;
+    color: #da0d15;
+    font-weight: bold;
+  }
+
+  .subject {
+    flex: 1;
+    padding-left: 14px;
+    font-size: 14px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+}

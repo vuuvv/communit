@@ -1,17 +1,17 @@
   <v-tabbar slot="footer">
-    <v-tabbar-item>
+    <v-tabbar-item [routerLink]="['/community']" routerLinkActive="active">
       <v-icon slot="icon" type="shequ"></v-icon>
       我们社区
     </v-tabbar-item>
-    <v-tabbar-item>
+    <v-tabbar-item [routerLink]="['/bank']" routerLinkActive="active">
       <v-icon slot="icon" type="gongyi"></v-icon>
       公益银行
     </v-tabbar-item>
-    <v-tabbar-item>
+    <v-tabbar-item [routerLink]="['/market']" routerLinkActive="active">
       <v-icon slot="icon" type="chaoshi"></v-icon>
       积分超市
     </v-tabbar-item>
-    <v-tabbar-item>
+    <v-tabbar-item [routerLink]="['/user']" routerLinkActive="active">
       <v-icon slot="icon" type="user"></v-icon>
       个人中心
     </v-tabbar-item>

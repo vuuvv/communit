@@ -3,6 +3,7 @@ quickentry {
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 
 quickentry-item {
@@ -26,9 +27,13 @@ quickentry-item {
     }
   }
 
+  & > span {
+    text-align: center;
+  }
+
   .quickentry-item-text {
     padding-top: 4px;
-    font-size: 13px;
+    font-size: 12px;
     color: #666;
   }
 }

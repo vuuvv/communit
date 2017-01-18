@@ -9,8 +9,18 @@ import { AppComponent } from './app.component';
 import { NgvModule } from '../components';
 
 import { SharedModule } from './shared';
+import { CommunityModule } from './community';
+import { BankModule } from './bank';
+import { MarketModule } from './market';
+import { UserModule } from './user';
 
-const appRoutes: Routes = [];
+const appRoutes: Routes = [
+  {
+    path: '',
+    redirectTo: '/community',
+    pathMatch: 'full',
+  }
+];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { useHash: true });
 
 @NgModule({
@@ -26,6 +36,11 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { us
 
     NgvModule.forRoot(),
     SharedModule.forRoot(),
+
+    CommunityModule,
+    BankModule,
+    MarketModule,
+    UserModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
