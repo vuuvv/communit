@@ -6,6 +6,7 @@ import { TabbarModule } from './tabbar';
 import { IconModule } from './icon';
 import { PageModule } from './page';
 import { DividerModule } from './divider';
+import { FlexBoxModule } from './flexbox';
 
 const MODULES = [
   HeaderModule,
@@ -14,6 +15,7 @@ const MODULES = [
   IconModule,
   PageModule,
   DividerModule,
+  FlexBoxModule,
 ];
 
 @NgModule({
