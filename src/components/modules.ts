@@ -7,6 +7,7 @@ import { IconModule } from './icon';
 import { PageModule } from './page';
 import { DividerModule } from './divider';
 import { FlexBoxModule } from './flexbox';
+import { OverlayModule } from './overlay';
 
 const MODULES = [
   HeaderModule,
@@ -16,12 +17,14 @@ const MODULES = [
   PageModule,
   DividerModule,
   FlexBoxModule,
+  OverlayModule,
 ];
 
 @NgModule({
   imports: [
     HeaderModule.forRoot(),
     BadgeModule.forRoot(),
+    OverlayModule.forRoot(),
   ],
   exports: MODULES,
 })

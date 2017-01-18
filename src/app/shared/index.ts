@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgvModule } from '../../components';
 
 import { SHARED_COMPONENTS } from './components';
+import { SHARED_SERVICES } from './services';
 
 @NgModule({
   imports: [
@@ -19,9 +20,10 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [],
+      providers: [ ...SHARED_SERVICES ],
     }
   }
 }
 
 export * from './components';
+export * from './services';

@@ -1,0 +1,20 @@
+<div class="weui-mask" *ngIf="overlayConfigs.length || actionsheet"></div>
+<v-overlay-component *ngFor="let config of overlayConfigs" [config]="config"></v-overlay-component>
+<div [style.display]="toastBlock">
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast">
+    <i [ngClass]="iconClass" *ngIf="toastIcon"></i>
+    <p class="weui-toast__content" *ngIf="toastText">{{ toastText }}</p>
+  </div>
+</div>
+<div class="weui-actionsheet weui-actionsheet_toggle" *ngIf="actionsheet">
+  <div class="weui-actionsheet__menu">
+    <div class="weui-actionsheet__cell" [routerLink]="['/home']" (click)="closeActionSheet()">首页</div>
+    <div class="weui-actionsheet__cell" [routerLink]="['/home/notify']" (click)="closeActionSheet()">消息</div>
+    <div class="weui-actionsheet__cell" [routerLink]="['/home/user']" (click)="closeActionSheet()">我的</div>
+    <div class="weui-actionsheet__cell" [routerLink]="['/order/list/all']" (click)="closeActionSheet()">订单</div>
+  </div>
+  <div class="weui-actionsheet__action">
+    <div class="weui-actionsheet__cell" (click)="closeActionSheet()">取消</div>
+  </div>
+</div>
