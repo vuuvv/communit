@@ -1,0 +1,15 @@
+<div class="weui-cell__hd">
+  <ng-content select="[slot=icon]"></ng-content>
+</div>
+<div class="weui-cell__bd" [class.weui-cell__primary]="primary==='title'">
+  <p>
+    <ng-content></ng-content>
+    <ng-content select="[slot=after-title]"></ng-content>
+  </p>
+  <v-inline-desc>{{inlineDesc}}</v-inline-desc>
+</div>
+<div class="weui-cell__ft" [class.weui-cell__primary]="primary==='content'" [class.with_arrow]="isLink">
+  {{value}}
+  <ng-content select="[slot=value]"></ng-content>
+</div>
+<ng-content select="[slot=child]"></ng-content>

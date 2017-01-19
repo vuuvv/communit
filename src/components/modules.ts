@@ -8,6 +8,9 @@ import { PageModule } from './page';
 import { DividerModule } from './divider';
 import { FlexBoxModule } from './flexbox';
 import { OverlayModule } from './overlay';
+import { GroupModule } from './group';
+import { CellModule } from './cell';
+import { InlineDescModule } from './inline-desc';
 
 const MODULES = [
   HeaderModule,
@@ -18,13 +21,24 @@ const MODULES = [
   DividerModule,
   FlexBoxModule,
   OverlayModule,
+  GroupModule,
+  CellModule,
+  InlineDescModule,
 ];
 
 @NgModule({
   imports: [
     HeaderModule.forRoot(),
     BadgeModule.forRoot(),
+    TabbarModule.forRoot(),
+    IconModule.forRoot(),
+    PageModule.forRoot(),
+    DividerModule.forRoot(),
+    FlexBoxModule.forRoot(),
     OverlayModule.forRoot(),
+    GroupModule.forRoot(),
+    CellModule.forRoot(),
+    InlineDescModule.forRoot(),
   ],
   exports: MODULES,
 })

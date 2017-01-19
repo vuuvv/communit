@@ -1,0 +1,5 @@
+<div class="weui-cells__title" *ngIf="title" [style.color]="titleColor">{{ title }}</div>
+<div class="weui-cells" [class.vux-no-group-title]="!title" [style.marginTop]="gutter">
+  <ng-content select="[slot=after-title]"></ng-content>
+  <ng-content></ng-content>
+</div>
