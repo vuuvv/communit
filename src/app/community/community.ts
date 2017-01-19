@@ -13,7 +13,7 @@ export class CommunityComponent {
 
   toast() {
     this.dialogService.alert('hi');
-    this.http.get('http://central.huijinet.com/mo/me').subscribe((value) => {
+    this.http.get('http://weixin.vuuvv.com/test').subscribe((value) => {
       console.log(value);
     })
   }

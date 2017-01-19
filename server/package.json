@@ -10,8 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "kcors": "^2.2.0",
     "koa": "^2.0.0-alpha.7",
+    "koa-convert": "^1.2.0",
     "koa-router": "^7.0.1",
+    "koa-session": "^3.4.0",
+    "koa-session2": "^2.0.3",
+    "koa2-cookie-session": "0.0.1",
     "mysql2": "^1.1.2",
     "raw-body": "^2.2.0",
     "request": "^2.79.0",

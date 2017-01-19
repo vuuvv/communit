@@ -1,3 +1,5 @@
+const qs = require('querystring');
+
 const request = require('request-promise');
 const sha1 = require('sha1');
 const getRawBody = require('raw-body');
@@ -29,6 +31,11 @@ async function getMessage(request) {
 
   let result = await parseXML(body);
   return result.xml;
+}
+
+async function createUser(gongzhonghao, user) {
+  await db.execute('insert into t_wechat_user (gongzhonghao_id,openid,nickname,sex,language,city,province,country,headimgurl,subscribe_time,remark,groupid,tagid_list) values (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+   [gongzhonghao, user.openid, user.nickname, user.sex, user.language, user.city, user.province, user.country, user.headimgurl, user.subscribe_time, user.remark, user.groupid, user.tagid_list]);
 }
 
 class Wechat {
@@ -74,10 +81,29 @@ class Wechat {
       return await this.fetchToken();
     }
     let now = new Date().getTime();
-    if (this.expires_in < now) {
+    console.log(this.expires_in, now);
+    if (this.expires_in > now) {
       return this.access_token;
     }
+    console.log('here');
     return await this.fetchToken();
+  }
+
+  async createMenu() {
+    let token = await this.getToken();
+    console.log(token);
+    let ret = await request(`https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${token}`, {
+      body: {
+        "button": [
+          {
+            "type": "view",
+            "name": "进入众邻",
+            "url": "http://weixin.vuuvv.com/entry/1"
+          }
+        ]
+      }
+    });
+    return ret;
   }
 
   async getUserInfo(openid) {
@@ -90,6 +116,18 @@ class Wechat {
       json: true,
     });
     return user;
+  }
+
+  async getUserAccessToken(code) {
+    return await request('https://api.weixin.qq.com/sns/oauth2/access_token', {
+      qs: {
+        appid: this.appid,
+        secret: this.appsecret,
+        code: code,
+        grant_type: 'authorization_code',
+      },
+      json: true,
+    })
   }
 
   textMessage(data) {
@@ -258,6 +296,9 @@ ${itemXml}
   }
 
   async onSubscribeEvent(message) {
+    let user = await this.getUserInfo(message.FromUserName);
+    console.log(user);
+    await createUser(this.id, user);
     return this.textMessage({
       to: message.FromUserName,
       from: message.ToUserName,
@@ -280,6 +321,8 @@ ${itemXml}
   async onViewEvent(message) {
   }
 }
+
+exports.Wechat = Wechat;
 
 exports.middleware = async function (ctx) {
   const wechat = await Wechat.create(ctx.params.id);

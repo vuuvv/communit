@@ -1,50 +1,130 @@
 <v-page>
   <tabbar slot="footer"></tabbar>
-
-  <div class="banner"></div>
-
-  <div class="quickentry-nav ngv-1px-b">
-    <quickentry>
-      <quickentry-item icon="shuiguoshengxian" bg="#46cc37">
-        社区概况
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#a035d9">
-        社区动态
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#f75181">
-        社区通知
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#46cc37">
-        事项公示
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#00abef">
-        议案公决
-      </quickentry-item>
-    </quickentry>
-    <quickentry>
-      <quickentry-item icon="shuiguoshengxian" bg="#00abef">
-        业委会工作
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#eb383a">
-        物业服务
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#0fe1c2">
-        点赞台
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#ffc72d">
-        曝光台
-      </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#ed7901">
-        社区机构
-      </quickentry-item>
-    </quickentry>
-  </div>
-  <div class="news">
-    <div class="news-item">
-      <span class="title ngv-1px-r">社区通知</span>
-      <span class="subject">好邻里，轻松自己</span>
-    </div>
+  <div class="weui-cells">
+    <a class="weui-cell origin weui-cell_access" [routerLink]="['setting']">
+      <div class="weui-cell__hd">
+        <div class="avatar">
+          <img src="//gw.alicdn.com/tps/i3/TB1yeWeIFXXXXX5XFXXuAZJYXXX-210-210.png_160x160.jpg">
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <div>
+          <p class="username">{{ user?.user.NickName }}</p>
+          <p class="usercode">{{ user?.user.UserCode }}</p>
+        </div>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
   </div>
 
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" [routerLink]="['qr']">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-qr">
+          <i class="iconfont icon-qr"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>个人二维码</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="['/store']">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-store">
+          <i class="iconfont icon-store"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>店铺管理</p>
+      </div>
+      <div class="weui-cell__ft">
+        <p>已授权{{ user?.stores.length }}个店铺</p>
+      </div>
+    </a>
+  </div>
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" [routerLink]="">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-service">
+          <i class="iconfont icon-service"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>客服</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-help">
+          <i class="iconfont icon-help"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>帮助中心</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+  </div>
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" [routerLink]="['setting']">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-settings">
+            <i class="iconfont icon-settings"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>设置</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+  </div>
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" [routerLink]="['/login']">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-change">
+            <i class="iconfont icon-change"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>切换帐号</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+  </div>
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" (click)="logout()">
+      <div class="weui-cell__hd">
+        <div class="ico">
+          <div class="ico-cont ico-quit">
+            <i class="iconfont icon-quit"></i>
+          </div>
+        </div>
+      </div>
+      <div class="weui-cell__bd">
+        <p>退出</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+  </div>
 </v-page>
-

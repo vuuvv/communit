@@ -27,7 +27,7 @@ export class AuthorizeService {
   }
 
   private doLogin(user: User): User {
-    let redirect = this.redirectUrl ? this.redirectUrl : '/home/user';
+    let redirect = this.redirectUrl ? this.redirectUrl : '/community';
     this.router.navigateByUrl(redirect);
     return user;
   }
@@ -47,7 +47,7 @@ export class AuthorizeService {
   }
 
   update(): Observable<User> {
-    return this.http.get<User>('mo/me', undefined, undefined, undefined, 'none').map((user: User) => {
+    return this.http.get<User>('/me', undefined, undefined, undefined, 'none').map((user: User) => {
       this.isLoggedIn = true
       this.user = user;
       return user;

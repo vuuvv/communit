@@ -1,0 +1,56 @@
+<v-page>
+  <v-header>社区概况</v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <div class="weui-cells">
+    <a class="weui-cell weui-cell_access" [routerLink]="['../profile']">
+      <div class="weui-cell__bd">
+        <p>社区简介</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access">
+      <div class="weui-cell__bd">
+        <p>社区荣誉</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="['../gender']">
+      <div class="weui-cell__bd">
+        <p>社区机构</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="['../area']">
+      <div class="weui-cell__bd">
+        <p>社区动态</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" (click)="serviceArea()">
+      <div class="weui-cell__bd">
+        <p>社区党建</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="['../password']">
+      <div class="weui-cell__bd">
+        <p>社区综治</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+    <a class="weui-cell weui-cell_access" [routerLink]="['../password']">
+      <div class="weui-cell__bd">
+        <p>人口计生</p>
+      </div>
+      <div class="weui-cell__ft">
+      </div>
+    </a>
+  </div>
+</v-page>

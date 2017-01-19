@@ -7,6 +7,7 @@ import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { CommunityComponent } from './community';
+import { SummaryComponent } from './summary';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
         pathMatch: 'full',
         component: CommunityComponent,
       },
+      {
+        path: 'summary',
+        component: SummaryComponent,
+      }
     ],
   },
 ];
@@ -31,6 +36,7 @@ const routes: Routes = [
   ],
   declarations: [
     CommunityComponent,
+    SummaryComponent,
   ]
 })
 export class CommunityModule {
