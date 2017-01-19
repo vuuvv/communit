@@ -11,6 +11,7 @@ import { OverlayModule } from './overlay';
 import { GroupModule } from './group';
 import { CellModule } from './cell';
 import { InlineDescModule } from './inline-desc';
+import { PanelModule } from './panel';
 
 const MODULES = [
   HeaderModule,
@@ -24,6 +25,7 @@ const MODULES = [
   GroupModule,
   CellModule,
   InlineDescModule,
+  PanelModule,
 ];
 
 @NgModule({
@@ -39,6 +41,7 @@ const MODULES = [
     GroupModule.forRoot(),
     CellModule.forRoot(),
     InlineDescModule.forRoot(),
+    PanelModule.forRoot(),
   ],
   exports: MODULES,
 })

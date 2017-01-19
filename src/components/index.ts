@@ -10,3 +10,4 @@ export * from './overlay';
 export * from './group';
 export * from './cell';
 export * from './inline-desc';
+export * from './panel';
