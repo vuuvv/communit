@@ -1,5 +1,6 @@
 export * from './modules';
 
+export * from './base';
 export * from './header';
 export * from './badge';
 export * from './tabbar';

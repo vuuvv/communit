@@ -62,7 +62,7 @@ router.get('/login', async (ctx) => {
   const token = await w.getUserAccessToken(ctx.query.code);
   const user = await db.first("select * from t_wechat_user where gongzhonghao_id=? and openid=?", [gid, token.openid])
   ctx.session.userid = user.id;
-  ctx.redirect('http://192.168.1.29:4200');
+  ctx.redirect('http://192.168.0.106:4200');
 })
 
 router.get('/menu', async (ctx) => {

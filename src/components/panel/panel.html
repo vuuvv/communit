@@ -1,4 +1,6 @@
-<div class="weui-panel__hd" *ngIf="header">{{ header }}</div>
+<div class="weui-panel__hd" #header [hidden]="hideHeader">
+  <ng-content></ng-content>
+</div>
 <div class="weui-panel__bd">
   <ng-container [ngSwitch]="type">
     <ng-container *ngSwitchCase="1">

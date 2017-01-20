@@ -6,36 +6,36 @@
   <div class="quickentry-nav ngv-1px-b">
     <quickentry>
       <quickentry-item icon="shuiguoshengxian" bg="#46cc37">
-        社区概况
+        土特食品
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#a035d9">
-        社区动态
+      <quickentry-item icon="shumajiadian" bg="#a035d9">
+        数码家电
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#f75181">
-        社区通知
+      <quickentry-item icon="badaxilietubiao01" bg="#f75181">
+        运动户外
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#46cc37">
-        事项公示
+      <quickentry-item icon="jiajubaihuo" bg="#46cc37">
+        居家百货
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#00abef">
-        议案公决
+      <quickentry-item icon="muyingyongpin" bg="#00abef">
+        母婴用品
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item icon="shuiguoshengxian" bg="#00abef">
-        业委会工作
+      <quickentry-item icon="jiushuiyinliao" bg="#00abef">
+        酒水茶饮
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#eb383a">
-        物业服务
+      <quickentry-item icon="nvzhuang" bg="#eb383a">
+        女装
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#0fe1c2">
-        点赞台
+      <quickentry-item icon="xiangbao" bg="#0fe1c2">
+        箱包
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#ffc72d">
-        曝光台
+      <quickentry-item icon="huazhuangpin" bg="#ffc72d">
+        护肤彩妆
       </quickentry-item>
-      <quickentry-item icon="shuiguoshengxian" bg="#ed7901">
-        社区机构
+      <quickentry-item icon="nanzhuang" bg="#ed7901">
+        男装
       </quickentry-item>
     </quickentry>
   </div>
@@ -43,6 +43,29 @@
     <div class="news-item">
       <span class="title ngv-1px-r">社区通知</span>
       <span class="subject">好邻里，轻松自己</span>
+    </div>
+  </div>
+
+  <div class="product-list">
+    <div class="title">
+      <div class="vline"></div>
+      <p>
+        <v-icon type="remai"></v-icon>
+        <span>为你推荐</span>
+      </p>
+      <div class="vline"></div>
+    </div>
+    <div class="products" *ngIf="hotProducts">
+      <div class="product" *ngFor="let product of hotProducts" [routerLink]="['/product/home/detail', {product: product?.HMBSpuCode}]">
+        <div class="prod-c">
+          <div class="prod-pic" [style.background-image]="product?.FirstImageUrl | backgroundUrl | unsafe"></div>
+          <div class="prod-title">{{ product?.Title }}</div>
+          <div class="prod-info">
+            <div class="prod-price">积分：{{ product?.HMBAvailabilityPrice }}</div>
+            <div class="prod-sales" *ngIf="product?.sellNum">销量: {{ product?.sellNum }}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

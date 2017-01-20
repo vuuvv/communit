@@ -1,5 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
+import { BaseModule } from './base';
 import { HeaderModule } from './header';
 import { BadgeModule } from './badge';
 import { TabbarModule } from './tabbar';
@@ -14,6 +15,7 @@ import { InlineDescModule } from './inline-desc';
 import { PanelModule } from './panel';
 
 const MODULES = [
+  BaseModule,
   HeaderModule,
   BadgeModule,
   TabbarModule,
@@ -30,6 +32,7 @@ const MODULES = [
 
 @NgModule({
   imports: [
+    BaseModule.forRoot(),
     HeaderModule.forRoot(),
     BadgeModule.forRoot(),
     TabbarModule.forRoot(),
