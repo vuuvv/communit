@@ -13,6 +13,7 @@ import { GroupModule } from './group';
 import { CellModule } from './cell';
 import { InlineDescModule } from './inline-desc';
 import { PanelModule } from './panel';
+import { TabModule } from './tab';
 
 const MODULES = [
   BaseModule,
@@ -28,6 +29,7 @@ const MODULES = [
   CellModule,
   InlineDescModule,
   PanelModule,
+  TabModule,
 ];
 
 @NgModule({
@@ -45,6 +47,7 @@ const MODULES = [
     CellModule.forRoot(),
     InlineDescModule.forRoot(),
     PanelModule.forRoot(),
+    TabModule.forRoot(),
   ],
   exports: MODULES,
 })

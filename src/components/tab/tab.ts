@@ -5,11 +5,23 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   templateUrl: './tab.html',
   styleUrls: ['./tab.less'],
   encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.ngv-tab]': 'true',
+    '[class.ngv-tab-no-animate]': '!animate',
+  }
 })
 export class TabComponent {
-  @Input() lineWidth: number = 3;
-  @Input() activeColor: string = '#04be02';
-  @Input() defaultColor: string = '#666';
-  @Input() disabledColor: string = '#ddd';
   @Input() animate: boolean = false;
+}
+
+@Component({
+  selector: 'v-tab-item',
+  templateUrl: './tab-item.html',
+  host: {
+    '[class.ngv-tab-item]': 'true',
+    '[class.ngv-tab-selected]': 'selected',
+  }
+})
+export class TabItemComponent {
+  @Input() selected: boolean;
 }

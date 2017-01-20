@@ -1,17 +1,17 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TabComponent } from './tab';
+import { TabComponent, TabItemComponent } from './tab';
 
 @NgModule({
   imports: [ CommonModule ],
-  exports: [ TabComponent ],
-  declarations: [ TabComponent ],
+  exports: [ TabComponent, TabItemComponent ],
+  declarations: [ TabComponent, TabItemComponent ],
 })
-export class GroupModule {
+export class TabModule {
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: GroupModule,
+      ngModule: TabModule,
       providers: [],
     }
   }
