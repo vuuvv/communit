@@ -7,6 +7,7 @@ import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { UserComponent } from './user';
+import { VerifyComponent } from './verify';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: UserComponent,
+      },
+      {
+        path: 'verify',
+        pathMatch: 'full',
+        component: VerifyComponent,
       },
     ],
   },
@@ -31,6 +37,7 @@ const routes: Routes = [
   ],
   declarations: [
     UserComponent,
+    VerifyComponent,
   ]
 })
 export class UserModule {

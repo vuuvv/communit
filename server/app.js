@@ -55,14 +55,21 @@ router.get('/entry/:id', async (ctx) => {
   }) + '#wechat_redirect');
 })
 
+const HOST = 'http://192.168.0.106:4200';
+
 router.get('/login', async (ctx) => {
   console.log(ctx.session.userid);
   const gid = 1;
   const w = await wechat.Wechat.create(gid);
   const token = await w.getUserAccessToken(ctx.query.code);
-  const user = await db.first("select * from t_wechat_user where gongzhonghao_id=? and openid=?", [gid, token.openid])
-  ctx.session.userid = user.id;
-  ctx.redirect('http://192.168.0.106:4200');
+  const user = await db.first("select * from t_wechat_user where gongzhonghao_id=? and openid=?", [gid, token.openid]);
+  ctx.session.wechat_userid = user.id;
+  if (!user.userid) {
+    ctx.redirect(`HOST/#/verify`)
+  } else {
+    ctx.session.userid = user.userid
+    ctx.redirect(HOST);
+  }
 })
 
 router.get('/menu', async (ctx) => {
@@ -75,7 +82,7 @@ router.get('/menu', async (ctx) => {
 router.get('/me', async (ctx) => {
   const userid = ctx.session.userid;
   if (userid) {
-    const user = await db.first("select * from t_wechat_user where id=?", [ctx.session.userid])
+    const user = await db.first("select w.*, u.phone from t_user as u join t_wechat_user as w on u.id=w.userid where u.id=?", [userid])
     if (user) {
       ctx.body = {
         success: true,

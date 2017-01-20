@@ -1,0 +1,45 @@
+<v-page>
+  <tabbar slot="footer"></tabbar>
+  <v-tab>
+    <v-tab-item [routerLink]="['../1']" routerLinkActive="ngv-tab-selected">服务自选</v-tab-item>
+    <v-tab-item [routerLink]="['../2']" routerLinkActive="ngv-tab-selected">邻里互助</v-tab-item>
+    <v-tab-item [routerLink]="['../3']" routerLinkActive="ngv-tab-selected">慈善同行</v-tab-item>
+  </v-tab>
+
+<div class="quickentry-nav ngv-1px-b">
+  <quickentry>
+    <quickentry-item icon="zixun" bg="#46cc37" [routerLink]="['./summary']">
+      咨询
+    </quickentry-item>
+    <quickentry-item icon="renyuanjieshao" bg="#a035d9">
+      介绍
+    </quickentry-item>
+    <quickentry-item icon="fudao" bg="#f75181">
+      辅导
+    </quickentry-item>
+    <quickentry-item icon="laorenpeihu" bg="#46cc37">
+      陪护
+    </quickentry-item>
+    <quickentry-item icon="weixiu" bg="#00abef">
+      维修
+    </quickentry-item>
+  </quickentry>
+  <quickentry>
+    <quickentry-item icon="gou" bg="#00abef">
+      代购
+    </quickentry-item>
+    <quickentry-item icon="tuoguan" bg="#eb383a">
+      托管
+    </quickentry-item>
+    <quickentry-item icon="chujie" bg="#0fe1c2">
+      出借
+    </quickentry-item>
+    <quickentry-item icon="zhekouicon" bg="#ffc72d">
+      折送
+    </quickentry-item>
+    <quickentry-item icon="shunfengche" bg="#ed7901">
+      顺搭
+    </quickentry-item>
+  </quickentry>
+</div>
+</v-page>

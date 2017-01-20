@@ -7,6 +7,7 @@ import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { BankComponent } from './bank';
+import { ServiceComponent } from './service';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: BankComponent,
+      },
+      {
+        path: 'service/:type',
+        pathMatch: 'full',
+        component: ServiceComponent,
       },
     ],
   },
@@ -31,9 +37,11 @@ const routes: Routes = [
   ],
   declarations: [
     BankComponent,
+    ServiceComponent,
   ]
 })
 export class BankModule {
 }
 
 export * from './bank';
+export * from './service';

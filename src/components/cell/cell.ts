@@ -7,7 +7,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None,
   host: {
     '[class.weui-cell]': 'true',
-    '[class.ngv-tap-active]': 'true'
+    '[class.ngv-tap-active]': 'isLink'
   }
 })
 export class CellComponent {
