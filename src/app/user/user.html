@@ -10,10 +10,10 @@
 
   <section>
     <div class="info-box ngv-flexbox ngv-flexbox-vcenter">
-      <img src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0">
+      <img [src]="user?.headimgurl">
       <div class="user-info ngv-flexbox-item">
-        <p>曾荧</p>
-        <p><v-icon type="iphone"></v-icon><span>135****1666</span></p>
+        <p>{{ user?.nickname }}</p>
+        <p><v-icon type="iphone"></v-icon><span>{{ user?.phone }}</span></p>
       </div>
       <div class="arrow">
         <v-icon type="right"></v-icon>

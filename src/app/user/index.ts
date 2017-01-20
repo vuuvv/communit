@@ -1,5 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { NgvModule } from '../../components';
@@ -8,6 +9,7 @@ import { SharedModule } from '../shared';
 
 import { UserComponent } from './user';
 import { VerifyComponent } from './verify';
+import { SignupComponent } from './signup';
 
 const routes: Routes = [
   {
@@ -23,6 +25,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: VerifyComponent,
       },
+      {
+        path: 'signup',
+        pathMatch: 'full',
+        component: SignupComponent,
+      },
     ],
   },
 ];
@@ -30,6 +37,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule.forChild(routes),
 
     SharedModule,
@@ -38,6 +46,7 @@ const routes: Routes = [
   declarations: [
     UserComponent,
     VerifyComponent,
+    SignupComponent,
   ]
 })
 export class UserModule {

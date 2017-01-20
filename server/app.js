@@ -1,18 +1,20 @@
 const qs = require('querystring');
 const Koa = require('koa');
+const serve = require('koa-static');
 const router = require('koa-router')();
 const cors = require('kcors');
 const session = require('koa-session');
 const convert = require('koa-convert');
+const koaBody = require('koa-body')({ multipart: true });
+const getRawBody = require('raw-body');
+
 const db = require('./db');
 
 const app = new Koa();
 
 app.use(async (ctx, next) => {
   try {
-    console.log('first')
     await next();
-    console.log('second')
   } catch(err) {
     ctx.body = {
       success: false,
@@ -21,6 +23,8 @@ app.use(async (ctx, next) => {
     }
   }
 })
+
+app.use(serve('.'));
 
 app.use(cors({
   credentials: true,
@@ -58,14 +62,17 @@ router.get('/entry/:id', async (ctx) => {
 const HOST = 'http://192.168.0.106:4200';
 
 router.get('/login', async (ctx) => {
-  console.log(ctx.session.userid);
   const gid = 1;
   const w = await wechat.Wechat.create(gid);
   const token = await w.getUserAccessToken(ctx.query.code);
+  if (!token.openid) {
+    ctx.body = '错误，请重新进入';
+    return;
+  }
   const user = await db.first("select * from t_wechat_user where gongzhonghao_id=? and openid=?", [gid, token.openid]);
   ctx.session.wechat_userid = user.id;
   if (!user.userid) {
-    ctx.redirect(`HOST/#/verify`)
+    ctx.redirect(`${HOST}/#/user/verify`)
   } else {
     ctx.session.userid = user.userid
     ctx.redirect(HOST);
@@ -86,8 +93,9 @@ router.get('/me', async (ctx) => {
     if (user) {
       ctx.body = {
         success: true,
-        user: user,
+        value: user,
       };
+      return;
     }
   } else {
     ctx.body = {
@@ -96,6 +104,78 @@ router.get('/me', async (ctx) => {
       "error_message": "用户未登录"
     }
   }
+})
+
+router.post('/verify', async (ctx) => {
+  const request = ctx.request;
+  let body = await getRawBody(request.req, {
+    length: request.length,
+    limit: '1mb',
+    encoding: request.charset,
+  })
+  const data = JSON.parse(body.toString());
+  ctx.session.verify_tel = data.tel;
+  ctx.body = {
+    success: true,
+    value: data
+  }
+})
+
+router.get('/verify', async (ctx) => {
+  ctx.body = {
+    success: true,
+    value: ctx.session.verify_tel,
+  }
+})
+
+router.post('/signup', async (ctx) => {
+  const tel = ctx.session.verify_tel;
+  if (!tel) {
+    ctx.body = {
+      success: false,
+      error_code: '10001',
+      error_message: '还未验证手机',
+    }
+    return;
+  }
+  const request = ctx.request;
+  let body = await getRawBody(request.req, {
+    length: request.length,
+    limit: '1mb',
+    encoding: request.charset,
+  })
+  const user = JSON.parse(body.toString());
+  const _db = db;
+
+  try {
+    await _db.execute('insert into t_user (phone, name, area, address) values (?, ?, ?, ?)', [tel, user.name, user.area, user.address]);
+    const wechat_userid = ctx.session.wechat_userid;
+    if (wechat_userid) {
+      const ret = await _db.first('select id from t_user where phone=?', [tel]);
+      console.log(ret);
+      await _db.execute('update t_wechat_user set userid=? where id=?', [ret.id, wechat_userid]);
+    }
+  }
+  catch(err) {
+    console.log(err);
+    await _db.execute('delete from t_user where phone=?', [tel]);
+    ctx.body = {
+      success: false,
+      error_code: '10001',
+      error_message: err,
+    }
+    return;
+  }
+  ctx.session.verify_tel = null;
+
+  ctx.body = {
+    success: true,
+  }
+})
+
+router.get('/clear', async (ctx) => {
+  ctx.session = null;
+  ctx.body = 'ok';
 })
 
 app.listen(8383);

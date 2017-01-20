@@ -1,0 +1,23 @@
+<v-page>
+  <v-header slot="header">加入社区</v-header>
+
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group>
+      <v-cell>
+        <input class="weui-input" type="text" [value]="phone" readonly="readonly">
+      </v-cell>
+      <v-cell>
+        <input class="weui-input" type="text" name="name" placeholder="真实姓名" required [(ngModel)]="user.name">
+      </v-cell>
+      <v-cell>
+        <input class="weui-input" type="text" name="area" placeholder="小区名称" required [(ngModel)]="user.area">
+      </v-cell>
+      <v-cell>
+        <input class="weui-input" type="text" name="address" placeholder="家庭住址" required [(ngModel)]="user.address">
+      </v-cell>
+    </v-group>
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
+</v-page>

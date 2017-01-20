@@ -1,13 +1,19 @@
 <v-page>
   <v-header slot="header">手机验证</v-header>
 
-  <v-group>
-    <v-cell class="weui-cell_vcode">
-      <input class="weui-input" type="tel" placeholder="请输入手机号">
-      <button slot="value" class="weui-vcode-btn">获取验证码</button>
-    </v-cell>
-    <v-cell>
-      <input class="weui-input" type="number" placeholder="请输入验证码">
-    </v-cell>
-  </v-group>
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group>
+      <v-cell class="weui-cell_vcode">
+        <input class="weui-input" type="tel" name="tel" placeholder="请输入手机号" required [(ngModel)]="verify.tel">
+        <button slot="value" class="weui-vcode-btn">获取验证码</button>
+      </v-cell>
+      <v-cell>
+        <input class="weui-input" type="number" name="code" placeholder="请输入验证码" required [(ngModel)]="verify.code">
+      </v-cell>
+    </v-group>
+    测试时请输入验证码: 123456
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
 </v-page>

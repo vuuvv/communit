@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http as RawHttp, Response, Headers, RequestOptions } from '@angular/http';
+import { Http as RawHttp, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
 import { Router } from '@angular/router';
 
 import { DialogService } from '../../../components';
@@ -160,5 +160,24 @@ export class Http {
     return encrypt ?
       this.publickKey(data).concatMap(data => this._post(url, data, errorTip)) :
       this._post(url, data, errorTip);
+  }
+
+  private _json<T>(url: string, data: any, errorTip: ErrorTipType = 'dialog'): Observable<T> {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    url = buildUrl(url, {}, false);
+    let options = new RequestOptions({
+      method: RequestMethod.Post,
+      url: url,
+      headers: headers,
+      body: JSON.stringify(data),
+      withCredentials: true,
+    });
+    return this.http.request(new Request(options)).map(res => this.resultHanlder(res)).catch(err => this.errorHandler(err, errorTip));
+  }
+
+  json<T>(url: string, data: any = null, encrypt = false, errorTip: ErrorTipType = 'dialog') {
+    return encrypt ?
+      this.publickKey(data).concatMap(data => this._json(url, data, errorTip)) :
+      this._json(url, data, errorTip);
   }
 }
