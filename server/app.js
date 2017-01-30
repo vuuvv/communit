@@ -178,4 +178,19 @@ router.get('/clear', async (ctx) => {
   ctx.body = 'ok';
 })
 
+router.get('/test', async (ctx) => {
+  await new Promise((resolve, reject) => {
+    process.nextTick(() => {
+      try {
+        let a = c.d.e;
+        resolve('');
+      }
+      catch(err) {
+        reject('err');
+      }
+    })
+  });
+  ctx.body = 'ok';
+})
+
 app.listen(8383);

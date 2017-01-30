@@ -54,6 +54,9 @@ class Wechat {
   }
 
   async updateToken(token) {
+    if (!token) {
+      return;
+    }
     await db.execute(
       "update t_wechat_gongzhonghao set access_token=?, expires_in=? where id=?",
       [token.access_token, new Date().getTime() + token.expires_in * 1000, this.id]
@@ -107,7 +110,7 @@ class Wechat {
   }
 
   async getUserInfo(openid) {
-    let token = this.getToken();
+    let token = await this.getToken();
     let user = await request('https://api.weixin.qq.com/cgi-bin/user/info', {
       qs: {
         access_token: this.access_token,

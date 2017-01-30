@@ -1,0 +1,45 @@
+{
+  "name": "tserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --watch ./lib --harmony ./lib/app.js",
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "watch": "gulp watch",
+    "test": "gulp test",
+    "test:watch": "gulp test:watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.38",
+    "@types/should": "^8.1.30",
+    "@types/supertest": "^2.0.0",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-mocha": "^3.0.1",
+    "gulp-typescript": "^3.1.4",
+    "gulp-util": "^3.0.8",
+    "merge2": "^1.0.3",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "should": "^11.2.0",
+    "supertest": "^3.0.0",
+    "ts-node": "^2.0.0",
+    "typescript": "^2.1.5"
+  },
+  "dependencies": {
+    "@types/es6-promise": "0.0.32",
+    "@types/koa": "^2.0.37",
+    "@types/koa-router": "^7.0.21",
+    "@types/node": "^7.0.4",
+    "@types/yargs": "^6.5.0",
+    "koa": "^2.0.0-alpha.7",
+    "koa-router": "^7.0.1",
+    "yargs": "^6.6.0"
+  }
+}
