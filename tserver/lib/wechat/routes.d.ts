@@ -1,4 +1,6 @@
-import * as Router from 'koa-router';
 export declare class WechatController {
+    test(ctx: any): string;
 }
-export declare const wechatRouter: Router;
+export declare class TestController {
+    test(ctx: any): Promise<string>;
+}

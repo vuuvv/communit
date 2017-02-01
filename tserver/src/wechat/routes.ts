@@ -1,13 +1,19 @@
-import * as Router from 'koa-router';
+import { router, get } from '../routes';
 
-const router = new Router();
-
-router.all('/', async (ctx) => {
-  ctx.body = 'Hello Wechat';
-});
-
-
+@router('wechat')
 export class WechatController {
+  @get('/test')
+  @get('/test1')
+  test(ctx) {
+    return 'wechat test';
+  }
 }
 
-export const wechatRouter = router;
+@router('test')
+export class TestController {
+  @get('/test')
+  async test(ctx) {
+    return 'test test';
+  }
+}
+

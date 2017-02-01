@@ -12,8 +12,10 @@ const router = new Router();
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-import { wechatRouter } from './wechat';
-router.use('/wechat', wechatRouter.routes(), wechatRouter.allowedMethods());
+import { WechatController, TestController } from './wechat';
+import { route } from './routes';
+route(router, WechatController);
+route(router, TestController);
 
 app.listen(PORT, HOST);
 
