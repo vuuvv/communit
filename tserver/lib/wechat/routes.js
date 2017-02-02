@@ -22,7 +22,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], WechatController.prototype, "test", null);
 WechatController = __decorate([
-    routes_1.router('wechat')
+    routes_1.router()
 ], WechatController);
 exports.WechatController = WechatController;
 let TestController = class TestController {
@@ -37,6 +37,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TestController.prototype, "test", null);
 TestController = __decorate([
-    routes_1.router('test')
+    routes_1.router()
 ], TestController);
 exports.TestController = TestController;

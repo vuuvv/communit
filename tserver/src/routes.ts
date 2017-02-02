@@ -8,7 +8,7 @@ export interface Controller {
   new (): any;
 }
 
-export function router(prefix: string) {
+export function router(prefix: string = null) {
   return function(target: Controller) {
     const prop = target.prototype;
     const r = new Router();
@@ -22,8 +22,6 @@ export function router(prefix: string) {
       if (routes) {
         routes.forEach((value) => {
           const [pattern, methods] = value;
-
-          console.log(prop[key].constructor);
           const fn = createKoaMiddleware(target, key);
           r.register(pattern, methods, fn);
         });
@@ -36,6 +34,7 @@ export function router(prefix: string) {
 function createKoaMiddleware(target: Controller, key: string) {
   const obj = new target();
   const fn = target.prototype[key];
+  console.log(target.name, key);
   if (fn.constructor.name === 'AsyncFunction') {
     return async (ctx, next) => {
       ctx.body = await fn.call(obj, ctx, next);

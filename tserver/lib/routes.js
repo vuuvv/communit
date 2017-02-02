@@ -3,7 +3,7 @@ const Router = require("koa-router");
 require("reflect-metadata");
 const _ = require("lodash");
 const ROUTE_METADATA = Symbol('route');
-function router(prefix) {
+function router(prefix = null) {
     return function (target) {
         const prop = target.prototype;
         const r = new Router();
@@ -17,7 +17,6 @@ function router(prefix) {
             if (routes) {
                 routes.forEach((value) => {
                     const [pattern, methods] = value;
-                    console.log(prop[key].constructor);
                     const fn = createKoaMiddleware(target, key);
                     r.register(pattern, methods, fn);
                 });
@@ -31,6 +30,7 @@ exports.router = router;
 function createKoaMiddleware(target, key) {
     const obj = new target();
     const fn = target.prototype[key];
+    console.log(target.name, key);
     if (fn.constructor.name === 'AsyncFunction') {
         return async (ctx, next) => {
             ctx.body = await fn.call(obj, ctx, next);

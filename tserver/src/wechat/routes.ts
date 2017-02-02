@@ -1,6 +1,6 @@
 import { router, get } from '../routes';
 
-@router('wechat')
+@router()
 export class WechatController {
   @get('/test')
   @get('/test1')
@@ -9,7 +9,7 @@ export class WechatController {
   }
 }
 
-@router('test')
+@router()
 export class TestController {
   @get('/test')
   async test(ctx) {
