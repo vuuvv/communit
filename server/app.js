@@ -179,6 +179,9 @@ router.get('/clear', async (ctx) => {
 })
 
 router.get('/test', async (ctx) => {
+  var a = {};
+  var ret = await db.query("select * from world.city where id=?", a.abc);
+  console.log(ret);
   await new Promise((resolve, reject) => {
     process.nextTick(() => {
       try {

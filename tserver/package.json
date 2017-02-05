@@ -45,6 +45,7 @@
     "koa-router": "^7.0.1",
     "lodash": "^4.17.4",
     "methods": "^1.1.2",
+    "mysql2": "^1.1.2",
     "reflect-metadata": "^0.1.9",
     "yargs": "^6.6.0"
   }
