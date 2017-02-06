@@ -21,7 +21,6 @@ export class PanelComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const elem = this.headerElem.nativeElement;
-    console.log(elem.innerText);
     this.hideHeader = elem.children.length == 0 && (!elem.innerText || /^\s+$/.test(elem.innerText))
   }
 }

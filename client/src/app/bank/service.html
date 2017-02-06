@@ -1,9 +1,14 @@
 <v-page>
+  <v-header [showBack]="false">
+    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
+      <span>返回</span>
+      <div class="left-arrow"></div>
+    </a>
+    公益银行
+  </v-header>
   <tabbar slot="footer"></tabbar>
   <v-tab>
-    <v-tab-item [routerLink]="['../1']" routerLinkActive="ngv-tab-selected">服务自选</v-tab-item>
-    <v-tab-item [routerLink]="['../2']" routerLinkActive="ngv-tab-selected">邻里互助</v-tab-item>
-    <v-tab-item [routerLink]="['../3']" routerLinkActive="ngv-tab-selected">慈善同行</v-tab-item>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['../' + (i+1)]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
   </v-tab>
 
 <div class="quickentry-nav ngv-1px-b">
@@ -42,4 +47,6 @@
     </quickentry-item>
   </quickentry>
 </div>
+
+<v-panel [list]="list" type="2">服务自选</v-panel>
 </v-page>

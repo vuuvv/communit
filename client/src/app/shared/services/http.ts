@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DialogService } from '../../../components';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/catch';
@@ -21,12 +22,17 @@ function fixUrl(url: string): string {
 }
 
 export function buildQueryString(data: any) {
-  if (!data)
+  if (!data) {
     return '';
-  return Object.keys(data).filter((value) => data[value] !== undefined && data[value] !== null).map(key => `${key}=${encodeURIComponent(data[key])}`).join('&');
+  }
+  return Object.keys(data).filter(
+    value => data[value] !== undefined && data[value] !== null
+  ).map(
+    key => `${key}=${encodeURIComponent(data[key])}`
+  ).join('&');
 }
 
-export function buildUrl(url: string, data: any = null, noCache=true) {
+export function buildUrl(url: string, data: any = null, noCache = true) {
   url = fixUrl(url);
   if (!data) {
     return url;
@@ -85,7 +91,7 @@ export class Http {
     if (err instanceof HttpError) {
       if (err.code === '10004') {
         this.router.navigate(['/login']);
-        return [];
+        return Observable.empty();
       }
       msg = err.message;
     } else if (err.status === 0) {
@@ -99,7 +105,7 @@ export class Http {
       case 'dialog':
       case 'toast':
         this.dialog.alert(msg, '错误');
-        break;
+        return Observable.empty();
       default:
         break;
     }
@@ -125,13 +131,13 @@ export class Http {
   }
 
   private encrypt(plain: string, secret: string) {
-    var parts = plain.match(/.{1,100}/g);
-    var ret = [];
+    let parts = plain.match(/.{1,100}/g);
+    let ret = [];
 
-    var encrypt = new window['JSEncrypt']();
+    let encrypt = new window['JSEncrypt']();
     encrypt.setPublicKey(secret);
 
-    for (var i = 0; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       ret.push(encrypt.encrypt(parts[i]));
     }
     return JSON.stringify(ret);
@@ -144,7 +150,7 @@ export class Http {
 
   get<T>(url: string, data: any = null, noCache = true, encrypt = false, errorTip: ErrorTipType = 'dialog'): Observable<T> {
     return encrypt ?
-      this.publickKey(data).concatMap(data => this._get(url, data, noCache, errorTip)) :
+      this.publickKey(data).concatMap(value => this._get(url, value, noCache, errorTip)) :
       this._get(url, data, noCache, errorTip);
   }
 
@@ -158,7 +164,7 @@ export class Http {
 
   post<T>(url: string, data: any = null, encrypt = false, errorTip: ErrorTipType = 'dialog') {
     return encrypt ?
-      this.publickKey(data).concatMap(data => this._post(url, data, errorTip)) :
+      this.publickKey(data).concatMap(value => this._post(url, value, errorTip)) :
       this._post(url, data, errorTip);
   }
 
@@ -177,7 +183,7 @@ export class Http {
 
   json<T>(url: string, data: any = null, encrypt = false, errorTip: ErrorTipType = 'dialog') {
     return encrypt ?
-      this.publickKey(data).concatMap(data => this._json(url, data, errorTip)) :
+      this.publickKey(data).concatMap(value => this._json(url, value, errorTip)) :
       this._json(url, data, errorTip);
   }
 }
