@@ -30,6 +30,7 @@
     "should": "^11.2.0",
     "supertest": "^3.0.0",
     "ts-node": "^2.0.0",
+    "tslint": "^4.4.2",
     "typescript": "^2.1.5"
   },
   "dependencies": {
@@ -39,14 +40,22 @@
     "@types/koa-router": "^7.0.21",
     "@types/lodash": "^4.14.52",
     "@types/node": "^7.0.4",
+    "@types/raw-body": "^2.1.1",
+    "@types/request-promise": "^4.1.33",
+    "@types/xml2js": "0.0.32",
     "@types/yargs": "^6.5.0",
     "knex": "^0.12.6",
     "koa": "^2.0.0-alpha.7",
     "koa-router": "^7.0.1",
     "lodash": "^4.17.4",
     "methods": "^1.1.2",
-    "mysql2": "^1.1.2",
+    "mysql": "^2.13.0",
+    "raw-body": "^2.2.0",
     "reflect-metadata": "^0.1.9",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "sha1": "^1.1.1",
+    "xml2js": "^0.4.17",
     "yargs": "^6.6.0"
   }
 }

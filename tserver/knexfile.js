@@ -3,7 +3,7 @@
 module.exports = {
 
   development: {
-    client: 'mysql2',
+    client: 'mysql',
     connection: {
       host: '127.0.0.1',
       user: 'root',
@@ -20,35 +20,36 @@ module.exports = {
   },
 
   staging: {
-    client: 'postgresql',
+    client: 'mysql',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
+      host: '127.0.0.1',
+      user: 'root',
+      password: '1111aaaa',
+      database: 'community',
+      charset: 'utf8mb4'
     },
     migrations: {
-      tableName: 'knex_migrations'
+      directory: __dirname + '/db/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/db/seeds/test'
     }
   },
 
   production: {
-    client: 'postgresql',
+    client: 'mysql',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
+      host: '127.0.0.1',
+      user: 'root',
+      password: '1111aaaa',
+      database: 'community',
+      charset: 'utf8mb4'
     },
     migrations: {
-      tableName: 'knex_migrations'
+      directory: __dirname + '/db/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/db/seeds/test'
     }
   }
-
 };

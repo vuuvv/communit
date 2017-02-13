@@ -1,6 +1,7 @@
 import * as yargs from  'yargs';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
+import { error } from './routes';
 
 const argv = yargs.argv;
 const PORT = process.env.PORT || argv.port || 8383;
@@ -9,13 +10,23 @@ const HOST = process.env.HOST || argv.host || '0.0.0.0';
 const app = new Koa();
 const router = new Router();
 
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    console.log(err);
+    ctx.body = error(err.toString());
+  }
+});
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-import { WechatController, TestController } from './wechat';
+import { WechatController } from './wechat';
 import { route } from './routes';
 route(router, WechatController);
-route(router, TestController);
+
+// console.log(router.stack);
 
 app.listen(PORT, HOST);
 
