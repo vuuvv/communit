@@ -14,6 +14,7 @@ import {
   WechatOfficialAccount, WechatOfficialAccountTableName,
   WechatUser, WechatUserTableName,
   WechatLog, WechatLogTableName,
+  User, UserTableName,
 } from './models';
 
 export interface Model<T> {
@@ -43,5 +44,9 @@ export class Table<T> {
 
   static get WechatLog() {
     return new Table<WechatLog>(WechatLog, WechatLogTableName).database;
+  }
+
+  static get User() {
+    return new Table<User>(User, UserTableName).database;
   }
 }

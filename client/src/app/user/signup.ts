@@ -15,7 +15,7 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get<string>('/verify').subscribe((value) => {
+    this.http.get<string>('/signup/verify').subscribe((value) => {
       this.phone = value;
     })
   }
@@ -23,6 +23,6 @@ export class SignupComponent implements OnInit {
   submit() {
     this.http.json('/signup', this.user).subscribe((value) => {
       this.router.navigate(['/user']);
-    })
+    });
   }
 }

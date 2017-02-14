@@ -25,5 +25,8 @@ class Table {
     static get WechatLog() {
         return new Table(models_1.WechatLog, models_1.WechatLogTableName).database;
     }
+    static get User() {
+        return new Table(models_1.User, models_1.UserTableName).database;
+    }
 }
 exports.Table = Table;

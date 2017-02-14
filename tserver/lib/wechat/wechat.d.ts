@@ -1,4 +1,4 @@
-import { WechatOfficialAccount } from '../models';
+import { WechatOfficialAccount, WechatUser } from '../models';
 export interface Notify {
     ToUserName: string;
     FromUserName: string;
@@ -131,7 +131,9 @@ export declare class Wechat {
     fetchToken(): Promise<any>;
     getToken(): Promise<any>;
     getUserInfo(openid: any): Promise<any>;
-    getUserAccessToken(code: any): Promise<any>;
+    getUserAccessToken(code: string): Promise<any>;
+    getWechatUser(openid: string): Promise<WechatUser>;
+    createMenu(menu: any): Promise<any>;
     dispatch(ctx: any): Promise<any>;
     transferCustomerServiceMessage(notify: Notify): string;
     onText(msg: TextMessage): Promise<string>;

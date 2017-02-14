@@ -55,8 +55,8 @@ export class HttpError extends Error {
 
   constructor(resp: ApiResult<any>) {
     super();
-    this.code = resp.error_code;
-    this.message = `[${resp.error_code}]${resp.error_message || '错误'}`;
+    this.code = resp.code;
+    this.message = `[${resp.code}]${resp.message || '错误'}`;
   }
 }
 
@@ -69,10 +69,9 @@ export class EncryptParameter {
 }
 
 export class ApiResult<T> {
-  success: boolean;
+  code: string;
   value: T;
-  error_code?: string;
-  error_message?: string;
+  message?: string;
 }
 
 export type ErrorTipType = 'none' | 'dialog' | 'toast';
@@ -114,7 +113,7 @@ export class Http {
 
   private resultHanlder<T>(res: Response) {
     let ret = res.json() as ApiResult<T>;
-    if (!ret.success) {
+    if (ret.code !== '0') {
       throw new HttpError(ret);
     }
     return ret.value;

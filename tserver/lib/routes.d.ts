@@ -26,5 +26,5 @@ export declare class ResponseError extends Error {
     code: string;
     constructor(message: string, code?: string);
 }
-export declare function success(value: any): Response;
+export declare function success(value?: any): Response;
 export declare function error(message: string | Error, code?: string): Response;

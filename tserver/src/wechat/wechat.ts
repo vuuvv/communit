@@ -371,7 +371,7 @@ export class Wechat {
     return user;
   }
 
-  async getUserAccessToken(code) {
+  async getUserAccessToken(code: string) {
     return await request('https://api.weixin.qq.com/sns/oauth2/access_token', {
       qs: {
         appid: this.officialAccount.appId,
@@ -381,6 +381,29 @@ export class Wechat {
       },
       json: true,
     });
+  }
+
+  async getWechatUser(openid: string): Promise<WechatUser> {
+    let ret = await Table.WechatUser.where({
+      openid: openid,
+      officialAccountId: this.officialAccount.id,
+    }).first();
+
+    if (ret) {
+      return create<WechatUser>(WechatUser, ret);
+    }
+    return null;
+  }
+
+  async createMenu(menu) {
+    let token = await this.getToken();
+    let ret = await request({
+      uri: `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${token}`,
+      method: 'POST',
+      body: menu,
+      json: true,
+    });
+    return ret;
   }
 
   async dispatch(ctx) {

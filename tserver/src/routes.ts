@@ -118,7 +118,7 @@ export class ResponseError extends Error {
   }
 }
 
-export function success(value: any) {
+export function success(value: any = null) {
   const ret =  new Response();
   ret.code = SUCCESS_CODE;
   ret.value = value;

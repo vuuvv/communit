@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Type } from '@angular/core';
 
 import { OverlayService, DialogService } from '../../components';
 import { Http } from '../shared';

@@ -17,6 +17,4 @@ export class WechatOfficialAccount extends BaseModel {
   expiresIn: number;
 }
 
-
-
 export const WechatOfficialAccountTableName = 't_wechat_official_account';

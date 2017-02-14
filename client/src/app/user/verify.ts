@@ -14,8 +14,8 @@ export class VerifyComponent {
   }
 
   submit() {
-    this.http.json('/verify', this.verify).subscribe((value) => {
+    this.http.json('/signup/verify', this.verify).subscribe((value) => {
       this.router.navigate(['/user/signup']);
-    })
+    });
   }
 }
