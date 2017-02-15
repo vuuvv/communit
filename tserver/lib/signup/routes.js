@@ -75,6 +75,14 @@ let SignupController = class SignupController {
     async getVerify(ctx) {
         return routes_1.success(ctx.session.verifiedPhone);
     }
+    async crash() {
+        process.nextTick(() => {
+            throw new Error('application crash test');
+        });
+    }
+    async test() {
+        return await db_1.Table.WechatLog.where('id', 1);
+    }
 };
 __decorate([
     routes_1.post('/'),
@@ -94,6 +102,18 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "getVerify", null);
+__decorate([
+    routes_1.get('/crash'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "crash", null);
+__decorate([
+    routes_1.get('/test'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "test", null);
 SignupController = __decorate([
     routes_1.router('/signup')
 ], SignupController);

@@ -3,10 +3,12 @@ const knex = require("knex");
 const config = require('../knexfile');
 const env = 'development';
 exports.db = knex(config[env]);
-exports.db.on('query', function (queryData) {
-    console.log(queryData.sql);
-    console.log(queryData.bindings);
+/*
+db.on('query', function(queryData) {
+  console.log(queryData.sql);
+  console.log(queryData.bindings);
 });
+*/
 const models_1 = require("./models");
 class Table {
     constructor(type, tableName) {

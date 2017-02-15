@@ -88,7 +88,7 @@ export class WechatController {
 
   @get('/url')
   async url() {
-    return await request('http://www.taobao.com');
+    return await request('http://www.163.com');
   }
 
   @get('/redirect')

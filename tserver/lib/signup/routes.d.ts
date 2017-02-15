@@ -9,4 +9,6 @@ export declare class SignupController {
      */
     createVerify(ctx: any): Promise<Response>;
     getVerify(ctx: any): Promise<Response>;
+    crash(): Promise<void>;
+    test(): Promise<any>;
 }

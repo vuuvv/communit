@@ -5,10 +5,12 @@ const env = 'development';
 
 export const db = knex(config[env]);
 
+/*
 db.on('query', function(queryData) {
   console.log(queryData.sql);
   console.log(queryData.bindings);
 });
+*/
 
 import {
   WechatOfficialAccount, WechatOfficialAccountTableName,

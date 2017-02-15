@@ -73,4 +73,16 @@ export class SignupController　{
   async getVerify(ctx) {
     return success(ctx.session.verifiedPhone);
   }
+
+  @get('/crash')
+  async crash() {
+    process.nextTick(() => {
+      throw new Error('application crash test');
+    });
+  }
+
+  @get('/test')
+  async test() {
+    return await Table.WechatLog.where('id', 1);
+  }
 }

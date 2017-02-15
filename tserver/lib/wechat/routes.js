@@ -85,7 +85,7 @@ let WechatController = class WechatController {
         return routes_1.success(ret);
     }
     async url() {
-        return await request('http://www.taobao.com');
+        return await request('http://www.163.com');
     }
     redirect(ctx) {
         ctx.redirect('http://weixin.vuuvv.com/error');
