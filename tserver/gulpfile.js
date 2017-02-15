@@ -1,4 +1,6 @@
 var path = require('path');
+var fs = require('fs');
+
 var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var clean = require('gulp-clean');
@@ -26,14 +28,27 @@ gulp.task('watch', ['clean', 'compile'], function(event) {
     var tsResult = gulp.src(event.path)
       .pipe(tsProject());
 
-    var relativePath = path.relative(path.join(__dirname, 'src'), path.dirname(event.path));
     console.log("file " + event.type + ": " + event.path);
+    var relativePath = path.relative(path.join(__dirname, 'src'), path.dirname(event.path));
     var targetPath = path.join('lib', relativePath);
 
-    return merge([
-      tsResult.dts.pipe(gulp.dest(targetPath)),
-      tsResult.js.pipe(gulp.dest(targetPath)),
-    ])
+    if (event.type === 'deleted') {
+      var targetfile = path.join(__dirname, targetPath)
+      var basename = path.basename(event.path, '.ts')
+      var file = path.join(targetfile, basename + '.js');
+      if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+      }
+      file = path.join(targetfile, basename + '.d.ts');
+      if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+      }
+    } else {
+      return merge([
+        tsResult.dts.pipe(gulp.dest(targetPath)),
+        tsResult.js.pipe(gulp.dest(targetPath)),
+      ])
+    }
   });
 })
 
