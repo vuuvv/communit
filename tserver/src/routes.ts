@@ -35,7 +35,6 @@ export function router(prefix: string = null) {
 };
 
 async function guardMiddleware(ctx, type) {
-  console.log(type);
   if (type === 'login') {
     if (!ctx.session.userId) {
       throw new ResponseError('请先登录', '100004');

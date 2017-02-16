@@ -5,6 +5,7 @@ import { Table } from '../db';
 import { Wechat } from './wechat';
 import { create } from '../utils';
 import { WechatOfficialAccount } from '../models';
+import { Config } from '../config';
 
 const HOST = 'http://192.168.1.19:4200';
 
@@ -35,6 +36,7 @@ export class WechatController {
     const wechat = await Wechat.create(id);
     const token = await wechat.getUserAccessToken(code);
     if (!token.openid) {
+      console.error(token);
       throw new ResponseError('获取用户token失败');
     }
     let wechatUser = await wechat.getWechatUser(token.openid);
@@ -42,12 +44,12 @@ export class WechatController {
       throw new ResponseError(`公众号${wechat.officialAccount.name}无此微信用户: ${token.openid}`);
     }
     ctx.session.wechatUserId = wechatUser.id;
-    console.log(wechatUser);
+    const config = await Config.instance();
     if (!wechatUser.userId) {
-      ctx.redirect(`${HOST}/#/user/verify`);
+      ctx.redirect(`${config.site.clientHost}/#/user/verify`);
     } else {
       ctx.session.userId = wechatUser.userId;
-      ctx.redirect(HOST);
+      ctx.redirect(config.site.clientHost);
     }
   }
 
@@ -82,7 +84,6 @@ export class WechatController {
         }
       ]
     });
-    console.log(ret);
     return success(ret);
   }
 

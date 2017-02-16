@@ -12,4 +12,5 @@ export declare class Table<T> {
     static readonly WechatUser: knex.QueryBuilder;
     static readonly WechatLog: knex.QueryBuilder;
     static readonly User: knex.QueryBuilder;
+    static readonly Config: knex.QueryBuilder;
 }

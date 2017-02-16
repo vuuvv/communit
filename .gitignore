@@ -13,6 +13,8 @@ node_modules/
 .classpath
 .c9/
 *.launch
+*.tmp
+~$*
 .settings/
 
 # IDE - VSCode

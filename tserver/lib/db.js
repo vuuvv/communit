@@ -30,5 +30,8 @@ class Table {
     static get User() {
         return new Table(models_1.User, models_1.UserTableName).database;
     }
+    static get Config() {
+        return new Table(models_1.Config, models_1.ConfigTableName).database;
+    }
 }
 exports.Table = Table;

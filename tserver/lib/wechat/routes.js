@@ -15,6 +15,7 @@ const db_1 = require("../db");
 const wechat_1 = require("./wechat");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
+const config_1 = require("../config");
 const HOST = 'http://192.168.1.19:4200';
 let WechatController = class WechatController {
     async getWechat(id) {
@@ -38,6 +39,7 @@ let WechatController = class WechatController {
         const wechat = await wechat_1.Wechat.create(id);
         const token = await wechat.getUserAccessToken(code);
         if (!token.openid) {
+            console.error(token);
             throw new routes_1.ResponseError('获取用户token失败');
         }
         let wechatUser = await wechat.getWechatUser(token.openid);
@@ -45,13 +47,13 @@ let WechatController = class WechatController {
             throw new routes_1.ResponseError(`公众号${wechat.officialAccount.name}无此微信用户: ${token.openid}`);
         }
         ctx.session.wechatUserId = wechatUser.id;
-        console.log(wechatUser);
+        const config = await config_1.Config.instance();
         if (!wechatUser.userId) {
-            ctx.redirect(`${HOST}/#/user/verify`);
+            ctx.redirect(`${config.site.clientHost}/#/user/verify`);
         }
         else {
             ctx.session.userId = wechatUser.userId;
-            ctx.redirect(HOST);
+            ctx.redirect(config.site.clientHost);
         }
     }
     async notify(ctx) {
@@ -82,7 +84,6 @@ let WechatController = class WechatController {
                 }
             ]
         });
-        console.log(ret);
         return routes_1.success(ret);
     }
     async url() {
