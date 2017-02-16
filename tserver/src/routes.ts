@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import * as methods from 'methods';
 
 const ROUTE_METADATA = Symbol('route');
+const GUARD_METADATA = Symbol('guard');
 
 export interface Controller {
   new (): any;
@@ -21,9 +22,10 @@ export function router(prefix: string = null) {
     }).map((key) => {
       const routes = Reflect.getOwnMetadata(ROUTE_METADATA, prop, key);
       if (routes) {
+        const guard = Reflect.getOwnMetadata(GUARD_METADATA, prop, key);
         routes.forEach((value) => {
           const [pattern, methods] = value;
-          const fn = createKoaMiddleware(target, key);
+          const fn = createKoaMiddleware(target, key, guard);
           r.register(pattern, methods, fn);
         });
       }
@@ -32,24 +34,39 @@ export function router(prefix: string = null) {
   };
 };
 
-function createKoaMiddleware(target: Controller, key: string) {
+async function guardMiddleware(ctx, type) {
+  console.log(type);
+  if (type === 'login') {
+    if (!ctx.session.userId) {
+      throw new ResponseError('请先登录', '100004');
+    }
+  }
+}
+
+function createKoaMiddleware(target: Controller, key: string, guard) {
   const obj = new target();
   const fn = target.prototype[key];
   if (fn.constructor.name === 'AsyncFunction') {
     return async (ctx, next) => {
+      await guardMiddleware(ctx, guard);
       const ret = await fn.call(obj, ctx, next);
       if (ret) {
         ctx.body = ret;
       }
     };
   } else {
-    return (ctx, next) => {
+    return async (ctx, next) => {
+      await guardMiddleware(ctx, guard);
       const ret = fn.call(obj, ctx, next);
       if (ret) {
         ctx.body = ret;
       }
     };
   }
+}
+
+export function login(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) {
+  Reflect.defineMetadata(GUARD_METADATA, 'login', target, targetKey);
 }
 
 export function register(pattern: string | RegExp, methods: string[] = ['all']) {

@@ -4,6 +4,7 @@ require("reflect-metadata");
 const _ = require("lodash");
 const methods = require("methods");
 const ROUTE_METADATA = Symbol('route');
+const GUARD_METADATA = Symbol('guard');
 function router(prefix = null) {
     return function (target) {
         const prop = target.prototype;
@@ -16,9 +17,10 @@ function router(prefix = null) {
         }).map((key) => {
             const routes = Reflect.getOwnMetadata(ROUTE_METADATA, prop, key);
             if (routes) {
+                const guard = Reflect.getOwnMetadata(GUARD_METADATA, prop, key);
                 routes.forEach((value) => {
                     const [pattern, methods] = value;
-                    const fn = createKoaMiddleware(target, key);
+                    const fn = createKoaMiddleware(target, key, guard);
                     r.register(pattern, methods, fn);
                 });
             }
@@ -28,11 +30,20 @@ function router(prefix = null) {
 }
 exports.router = router;
 ;
-function createKoaMiddleware(target, key) {
+async function guardMiddleware(ctx, type) {
+    console.log(type);
+    if (type === 'login') {
+        if (!ctx.session.userId) {
+            throw new ResponseError('请先登录', '100004');
+        }
+    }
+}
+function createKoaMiddleware(target, key, guard) {
     const obj = new target();
     const fn = target.prototype[key];
     if (fn.constructor.name === 'AsyncFunction') {
         return async (ctx, next) => {
+            await guardMiddleware(ctx, guard);
             const ret = await fn.call(obj, ctx, next);
             if (ret) {
                 ctx.body = ret;
@@ -40,7 +51,8 @@ function createKoaMiddleware(target, key) {
         };
     }
     else {
-        return (ctx, next) => {
+        return async (ctx, next) => {
+            await guardMiddleware(ctx, guard);
             const ret = fn.call(obj, ctx, next);
             if (ret) {
                 ctx.body = ret;
@@ -48,6 +60,10 @@ function createKoaMiddleware(target, key) {
         };
     }
 }
+function login(target, targetKey, targetDescriptor) {
+    Reflect.defineMetadata(GUARD_METADATA, 'login', target, targetKey);
+}
+exports.login = login;
 function register(pattern, methods = ['all']) {
     return function (target, targetKey, targetDescriptor) {
         let routes = Reflect.getOwnMetadata(ROUTE_METADATA, target, targetKey) || [];

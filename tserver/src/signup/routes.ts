@@ -1,4 +1,4 @@
-import { router, get, post, all, success, error, Response, ResponseError } from '../routes';
+import { router, get, post, all, success, error, Response, ResponseError, login } from '../routes';
 import { getRawBody } from '../utils';
 import { db, Table } from '../db';
 
@@ -70,6 +70,7 @@ export class SignupController　{
   }
 
   @get('/verify')
+  @login
   async getVerify(ctx) {
     return success(ctx.session.verifiedPhone);
   }
@@ -81,8 +82,10 @@ export class SignupController　{
     });
   }
 
-  @get('/test')
-  async test() {
-    return await Table.WechatLog.where('id', 1);
+  @get('/login')
+  async login(ctx) {
+    const user = await Table.User.first();
+    ctx.session.userId = user.id;
+    return user;
   }
 }

@@ -15,7 +15,7 @@ const db_1 = require("../db");
 const wechat_1 = require("./wechat");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
-const HOST = 'http://192.168.1.12:4200';
+const HOST = 'http://192.168.1.19:4200';
 let WechatController = class WechatController {
     async getWechat(id) {
         let dbRet = await db_1.Table.WechatOfficialAccount.where('id', id).first();
@@ -45,6 +45,7 @@ let WechatController = class WechatController {
             throw new routes_1.ResponseError(`公众号${wechat.officialAccount.name}无此微信用户: ${token.openid}`);
         }
         ctx.session.wechatUserId = wechatUser.id;
+        console.log(wechatUser);
         if (!wechatUser.userId) {
             ctx.redirect(`${HOST}/#/user/verify`);
         }

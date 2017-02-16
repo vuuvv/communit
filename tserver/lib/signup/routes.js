@@ -80,8 +80,10 @@ let SignupController = class SignupController {
             throw new Error('application crash test');
         });
     }
-    async test() {
-        return await db_1.Table.WechatLog.where('id', 1);
+    async login(ctx) {
+        const user = await db_1.Table.User.first();
+        ctx.session.userId = user.id;
+        return user;
     }
 };
 __decorate([
@@ -98,6 +100,7 @@ __decorate([
 ], SignupController.prototype, "createVerify", null);
 __decorate([
     routes_1.get('/verify'),
+    routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -109,11 +112,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "crash", null);
 __decorate([
-    routes_1.get('/test'),
+    routes_1.get('/login'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], SignupController.prototype, "test", null);
+], SignupController.prototype, "login", null);
 SignupController = __decorate([
     routes_1.router('/signup')
 ], SignupController);

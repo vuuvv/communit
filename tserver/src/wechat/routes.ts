@@ -6,7 +6,7 @@ import { Wechat } from './wechat';
 import { create } from '../utils';
 import { WechatOfficialAccount } from '../models';
 
-const HOST = 'http://192.168.1.12:4200';
+const HOST = 'http://192.168.1.19:4200';
 
 @router('/wechat')
 export class WechatController {
@@ -28,7 +28,6 @@ export class WechatController {
     }) + '#wechat_redirect');
   }
 
-
   @get('/:id/login')
   async login(ctx) {
     const id = ctx.params.id;
@@ -43,6 +42,7 @@ export class WechatController {
       throw new ResponseError(`公众号${wechat.officialAccount.name}无此微信用户: ${token.openid}`);
     }
     ctx.session.wechatUserId = wechatUser.id;
+    console.log(wechatUser);
     if (!wechatUser.userId) {
       ctx.redirect(`${HOST}/#/user/verify`);
     } else {
