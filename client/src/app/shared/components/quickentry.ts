@@ -17,7 +17,7 @@ export class QuickentryComponent {
 })
 export class QuickentryItemComponent {
   @Input() icon: string;
-  @Input() color: string = "#fff";
+  @Input() color: string = '#fff';
   @Input() bg: string;
 }
 

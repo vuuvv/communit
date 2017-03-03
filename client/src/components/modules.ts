@@ -14,6 +14,8 @@ import { CellModule } from './cell';
 import { InlineDescModule } from './inline-desc';
 import { PanelModule } from './panel';
 import { TabModule } from './tab';
+import { SliderModule } from './slider';
+import { ImageModule } from './image';
 
 const MODULES = [
   BaseModule,
@@ -30,6 +32,8 @@ const MODULES = [
   InlineDescModule,
   PanelModule,
   TabModule,
+  SliderModule,
+  ImageModule,
 ];
 
 @NgModule({
@@ -48,6 +52,8 @@ const MODULES = [
     InlineDescModule.forRoot(),
     PanelModule.forRoot(),
     TabModule.forRoot(),
+    SliderModule.forRoot(),
+    ImageModule.forRoot(),
   ],
   exports: MODULES,
 })

@@ -1,0 +1,15 @@
+<v-page>
+  <v-header [showBack]="false">
+    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
+      <span>返回</span>
+      <div class="left-arrow"></div>
+    </a>
+    社工参与
+  </v-header>
+  <tabbar slot="footer"></tabbar>
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['../' + (i+1)]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
+  </v-tab>
+
+  <empty-page>没有相关的项目</empty-page>
+</v-page>

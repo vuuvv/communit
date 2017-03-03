@@ -12,7 +12,7 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/me').subscribe((value) => {
+    this.http.get('/user/me').subscribe((value) => {
       this.user = value;
     });
   }

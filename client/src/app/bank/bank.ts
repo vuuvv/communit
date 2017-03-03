@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
 })
 export class BankComponent {
   private list = [{
+    id: '1',
+    organization: '老年人协会',
+    date: '2017-03-10',
     src: '',
     title: '永久公益心理咨询',
     desc: '这是一个意义危机的时代，情感无归的时代，个体几乎被无视的时代……在帝都更甚。心灵迫切需要在这样的沙漠中找到一块小小的绿洲，可以体验生命之美，情感之美，爱之美。',

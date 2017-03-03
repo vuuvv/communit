@@ -8,6 +8,8 @@ import { SharedModule } from '../shared';
 
 import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
+import { ActivityComponent } from './activity';
+import { WorkerComponent } from './worker';
 
 const routes: Routes = [
   {
@@ -23,6 +25,15 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ServiceComponent,
       },
+      {
+        path: 'worker/:type',
+        pathMatch: 'full',
+        component: WorkerComponent,
+      },
+      {
+        path: 'activity/:id',
+        component: ActivityComponent,
+      }
     ],
   },
 ];
@@ -38,6 +49,8 @@ const routes: Routes = [
   declarations: [
     BankComponent,
     ServiceComponent,
+    ActivityComponent,
+    WorkerComponent,
   ]
 })
 export class BankModule {

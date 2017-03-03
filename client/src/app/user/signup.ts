@@ -8,8 +8,8 @@ import { Http } from '../shared';
   styleUrls: ['./signup.less'],
 })
 export class SignupComponent implements OnInit {
-  private user = {}
-  private phone:string = '';
+  private user = {};
+  private phone: string = '';
 
   constructor(private http: Http, private router: Router) {
   }
@@ -17,7 +17,7 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
     this.http.get<string>('/signup/verify').subscribe((value) => {
       this.phone = value;
-    })
+    });
   }
 
   submit() {

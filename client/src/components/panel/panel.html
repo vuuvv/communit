@@ -4,26 +4,32 @@
 <div class="weui-panel__bd">
   <ng-container [ngSwitch]="type">
     <ng-container *ngSwitchCase="1">
-      <a *ngFor="let item of list" class="weui-media-box weui-media-box_appmsg">
+      <a *ngFor="let item of panelList" class="weui-media-box weui-media-box_appmsg">
         <div class="weui-media-box__hd" *ngIf="item.src">
           <img class="weui-media-box__thumb" [src]="item.src" alt="">
         </div>
         <div class="weui-media-box__bd">
           <h4 class="weui-media-box__title">{{item.title}}</h4>
           <p class="weui-media-box__desc">{{item.desc}}</p>
+          <ul class="weui-media-box__info" *ngIf="item.metas && item.metas.length">
+            <li class="weui-media-box__info__meta" *ngFor="let meta of item.metas;let i = $index" [class.weui-media-box__info__meta_extra]="item.metas.length && item.metas.length > 1 && i === (item.metas.length - 1)">{{meta}}</li>
+          </ul>
         </div>
       </a>
     </ng-container>
     <ng-container *ngSwitchCase="2">
-      <div class="weui-media-box weui-media__text" *ngFor="let item of list">
+      <div class="weui-media-box weui-media-box_text" *ngFor="let item of panelList">
           <h4 class="weui-media-box__title">{{item.title}}</h4>
           <p class="weui-media-box__desc">{{item.desc}}</p>
+          <ul class="weui-media-box__info" *ngIf="item.metas && item.metas.length">
+            <li class="weui-media-box__info__meta" *ngFor="let meta of item.metas;let i = $index" [class.weui-media-box__info__meta_extra]="item.metas.length && item.metas.length > 1 && i === (item.metas.length - 1)">{{meta}}</li>
+          </ul>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="3">
       <div class="weui-media-box weui-media-box_small-appmsg">
           <div class="weui-cells weui-cells__access">
-            <a class="weui-cell" *ngFor="let item of list">
+            <a class="weui-cell" *ngFor="let item of panelList">
               <div class="weui-cell__hd">
                 <img [src]="item.src" alt="" style="width:20px;margin-right:5px;display:block">
               </div>

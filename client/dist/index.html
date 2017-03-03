@@ -8,6 +8,81 @@
 
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+  @charset "UTF-8";
+@-webkit-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    /* Firefox 16+, IE 10+, Opera */ }
+  100% {
+    transform: rotate(360deg);
+    /* Firefox 16+, IE 10+, Opera */ } }
+
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    /* Firefox 16+*/ }
+  100% {
+    -moz-transform: rotate(360deg);
+    /* Firefox 16+*/ } }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    /* Firefox 16+, IE 10+, Opera */ }
+  100% {
+    transform: rotate(360deg);
+    /* Firefox 16+, IE 10+, Opera */ } }
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1003;
+  background: #32373c; }
+  #preloader > div {
+    display: block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #e74c3c;
+    transform: translate3d(0, 0, 0);
+    animation: spin 2s linear infinite;
+    /* Chrome, Firefox 16+, IE 10+, Opera */ }
+    #preloader > div:before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #017170;
+      -webkit-animation: spin 3s linear infinite;
+      /* Chrome, Opera 15+, Safari 5+ */
+      animation: spin 3s linear infinite;
+      /* Chrome, Firefox 16+, IE 10+, Opera */ }
+    #preloader > div:after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #f39c12;
+      animation: spin 1.5s linear infinite;
+      /* Chrome, Firefox 16+, IE 10+, Opera */ }
+  </style>
   <link rel="stylesheet" href="./assets/css/weui.css">
   <link rel="stylesheet" href="./assets/fonts/iconfont/iconfont.css">
   <script>
@@ -15,10 +90,16 @@
     // window.BASE_URL = "http://central.huijinet.com";
     window.BASE_URL = "http://weixin.vuuvv.com";
   </script>
-<link href="styles.be5edd731c8c56578f32.bundle.css" rel="stylesheet"></head>
+<link href="styles.9cc7533408b008db3a75.bundle.css" rel="stylesheet"></head>
 <body>
   <app-root>
+  <div id="preloader">
+    <div></div>
+  </div>
+
+    <!--
     <i class="weui-loading" style="position: absolute;top: 50%; left: 50%; width: 40px; height: 40px; margin-top: -20px; margin-left: -20px;"></i>
+    -->
   </app-root>
-<script type="text/javascript" src="inline.1dc8ecb4b456511de0ad.bundle.js"></script><script type="text/javascript" src="main.b35c2a32f8f64cd3527e.bundle.js"></script></body>
+<script type="text/javascript" src="inline.67074cd01194b33245e0.bundle.js"></script><script type="text/javascript" src="main.829035a02a215e43e6df.bundle.js"></script></body>
 </html>

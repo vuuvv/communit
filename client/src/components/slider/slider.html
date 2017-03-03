@@ -1,0 +1,13 @@
+<div
+  class="ngv-slider-viewport"
+  v-scroll
+  #viewport
+  [scrollOptions]="{scrollX: true, scrollY: false, momentum: false, snap: true, snapLoop: true, snapSpeed: speed}"
+>
+  <div class="ngv-slider-content" #content>
+    <ng-content></ng-content>
+  </div>
+  <div class="ngv-slider-indicator" *ngIf="indicator && pages && pages > 1">
+    <span *ngFor="let p of (pages - 2) | repeat; let i = index" [class.on]="i === page - 1"></span>
+  </div>
+</div>

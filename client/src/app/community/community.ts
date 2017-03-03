@@ -64,6 +64,6 @@ export class CommunityComponent {
     this.dialogService.alert('hi');
     this.http.get('http://weixin.vuuvv.com/test').subscribe((value) => {
       console.log(value);
-    })
+    });
   }
 }

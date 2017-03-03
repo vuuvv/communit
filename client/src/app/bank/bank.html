@@ -11,7 +11,7 @@
       <quickentry-item icon="gongshi" bg="#a035d9">
         事项公示
       </quickentry-item>
-      <quickentry-item icon="shegongcanyu" bg="#f75181">
+      <quickentry-item icon="shegongcanyu" bg="#f75181" [routerLink]="['./worker/1']">
         社工参与
       </quickentry-item>
       <quickentry-item icon="fuwu" bg="#46cc37" [routerLink]="['./service/1']">
@@ -34,8 +34,10 @@
     </quickentry>
   </div>
 
-  <v-panel [list]="list" type="2">活动公告</v-panel>
+  <v-panel [list]="list" [mapper]="{metas: ['organization', 'date']}" type="2">
+    <v-cell [isLink]="true">活动公告</v-cell>
+  </v-panel>
+
   <v-panel [list]="list" type="2">服务自选</v-panel>
 
 </v-page>
-

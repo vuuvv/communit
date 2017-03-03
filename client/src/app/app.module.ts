@@ -13,6 +13,7 @@ import { CommunityModule } from './community';
 import { BankModule } from './bank';
 import { MarketModule } from './market';
 import { UserModule } from './user';
+import { PublishModule } from './publish';
 
 const appRoutes: Routes = [
   {
@@ -41,6 +42,7 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { us
     BankModule,
     MarketModule,
     UserModule,
+    PublishModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
