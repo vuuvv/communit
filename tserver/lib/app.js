@@ -20,7 +20,7 @@ app.use(async (ctx, next) => {
     }
     catch (err) {
         console.log(err);
-        ctx.body = routes_1.error(err.toString());
+        ctx.body = routes_1.error(err);
     }
 });
 /**
@@ -48,9 +48,11 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 const wechat_1 = require("./wechat");
 const signup_1 = require("./signup");
+const user_1 = require("./user");
 const routes_2 = require("./routes");
 routes_2.route(router, wechat_1.WechatController);
 routes_2.route(router, signup_1.SignupController);
+routes_2.route(router, user_1.UserController);
 // console.log(router.stack);
 app.listen(PORT, HOST);
 console.log(`Listening at ${HOST}:${PORT}`);

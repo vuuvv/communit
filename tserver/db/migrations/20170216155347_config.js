@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('t_config', function(table) {
-        table.increments('id').primary();
+        table.uuid('id').primary();
         table.string('key', 100).notNullable();
         table.text('value').notNullable();
         table.timestamp('createdAt').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));

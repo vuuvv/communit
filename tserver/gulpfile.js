@@ -32,6 +32,19 @@ gulp.task('watch', ['clean', 'compile'], function(event) {
     var relativePath = path.relative(path.join(__dirname, 'src'), path.dirname(event.path));
     var targetPath = path.join('lib', relativePath);
 
+    if(fs.lstatSync(event.path).isDirectory()) {
+      if (event.type === 'added') {
+        if (!fs.existsSync(targetPath)) {
+          fs.mkdirSync(targetPath);
+        }
+        return;
+      }
+      if (event.type === 'deleted') {
+        gulp.src(targetPath).pipe(clean({force: true}));
+        return;
+      }
+    }
+
     if (event.type === 'deleted') {
       var targetfile = path.join(__dirname, targetPath)
       var basename = path.basename(event.path, '.ts')

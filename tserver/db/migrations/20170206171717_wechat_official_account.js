@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('t_wechat_official_account', function(table) {
-        table.increments('id').primary();
+        table.uuid('id').primary();
         table.string('name', 50).notNullable();
         table.string('appId', 100).notNullable();
         table.string('appSecret', 100).notNullable();

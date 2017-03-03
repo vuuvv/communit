@@ -22,7 +22,7 @@ app.use(async (ctx, next) => {
     await next();
   } catch (err) {
     console.log(err);
-    ctx.body = error(err.toString());
+    ctx.body = error(err);
   }
 });
 
@@ -56,9 +56,11 @@ app.use(router.allowedMethods());
 
 import { WechatController } from './wechat';
 import { SignupController } from './signup';
+import { UserController } from './user';
 import { route } from './routes';
 route(router, WechatController);
 route(router, SignupController);
+route(router, UserController);
 
 // console.log(router.stack);
 

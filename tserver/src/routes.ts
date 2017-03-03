@@ -146,9 +146,11 @@ export function error(message: string | Error, code: string = COMMON_ERROR_CODE)
   ret.code = COMMON_ERROR_CODE;
   if (_.isString(message)) {
     ret.message = message;
-  } else {
+  } else if (message['code']) {
     ret.message = message.message;
-    ret.code = message['code'] || COMMON_ERROR_CODE;
+    ret.code = message['code'];
+  } else {
+    ret.message = message.toString();
   }
 
   return ret;

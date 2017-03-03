@@ -9,7 +9,7 @@ exports.seed = function(knex, Promise) {
           title: '众邻',
           domain: 'weixin.vuuvv.com',
           host: 'http://weixin.vuuvv.com',
-          clientHost: 'http://192.168.1.19:4200',
+          client: 'http://192.168.1.19:4200',
         })}),
       ]);
     });

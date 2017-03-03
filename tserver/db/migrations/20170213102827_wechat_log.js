@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('t_wechat_log', function(table) {
-        table.increments('id').primary();
+        table.uuid('id').primary();
         table.integer('officialAccountId').unsigned().notNullable();
         table.text('request').notNullable();
         table.text('response').nullable();

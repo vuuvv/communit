@@ -46,10 +46,10 @@ export class WechatController {
     ctx.session.wechatUserId = wechatUser.id;
     const config = await Config.instance();
     if (!wechatUser.userId) {
-      ctx.redirect(`${config.site.clientHost}/#/user/verify`);
+      ctx.redirect(`${config.site.client}/#/user/verify`);
     } else {
       ctx.session.userId = wechatUser.userId;
-      ctx.redirect(config.site.clientHost);
+      ctx.redirect(config.site.client);
     }
   }
 
