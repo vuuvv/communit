@@ -7,6 +7,7 @@ import { BScrollDirective } from '../../components';
 })
 export class PublishComponent {
   @ViewChild('scroll') scroll: BScrollDirective;
+  show: boolean = false;
 
   scrollStart(event) {
     console.log(this.scroll.reload);

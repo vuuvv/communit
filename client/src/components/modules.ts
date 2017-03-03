@@ -16,6 +16,7 @@ import { PanelModule } from './panel';
 import { TabModule } from './tab';
 import { SliderModule } from './slider';
 import { ImageModule } from './image';
+import { MaskModule } from './mask';
 
 const MODULES = [
   BaseModule,
@@ -34,6 +35,7 @@ const MODULES = [
   TabModule,
   SliderModule,
   ImageModule,
+  MaskModule,
 ];
 
 @NgModule({
@@ -54,6 +56,7 @@ const MODULES = [
     TabModule.forRoot(),
     SliderModule.forRoot(),
     ImageModule.forRoot(),
+    MaskModule.forRoot(),
   ],
   exports: MODULES,
 })

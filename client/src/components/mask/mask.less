@@ -1,0 +1,41 @@
+@import '../../styles/variable';
+
+v-mask {
+  position: absolute;
+  display: none;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: @mask-z-index;
+
+  &.ngv-mask-show {
+    display: block;
+  }
+}
+
+.ngv-mask-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  transition: all 5s;
+  opacity: 0;
+  z-index: 1;
+}
+
+.ngv-mask-show {
+  .ngv-mask-overlay {
+    background: rgba(0,0,0,.6);
+    opacity: 1;
+  }
+}
+
+.ngv-mask-view {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
