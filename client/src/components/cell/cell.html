@@ -12,4 +12,8 @@
   {{value}}
   <ng-content select="[slot=value]"></ng-content>
 </div>
+<div *ngIf="hasMore">
+  <v-icon type="more"></v-icon>
+</div>
+
 <ng-content select="[slot=child]"></ng-content>

@@ -1,53 +1,98 @@
 <v-page>
+  <v-header [showBack]="false" slot="header">
+    <img src="assets/images/ios/@2x/logo@2x.png"/>
+  </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <div class="banner"></div>
+  <v-slider>
+    <v-slider-item>
+      <v-image width="100%" height="152" src="https://ustbhuangyi.github.io/better-scroll/images/slider1.jpg" size="cover"></v-image>
+    </v-slider-item>
+    <v-slider-item>
+      <v-image width="100%" height="152" src="https://ustbhuangyi.github.io/better-scroll/images/slider2.jpg" size="cover"></v-image>
+    </v-slider-item>
+    <v-slider-item>
+      <v-image width="100%" height="152" src="https://ustbhuangyi.github.io/better-scroll/images/slider3.jpg" size="cover"></v-image>
+    </v-slider-item>
+  </v-slider>
+  <div class="site">
+    <span class="site-main">众邻</span>
+    <span class="site-body">...社区自治与互助服务平台</span>
+  </div>
 
   <div class="quickentry-nav ngv-1px-b">
     <quickentry>
-      <quickentry-item icon="gaikuang" bg="#46cc37" [routerLink]="['./summary']">
+      <quickentry-item icon="sqgk" [routerLink]="['./summary']">
         社区概况
       </quickentry-item>
-      <quickentry-item icon="dongtai" bg="#a035d9">
-        社区动态
-      </quickentry-item>
-      <quickentry-item icon="tongzhi" bg="#f75181">
-        社区通知
-      </quickentry-item>
-      <quickentry-item icon="gongshi" bg="#46cc37">
+      <quickentry-item icon="sxgs">
         事项公示
       </quickentry-item>
-      <quickentry-item icon="toupiao" bg="#00abef">
+      <quickentry-item icon="yagj" bg="#f75181">
         议案公决
+      </quickentry-item>
+      <quickentry-item icon="ywhgz" bg="#46cc37">
+        业委会工作
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item icon="yezhuweiyuanhui" bg="#00abef">
-        业委会
-      </quickentry-item>
-      <quickentry-item icon="wuyeguanli" bg="#eb383a">
+      <quickentry-item icon="wyfw" bg="#eb383a">
         物业服务
       </quickentry-item>
-      <quickentry-item icon="dianzan" bg="#0fe1c2">
+      <quickentry-item icon="dzt" bg="#0fe1c2">
         点赞台
       </quickentry-item>
-      <quickentry-item icon="meitipuguangdu" bg="#ffc72d">
+      <quickentry-item icon="bgt" bg="#ffc72d">
         曝光台
       </quickentry-item>
-      <quickentry-item icon="jigou" bg="#ed7901">
-        社区机构
+      <quickentry-item icon="all" bg="#ed7901">
+        全　部
       </quickentry-item>
     </quickentry>
   </div>
-  <div class="news">
-    <div class="news-item">
-      <span class="title ngv-1px-r">社区通知</span>
-      <span class="subject">好邻里，轻松自己</span>
+
+  <div class="weui-panel weui-panel__access">
+    <div class="weui-panel__hd">
+      <v-cell [hasMore]="true">
+        <h1>社区动态</h1>
+        <v-image src="assets/images/ios/@2x/sqdt@2x.png" slot="icon" [block]="true"></v-image>
+      </v-cell>
+    </div>
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_small-appmsg">
+          <div class="weui-cells weui-cells__access">
+            <a class="weui-cell" *ngFor="let item of list">
+              <div class="weui-cell__bd weui-cell__primary">
+                <p>{{item.title}}</p>
+              </div>
+              <span class="weui-cell__ft">[2016-07-07]</span>
+            </a>
+          </div>
+      </div>
     </div>
   </div>
 
-  <v-panel [list]="list" type="2">社区动态</v-panel>
-  <v-panel [list]="list" type="2">事项公示</v-panel>
+  <div class="weui-panel weui-panel__access">
+    <div class="weui-panel__hd">
+      <v-cell [hasMore]="true">
+        <h1>社区通知</h1>
+        <v-image src="assets/images/ios/@2x/sqtz@2x.png" slot="icon" [block]="true"></v-image>
+      </v-cell>
+    </div>
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_small-appmsg">
+          <div class="weui-cells weui-cells__access">
+            <a class="weui-cell" *ngFor="let item of list">
+              <div class="weui-cell__bd weui-cell__primary">
+                <p>{{item.title}}</p>
+              </div>
+              <span class="weui-cell__ft">[2016-07-07]</span>
+            </a>
+          </div>
+      </div>
+    </div>
+  </div>
+
 
 </v-page>
 

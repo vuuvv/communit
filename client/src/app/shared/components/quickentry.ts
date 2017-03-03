@@ -17,8 +17,10 @@ export class QuickentryComponent {
 })
 export class QuickentryItemComponent {
   @Input() icon: string;
-  @Input() color: string = '#fff';
-  @Input() bg: string;
+
+  get src() {
+    return `assets/images/ios/@2x/${this.icon}@2x.png`;
+  }
 }
 
 

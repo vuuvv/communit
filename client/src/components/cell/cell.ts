@@ -14,6 +14,7 @@ export class CellComponent {
   @Input() title: string;
   @Input() value: string;
   @Input() isLink: boolean;
+  @Input() hasMore: boolean;
   @Input() inlineDesc: string;
   @Input() primary: string = 'title';
 }

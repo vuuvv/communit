@@ -17,6 +17,7 @@ import { TabModule } from './tab';
 import { SliderModule } from './slider';
 import { ImageModule } from './image';
 import { MaskModule } from './mask';
+import { PickerModule } from './picker';
 
 const MODULES = [
   BaseModule,
@@ -36,6 +37,7 @@ const MODULES = [
   SliderModule,
   ImageModule,
   MaskModule,
+  PickerModule,
 ];
 
 @NgModule({
@@ -57,6 +59,7 @@ const MODULES = [
     SliderModule.forRoot(),
     ImageModule.forRoot(),
     MaskModule.forRoot(),
+    PickerModule.forRoot(),
   ],
   exports: MODULES,
 })

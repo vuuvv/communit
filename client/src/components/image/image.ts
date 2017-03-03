@@ -14,6 +14,12 @@ export class ImageComponent {
   @Input() width: string;
   @Input() height: string;
   @Input() src: string;
+  @Input() block: boolean = true;
+
+  @HostBinding('style.display')
+  get displayStyle() {
+    return this.block ? 'block' : 'inline-block';
+  }
 
   @Input()
   @HostBinding('style.background-size')

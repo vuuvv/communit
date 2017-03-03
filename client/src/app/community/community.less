@@ -1,0 +1,72 @@
+@import '../../styles/variable';
+
+v-header {
+  img {
+    padding-top: 3px;
+    height: 33px;
+  }
+}
+
+.site {
+  height: 32px;
+  background: #fff;
+  text-align: center;
+  color: @main-color;
+  margin-bottom: 8px;
+
+  .site-main {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 32px;
+  }
+
+  .site-body {
+    font-size: 12px;
+    line-height: 32px;
+  }
+}
+
+.weui-panel {
+  h1 {
+    font-size: 14px;
+    font-weight: 500;
+    color: @main-color;
+  }
+
+  .weui-panel__bd {
+    .weui-cell {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+  }
+
+  .weui-cell__ft {
+    font-size: 14px;
+    padding-left: 8px;
+  }
+
+  .weui-cell__primary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    p {
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  v-image {
+    width: 14px;
+    height: 13px;
+    vertical-align: middle;
+    margin-right: 3px;
+  }
+}
+
+:host /deep/ .weui-panel__hd {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
