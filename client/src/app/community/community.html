@@ -61,7 +61,7 @@
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_small-appmsg">
           <div class="weui-cells weui-cells__access">
-            <a class="weui-cell" *ngFor="let item of list">
+            <a class="weui-cell" *ngFor="let item of list" [routerLink]="['/article/'+item.id]">
               <div class="weui-cell__bd weui-cell__primary">
                 <p>{{item.title}}</p>
               </div>

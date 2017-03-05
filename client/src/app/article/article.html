@@ -1,0 +1,12 @@
+<v-page class="page-article">
+  <v-header [showBack]="true" slot="header">
+    {{ article?.category }}
+  </v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <div class="article" *ngIf="article">
+    <h1>{{ article.title }}</h1>
+    <div class="article-from">{{ article.from }}</div>
+    <div class="article-content" [innerHTML]="article.content"></div>
+  </div>
+</v-page>
