@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   templateUrl: './bank.html',
   styleUrls: ['./bank.less'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class BankComponent {
   private list = [{

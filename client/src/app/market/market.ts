@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   templateUrl: './market.html',
   styleUrls: ['./market.less'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class MarketComponent {
   private hotProducts = [

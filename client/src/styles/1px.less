@@ -1,8 +1,36 @@
-/**
-* https://github.com/frozenui/frozenui/
-* MIT License
-*/
+@import "./weui/base/mixin/setOnepx.less";
 
+@border-color: #e5e5e5;
+
+.ngv-1px-t {
+  position: relative;
+  &:after {
+    .setTopLine(@border-color);
+  }
+}
+
+.ngv-1px-b {
+  position: relative;
+  &:after {
+    .setBottomLine(@border-color);
+  }
+}
+
+.ngv-1px-l {
+  position: relative;
+  &:after {
+    .setLeftLine(@border-color);
+  }
+}
+
+.ngv-1px-r {
+  position: relative;
+  &:after {
+    .setRightLine(@border-color);
+  }
+}
+
+/*
 .ngv-1px-t {
   border-top: 1px solid #e0e0e0;
 }
@@ -118,3 +146,5 @@
     pointer-events: none;
   }
 }
+
+*/

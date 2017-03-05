@@ -1,73 +1,59 @@
-<v-page>
+<v-page class="page-market">
+  <v-searchbar slot="header"></v-searchbar>
   <tabbar slot="footer"></tabbar>
-
-  <div class="banner"></div>
 
   <div class="quickentry-nav ngv-1px-b">
     <quickentry>
-      <quickentry-item icon="shuiguoshengxian" bg="#46cc37">
-        土特食品
+      <quickentry-item icon="ms" [routerLink]="['./summary']">
+        美食
       </quickentry-item>
-      <quickentry-item icon="shumajiadian" bg="#a035d9">
-        数码家电
+      <quickentry-item icon="lr">
+        丽人
       </quickentry-item>
-      <quickentry-item icon="badaxilietubiao01" bg="#f75181">
-        运动户外
+      <quickentry-item icon="ac">
+        爱车
       </quickentry-item>
-      <quickentry-item icon="jiajubaihuo" bg="#46cc37">
-        居家百货
+      <quickentry-item icon="gw">
+        购物
       </quickentry-item>
-      <quickentry-item icon="muyingyongpin" bg="#00abef">
-        母婴用品
+      <quickentry-item icon="qz">
+        亲子
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item icon="jiushuiyinliao" bg="#00abef">
-        酒水茶饮
+      <quickentry-item icon="jd" [routerLink]="['./summary']">
+        酒店
       </quickentry-item>
-      <quickentry-item icon="nvzhuang" bg="#eb383a">
-        女装
+      <quickentry-item icon="shfw">
+        生活服务
       </quickentry-item>
-      <quickentry-item icon="xiangbao" bg="#0fe1c2">
-        箱包
+      <quickentry-item icon="xxyl">
+        休闲娱乐
       </quickentry-item>
-      <quickentry-item icon="huazhuangpin" bg="#ffc72d">
-        护肤彩妆
+      <quickentry-item icon="ydjs">
+        运动健身
       </quickentry-item>
-      <quickentry-item icon="nanzhuang" bg="#ed7901">
-        男装
+      <quickentry-item icon="xxpx">
+        学习培训
       </quickentry-item>
     </quickentry>
   </div>
-  <div class="news">
-    <div class="news-item">
-      <span class="title ngv-1px-r">社区通知</span>
-      <span class="subject">好邻里，轻松自己</span>
-    </div>
-  </div>
 
   <div class="product-list">
-    <div class="title">
-      <div class="vline"></div>
-      <p>
-        <v-icon type="remai"></v-icon>
-        <span>为你推荐</span>
-      </p>
-      <div class="vline"></div>
-    </div>
-    <div class="products" *ngIf="hotProducts">
-      <div class="product" *ngFor="let product of hotProducts" [routerLink]="['/product/home/detail', {product: product?.HMBSpuCode}]">
-        <div class="prod-c">
-          <div class="prod-pic" [style.background-image]="product?.FirstImageUrl | backgroundUrl | unsafe"></div>
-          <div class="prod-title">{{ product?.Title }}</div>
-          <div class="prod-info">
-            <div class="prod-price">积分：{{ product?.HMBAvailabilityPrice }}</div>
-            <div class="prod-sales" *ngIf="product?.sellNum">销量: {{ product?.sellNum }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
+    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
+    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
+    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
+    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
+    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
+    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
+    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
+    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
+    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
+    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
+    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
+ </div>
+
 
 </v-page>
 

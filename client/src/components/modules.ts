@@ -18,6 +18,9 @@ import { SliderModule } from './slider';
 import { ImageModule } from './image';
 import { MaskModule } from './mask';
 import { PickerModule } from './picker';
+import { XSCrollModule } from './xscroll';
+import { RankModule } from './rank';
+import { SearchbarModule } from './searchbar';
 
 const MODULES = [
   BaseModule,
@@ -38,6 +41,9 @@ const MODULES = [
   ImageModule,
   MaskModule,
   PickerModule,
+  XSCrollModule,
+  RankModule,
+  SearchbarModule,
 ];
 
 @NgModule({
@@ -60,6 +66,9 @@ const MODULES = [
     ImageModule.forRoot(),
     MaskModule.forRoot(),
     PickerModule.forRoot(),
+    XSCrollModule.forRoot(),
+    RankModule.forRoot(),
+    SearchbarModule.forRoot(),
   ],
   exports: MODULES,
 })

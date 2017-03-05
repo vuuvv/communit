@@ -1,0 +1,14 @@
+<v-image [src]="src" width="40" height="40"></v-image>
+<div class="list-item-content">
+  <div class="list-item-title">{{ title }}</div>
+  <div class="list-item-desc">{{ desc }}</div>
+  <div class="list-item-price">
+    <span>积分售价:￥</span><span class="list-item-highlight">{{price}} + {{credit}}</span><span>&nbsp;积分</span>
+  </div>
+  <div class="list-item-real-price">
+    <span>现场售价:￥</span><span class="list-item-highlight">{{realPrice}}</span>
+  </div>
+</div>
+<div class="list-item-right">
+  <v-rank [points]="2.5" size="12px"></v-rank>
+</div>

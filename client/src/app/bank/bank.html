@@ -1,43 +1,84 @@
-<v-page>
+<v-page class="page-bank">
+  <v-header [showBack]="false" slot="header">
+    <span>众邻</span>
+    <span style="font-size: 14px">...好邻里·轻松自己</span>
+  </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <div class="banner"></div>
-
-  <div class="quickentry-nav ngv-1px-b">
-    <quickentry>
-      <quickentry-item icon="gonggao" bg="#46cc37">
-        活动公告
-      </quickentry-item>
-      <quickentry-item icon="gongshi" bg="#a035d9">
-        事项公示
-      </quickentry-item>
-      <quickentry-item icon="shegongcanyu" bg="#f75181" [routerLink]="['./worker/1']">
-        社工参与
-      </quickentry-item>
-      <quickentry-item icon="fuwu" bg="#46cc37" [routerLink]="['./service/1']">
-        服务自选
-      </quickentry-item>
-    </quickentry>
-    <quickentry>
-      <quickentry-item icon="linlihuzhu" bg="#00abef" [routerLink]="['./service/2']">
-        邻里互助
-      </quickentry-item>
-      <quickentry-item icon="cishan" bg="#00abef" [routerLink]="['./service/3']">
-        慈善同行
-      </quickentry-item>
-      <quickentry-item icon="shangjiagongyibang" bg="#eb383a">
-        商家公益榜
-      </quickentry-item>
-      <quickentry-item icon="jumingongyibang" bg="#0fe1c2">
-        居民公益榜
-      </quickentry-item>
-    </quickentry>
+  <div class="news">
+    <div class="news-wrapper">
+      <div class="news-item">
+        <span class="title ngv-1px-r">社区通知</span>
+        <span class="subject">社区“道德讲堂”举办元宵民俗专题讲座</span>
+      </div>
+    </div>
   </div>
 
-  <v-panel [list]="list" [mapper]="{metas: ['organization', 'date']}" type="2">
-    <v-cell [isLink]="true">活动公告</v-cell>
-  </v-panel>
+  <div class="ngv-1px-t">
+    <v-xscroll class="main-nav">
+      <quickentry-item class="ngv-xscroll-item" icon="sxgs" [routerLink]="['./summary']">
+        事项公示
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="llhz" [routerLink]="['./summary']">
+        邻里互助
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="sgcy" [routerLink]="['./summary']">
+        社工参与
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="fwzx" [routerLink]="['./summary']">
+        服务自选
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="cstx" [routerLink]="['./summary']">
+        慈善同行
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="gyph" [routerLink]="['./summary']">
+        公益排行
+      </quickentry-item>
+    </v-xscroll>
+    <v-xscroll class="sub-nav">
+      <quickentry-item class="ngv-xscroll-item" icon="zx" width="20" height="20">
+        咨询
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="js" width="20" height="20">
+        介绍
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="fd" width="20" height="20">
+        辅导
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="ph" width="20" height="20">
+        陪护
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="wx" width="20" height="20">
+        维修
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="dg" width="20" height="20">
+        代购
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="tg" width="20" height="20">
+        托管
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="cj" width="20" height="20">
+        出借
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="ph" width="20" height="20">
+        折送
+      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" icon="fd" width="20" height="20">
+        顺搭
+      </quickentry-item>
+    </v-xscroll>
+  </div>
 
-  <v-panel [list]="list" type="2">服务自选</v-panel>
-
+  <div class="service-list">
+    <service-list-item icon="zx2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律北京盈科(泉州)律师事务所专职律师" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    </service-list-item>
+    <service-list-item icon="fd2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律北京盈科(泉州)律师事务所专职律师" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    </service-list-item>
+    <service-list-item icon="ydjs2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律北京盈科(泉州)律师事务所专职律师" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    </service-list-item>
+    <service-list-item icon="tg2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律北京盈科(泉州)律师事务所专职律师" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    </service-list-item>
+    <service-list-item icon="ph2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律北京盈科(泉州)律师事务所专职律师" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    </service-list-item>
+  </div>
 </v-page>

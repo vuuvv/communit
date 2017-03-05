@@ -1,0 +1,21 @@
+<div class="weui-search-bar" [class.weui-search-bar_focusing]="focused">
+  <form class="weui-search-bar__form">
+    <div class="weui-search-bar__box">
+      <i class="weui-icon-search"></i>
+      <input type="search" #input class="weui-search-bar__input" [(ngModel)]="keyword" name="keyword" placeholder="搜索">
+      <a class="weui-icon-clear" (click)="clear()"></a>
+    </div>
+    <label class="weui-search-bar__label" (click)="click()">
+      <i class="weui-icon-search"></i>
+      <span>搜索</span>
+    </label>
+  </form>
+  <a class="weui-search-bar__cancel-btn" (click)="cancel()">取消</a>
+</div>
+<div class="weui-cells searchbar-result" *ngIf="keyword">
+  <div class="weui-cell weui-cell_access">
+    <div class="weui-cell__bd weui-cell_primary">
+      <p>{{ keyword }}</p>
+    </div>
+  </div>
+</div>
