@@ -1,0 +1,9 @@
+<v-page class="page-article">
+  <v-header [showBack]="true" slot="header">
+    {{ category }}
+  </v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <v-panel [list]="articles" [mapper]="{metas: ['organization', 'date']}" type="2">
+  </v-panel>
+</v-page>

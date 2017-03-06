@@ -1,10 +1,11 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { PanelComponent } from './panel';
 
 @NgModule({
-  imports: [ CommonModule ],
+  imports: [ CommonModule, RouterModule ],
   exports: [ PanelComponent ],
   declarations: [ PanelComponent ],
 })

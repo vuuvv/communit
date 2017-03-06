@@ -23,3 +23,4 @@ export class BaseModule {
 
 export * from './pipes';
 export * from './directives';
+export * from './utils';

@@ -7,6 +7,7 @@ import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { ArticleComponent } from './article';
+import { ArticleListComponent } from './article-list';
 
 const routes: Routes = [
   {
@@ -16,6 +17,16 @@ const routes: Routes = [
         path: ':id',
         pathMatch: 'full',
         component: ArticleComponent,
+      }
+    ],
+  },
+  {
+    path: 'articles',
+    children: [
+      {
+        path: ':id',
+        pathMatch: 'full',
+        component: ArticleListComponent,
       }
     ],
   },
@@ -31,6 +42,7 @@ const routes: Routes = [
   ],
   declarations: [
     ArticleComponent,
+    ArticleListComponent,
   ]
 })
 export class ArticleModule {

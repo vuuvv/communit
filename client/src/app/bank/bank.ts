@@ -55,4 +55,8 @@ export class BankComponent {
     desc: '1月20日上午，戎苑社区组织居民代表召开了2016年年终总结大会并接受考核。会上，社区党委书记、主任曹淑萍首先对本社区全年工作进行汇报',
     url: '/component/cell'
   }];
+
+  click() {
+    console.log('click');
+  }
 }

@@ -1,0 +1,16 @@
+<v-page>
+  <v-header [showBack]="false">
+    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
+      <span>返回</span>
+      <div class="left-arrow"></div>
+    </a>
+    社区调解员
+  </v-header>
+  <div slot="footer">我要加入</div>
+
+  <v-group gutter="0">
+    <v-cell [isLink]="true" [routerLink]="['/articles/1']">张三</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/articles/1']">李四</v-cell>
+  </v-group>
+
+</v-page>

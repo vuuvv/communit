@@ -65,5 +65,7 @@ export class PanelComponent implements AfterViewInit, OnChanges {
       ret.metas = mapper.metas ? mapper.metas.map((meta) => value[meta]) : value.metas;
       return ret;
     });
+
+    console.log(this.panelList);
   }
 }

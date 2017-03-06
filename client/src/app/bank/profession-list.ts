@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { isEmptyArray } from '../shared';
 
 @Component({
-  templateUrl: './worker.html',
+  templateUrl: './profession-list.html',
 })
-export class WorkerComponent {
+export class ProfessionListComponent {
 }
