@@ -3,7 +3,7 @@ import { BaseModel } from './base_model';
 
 export class WechatLog extends BaseModel {
   @property()
-  officialAccountId: number;
+  officialAccountId: string;
   @property()
   request: string;
   @property()

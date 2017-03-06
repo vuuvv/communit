@@ -57,10 +57,15 @@ app.use(router.allowedMethods());
 import { WechatController } from './wechat';
 import { SignupController } from './signup';
 import { UserController } from './user';
+import { ArticleController, ArticlesController } from './article';
+
 import { route } from './routes';
+
 route(router, WechatController);
 route(router, SignupController);
 route(router, UserController);
+route(router, ArticleController);
+route(router, ArticlesController);
 
 // console.log(router.stack);
 

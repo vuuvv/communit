@@ -25,9 +25,10 @@ let WechatController = class WechatController {
     async test(ctx) {
         const id = ctx.params.id;
         const wechat = await this.getWechat(id);
+        const config = await config_1.Config.instance();
         ctx.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
             appid: wechat.appId,
-            redirect_uri: `http://weixin.vuuvv.com/wechat/${id}/login`,
+            redirect_uri: `${config.site.host}/${id}/login`,
             response_type: 'code',
             scope: 'snsapi_base',
             state: '123'

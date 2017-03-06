@@ -3,18 +3,18 @@ import { BaseModel } from './base_model';
 
 
 export class WechatOfficialAccount extends BaseModel {
-  @property()
+  @property('accountname')
   name: string;
-  @property('appid')
+  @property('accountappid')
   appId: string;
-  @property('appsecret')
+  @property('accountappsecret')
   appSecret: string;
-  @property()
+  @property('accounttoken')
   token: string;
-  @property('access_token')
+  @property('accountaccesstoken')
   accessToken: string;
-  @property('expires_in')
-  expiresIn: number;
+  @property('ADDTOEKNTIME')
+  expiresIn: Date;
 }
 
 export const WechatOfficialAccountTableName = 't_wechat_official_account';

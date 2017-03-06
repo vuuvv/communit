@@ -8,23 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-const uuid = require("uuid/v4");
-class BaseModel {
-    constructor() {
-        this.id = uuid().replace(/-/g, '');
-    }
+class AccountType extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], BaseModel.prototype, "id", void 0);
-__decorate([
-    utils_1.property('created_at'),
-    __metadata("design:type", Date)
-], BaseModel.prototype, "createdAt", void 0);
-__decorate([
-    utils_1.property('updated_at'),
-    __metadata("design:type", Date)
-], BaseModel.prototype, "updatedAt", void 0);
-exports.BaseModel = BaseModel;
+], AccountType.prototype, "name", void 0);
+exports.AccountType = AccountType;
+exports.ConfigTableName = 't_account_type';

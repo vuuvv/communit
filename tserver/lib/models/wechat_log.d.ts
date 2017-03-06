@@ -1,6 +1,6 @@
 import { BaseModel } from './base_model';
 export declare class WechatLog extends BaseModel {
-    officialAccountId: number;
+    officialAccountId: string;
     request: string;
     responst: string;
     type: string;

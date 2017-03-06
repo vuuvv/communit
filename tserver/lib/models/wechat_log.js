@@ -14,7 +14,7 @@ class WechatLog extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], WechatLog.prototype, "officialAccountId", void 0);
 __decorate([
     utils_1.property(),

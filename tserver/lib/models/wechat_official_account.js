@@ -13,28 +13,28 @@ const base_model_1 = require("./base_model");
 class WechatOfficialAccount extends base_model_1.BaseModel {
 }
 __decorate([
-    utils_1.property(),
+    utils_1.property('accountname'),
     __metadata("design:type", String)
 ], WechatOfficialAccount.prototype, "name", void 0);
 __decorate([
-    utils_1.property('appid'),
+    utils_1.property('accountappid'),
     __metadata("design:type", String)
 ], WechatOfficialAccount.prototype, "appId", void 0);
 __decorate([
-    utils_1.property('appsecret'),
+    utils_1.property('accountappsecret'),
     __metadata("design:type", String)
 ], WechatOfficialAccount.prototype, "appSecret", void 0);
 __decorate([
-    utils_1.property(),
+    utils_1.property('accounttoken'),
     __metadata("design:type", String)
 ], WechatOfficialAccount.prototype, "token", void 0);
 __decorate([
-    utils_1.property('access_token'),
+    utils_1.property('accountaccesstoken'),
     __metadata("design:type", String)
 ], WechatOfficialAccount.prototype, "accessToken", void 0);
 __decorate([
-    utils_1.property('expires_in'),
-    __metadata("design:type", Number)
+    utils_1.property('ADDTOEKNTIME'),
+    __metadata("design:type", Date)
 ], WechatOfficialAccount.prototype, "expiresIn", void 0);
 exports.WechatOfficialAccount = WechatOfficialAccount;
 exports.WechatOfficialAccountTableName = 't_wechat_official_account';

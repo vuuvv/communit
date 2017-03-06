@@ -1,4 +1,3 @@
-
 exports.seed = function(knex, Promise) {
   return knex('t_account_type').truncate()
     .then(function () {

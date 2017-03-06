@@ -324,8 +324,8 @@ export class Wechat {
 
   async updateToken(officialAccount: WechatOfficialAccount) {
     await Table.WechatOfficialAccount.where('id', officialAccount.id).update({
-      accessToken: officialAccount.accessToken,
-      expiresIn: officialAccount.expiresIn,
+      accountaccesstoken: officialAccount.accessToken,
+      ADDTOEKNTIME: officialAccount.expiresIn,
     });
   }
 
@@ -342,7 +342,7 @@ export class Wechat {
     });
     token.expires_in -= 5 * 60;
     officialAccount.accessToken = token.access_token;
-    officialAccount.expiresIn = new Date().getTime() + token.expires_in * 1000;
+    officialAccount.expiresIn = new Date(new Date().getTime() + token.expires_in * 1000);
     await this.updateToken(officialAccount);
     return token.access_token;
   }
@@ -353,7 +353,7 @@ export class Wechat {
       return await this.fetchToken();
     }
     let now = new Date().getTime();
-    if (officialAccount.expiresIn > now) {
+    if (officialAccount.expiresIn.getTime() > now) {
       return officialAccount.accessToken;
     }
     return await this.fetchToken();
