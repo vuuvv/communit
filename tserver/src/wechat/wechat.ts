@@ -310,7 +310,7 @@ export class Wechat {
     if (!obj) {
       return null;
     }
-    return new Wechat(obj);
+    return new Wechat(create(WechatOfficialAccount, obj));
   }
 
   constructor(officialAccount: WechatOfficialAccount) {
@@ -368,7 +368,33 @@ export class Wechat {
       },
       json: true,
     });
+    if (user.errcode) {
+      console.log(user);
+      return null;
+    }
     return user;
+  }
+
+  async createUser(openid) {
+    let user = await this.getUserInfo(openid);
+    if (!user) {
+      return null;
+    }
+    let ret = null;
+    await db.transaction(async (trx) => {
+      let wechatUser = await Table.WechatUser.transacting(trx).where({
+        openId: openid,
+        officialAccountId: this.officialAccount.id,
+      }).forUpdate().first();
+      if (!wechatUser) {
+        wechatUser = create(WechatUser, user);
+        wechatUser.officialAccountId = this.officialAccount.id;
+        wechatUser.tagIdList = wechatUser.tagIdList.toString();
+        await Table.WechatUser.transacting(trx).insert(wechatUser);
+      }
+      ret = wechatUser;
+    });
+    return ret;
   }
 
   async getUserAccessToken(code: string) {
@@ -392,7 +418,8 @@ export class Wechat {
     if (ret) {
       return create<WechatUser>(WechatUser, ret);
     }
-    return null;
+
+    return await this.createUser(openid);
   }
 
   async createMenu(menu) {
@@ -449,19 +476,7 @@ export class Wechat {
   }
 
   async onSubscribeEvent(message: Event) {
-    let user = await this.getUserInfo(message.FromUserName);
-    await db.transaction(async (trx) => {
-      let wechatUser = await Table.WechatUser.transacting(trx).where({
-        openId: message.FromUserName,
-        officialAccountId: this.officialAccount.id,
-      }).forUpdate().first();
-      if (!wechatUser) {
-        wechatUser = create(WechatUser, user);
-        wechatUser.officialAccountId = this.officialAccount.id;
-        wechatUser.tagIdList = wechatUser.tagIdList.toString();
-        await Table.WechatUser.transacting(trx).insert(wechatUser);
-      }
-    });
+    let user = this.createUser(message.FromUserName);
 
     return new TextReply(message.ToUserName, message.FromUserName, `谢谢关注${this.officialAccount.name}`).toXml();
   }

@@ -7,12 +7,13 @@ import { create } from '../utils';
 import { WechatOfficialAccount } from '../models';
 import { Config } from '../config';
 
-const HOST = 'http://192.168.1.19:4200';
-
 @router('/wechat')
 export class WechatController {
   private async getWechat(id) {
     let dbRet = await Table.WechatOfficialAccount.where('id', id).first();
+    if (!dbRet) {
+      return dbRet;
+    }
     return create<WechatOfficialAccount>(WechatOfficialAccount, dbRet);
   }
 
@@ -23,7 +24,7 @@ export class WechatController {
     const config = await Config.instance();
     ctx.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
       appid: wechat.appId,
-      redirect_uri: `${config.site.host}/${id}/login`,
+      redirect_uri: `${config.site.host}/wechat/${id}/login`,
       response_type: 'code',
       scope: 'snsapi_base',
       state: '123'
@@ -36,6 +37,7 @@ export class WechatController {
     const code = ctx.query.code;
     const wechat = await Wechat.create(id);
     const token = await wechat.getUserAccessToken(code);
+    ctx.session.communityId = wechat.officialAccount.id;
     if (!token.openid) {
       console.error(token);
       throw new ResponseError('获取用户token失败');

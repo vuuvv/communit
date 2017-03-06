@@ -1,16 +1,23 @@
 import { router, get, post, all, success, error, Response, ResponseError, login } from '../routes';
 import { getRawBody } from '../utils';
 import { db, Table } from '../db';
+import { uuid } from '../utils';
 
 @router('/signup')
 export class SignupController　{
   /**
    * 用户填写注册信息, 生成用户
    */
-  @post('/')
+  @post('/create')
   async signup(ctx) {
+    const wechatAccountId = ctx.session.communityId;
     const tel = ctx.session.verifiedPhone;
     const wechatUserId = ctx.session.wechatUserId;
+
+    let account = await Table.WechatOfficialAccount.where('id', wechatAccountId);
+    if (!account) {
+      throw new ResponseError('无效的公众号: ' + wechatAccountId);
+    }
     if (!tel) {
       throw new ResponseError('请先验证手机');
     }
@@ -28,23 +35,42 @@ export class SignupController　{
     model.phone = tel;
 
     await db.transaction(async (trx) => {
-      let user = await Table.User.transacting(trx).where('phone', tel).forUpdate().first();
+      let user = await Table.User.transacting(trx).where('username', tel).forUpdate().first();
       if (user) {
-        throw new ResponseError('用户已存在');
+        // 用户已存在, 检查在该社区是否存在
+        let wechatUser = await Table.WechatUser.transacting(trx).where({
+          userId: user.id,
+          officialAccountId: wechatAccountId,
+        });
+        if (wechatUser) {
+          throw new ResponseError('用户已存在');
+        }
+        await Table.WechatUser.transacting(trx).where('id', wechatUser.id).update({
+          userId: user.id,
+          realname: model.name,
+          area: model.area,
+          address: model.address,
+        });
       }
-      let ids = await Table.User.transacting(trx).insert(model).select('id');
+
+      let userId = uuid();
+
+      let ids = await Table.User.transacting(trx).insert({
+        ID: userId,
+        username: tel,
+      }).select('ID');
       if (wechatUserId) {
         let wUser = await Table.WechatUser.where('id', wechatUserId).first();
         if (wUser) {
-          await Table.User.transacting(trx).where('id', ids[0]).update({
-            avatar: wUser.headimgurl,
-            sex: wUser.sex,
-          });
           await Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
-            userId: ids[0],
+            userId: userId,
+            realname: model.name,
+            area: model.area,
+            address: model.address,
           });
         }
       }
+      ctx.session.userId = userId;
     });
     delete ctx.session.verifiedPhone;
     delete ctx.session.wechatUserid;
@@ -70,7 +96,6 @@ export class SignupController　{
   }
 
   @get('/verify')
-  @login
   async getVerify(ctx) {
     return success(ctx.session.verifiedPhone);
   }
@@ -84,8 +109,10 @@ export class SignupController　{
 
   @get('/login')
   async login(ctx) {
-    const user = await Table.User.first();
-    ctx.session.userId = user.id;
+    const user = await Table.WechatUser.first();
+    ctx.session.userId = user.userId;
+    ctx.session.communityId = user.officialAccountId;
+    console.log(user.userId, user.officialAccountId);
     return user;
   }
 }

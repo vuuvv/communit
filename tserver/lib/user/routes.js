@@ -12,8 +12,17 @@ const routes_1 = require("../routes");
 const db_1 = require("../db");
 let UserController = class UserController {
     async me(ctx) {
-        let user = await db_1.Table.User.where('id', ctx.session.userId).first();
-        return routes_1.success(user);
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
+        if (!communityId) {
+            throw new routes_1.ResponseError('没有社区信息, 请退出后重新从微信进入');
+        }
+        let user = await db_1.db.raw(`
+    select wu.headimgurl as avatar, wu.realname as name, wa.accountname as community from t_wechat_user as wu
+    join weixin_account as wa on wu.officialAccountId=wa.id
+    where wu.officialAccountId=? and wu.userId=?
+    `, [communityId, userId]);
+        return routes_1.success(user[0][0]);
     }
     async hello() {
         return 'hello';

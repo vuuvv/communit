@@ -37,4 +37,4 @@ __decorate([
     __metadata("design:type", Date)
 ], WechatOfficialAccount.prototype, "expiresIn", void 0);
 exports.WechatOfficialAccount = WechatOfficialAccount;
-exports.WechatOfficialAccountTableName = 't_wechat_official_account';
+exports.WechatOfficialAccountTableName = 'weixin_account';

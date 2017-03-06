@@ -1,9 +1,9 @@
 import { property } from '../utils';
-import * as uuid from 'uuid/v4';
+import { uuid } from '../utils';
 
 export class BaseModel {
   @property()
-  id: string = uuid().replace(/-/g, '');
+  id: string = uuid();
   @property('created_at')
   createdAt: Date;
   @property('updated_at')

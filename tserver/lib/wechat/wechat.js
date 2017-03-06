@@ -192,7 +192,7 @@ class Wechat {
         if (!obj) {
             return null;
         }
-        return new Wechat(obj);
+        return new Wechat(utils_1.create(models_1.WechatOfficialAccount, obj));
     }
     constructor(officialAccount) {
         this.officialAccount = officialAccount;
@@ -244,7 +244,32 @@ class Wechat {
             },
             json: true,
         });
+        if (user.errcode) {
+            console.log(user);
+            return null;
+        }
         return user;
+    }
+    async createUser(openid) {
+        let user = await this.getUserInfo(openid);
+        if (!user) {
+            return null;
+        }
+        let ret = null;
+        await db_1.db.transaction(async (trx) => {
+            let wechatUser = await db_1.Table.WechatUser.transacting(trx).where({
+                openId: openid,
+                officialAccountId: this.officialAccount.id,
+            }).forUpdate().first();
+            if (!wechatUser) {
+                wechatUser = utils_1.create(models_1.WechatUser, user);
+                wechatUser.officialAccountId = this.officialAccount.id;
+                wechatUser.tagIdList = wechatUser.tagIdList.toString();
+                await db_1.Table.WechatUser.transacting(trx).insert(wechatUser);
+            }
+            ret = wechatUser;
+        });
+        return ret;
     }
     async getUserAccessToken(code) {
         return await request('https://api.weixin.qq.com/sns/oauth2/access_token', {
@@ -265,7 +290,7 @@ class Wechat {
         if (ret) {
             return utils_1.create(models_1.WechatUser, ret);
         }
-        return null;
+        return await this.createUser(openid);
     }
     async createMenu(menu) {
         let token = await this.getToken();
@@ -313,19 +338,7 @@ class Wechat {
         return reply.toXml();
     }
     async onSubscribeEvent(message) {
-        let user = await this.getUserInfo(message.FromUserName);
-        await db_1.db.transaction(async (trx) => {
-            let wechatUser = await db_1.Table.WechatUser.transacting(trx).where({
-                openId: message.FromUserName,
-                officialAccountId: this.officialAccount.id,
-            }).forUpdate().first();
-            if (!wechatUser) {
-                wechatUser = utils_1.create(models_1.WechatUser, user);
-                wechatUser.officialAccountId = this.officialAccount.id;
-                wechatUser.tagIdList = wechatUser.tagIdList.toString();
-                await db_1.Table.WechatUser.transacting(trx).insert(wechatUser);
-            }
-        });
+        let user = this.createUser(message.FromUserName);
         return new TextReply(message.ToUserName, message.FromUserName, `谢谢关注${this.officialAccount.name}`).toXml();
     }
 }

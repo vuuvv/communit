@@ -8,33 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class User extends base_model_1.BaseModel {
+class User {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], User.prototype, "phone", void 0);
+], User.prototype, "ID", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], User.prototype, "username", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], User.prototype, "area", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], User.prototype, "address", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], User.prototype, "avatar", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], User.prototype, "sex", void 0);
 exports.User = User;
-exports.UserTableName = 't_user';
+exports.UserTableName = 't_s_base_user';

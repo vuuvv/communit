@@ -131,6 +131,7 @@ export declare class Wechat {
     fetchToken(): Promise<any>;
     getToken(): Promise<any>;
     getUserInfo(openid: any): Promise<any>;
+    createUser(openid: any): Promise<any>;
     getUserAccessToken(code: string): Promise<any>;
     getWechatUser(openid: string): Promise<WechatUser>;
     createMenu(menu: any): Promise<any>;

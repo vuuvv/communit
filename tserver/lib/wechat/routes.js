@@ -16,10 +16,12 @@ const wechat_1 = require("./wechat");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
 const config_1 = require("../config");
-const HOST = 'http://192.168.1.19:4200';
 let WechatController = class WechatController {
     async getWechat(id) {
         let dbRet = await db_1.Table.WechatOfficialAccount.where('id', id).first();
+        if (!dbRet) {
+            return dbRet;
+        }
         return utils_1.create(models_1.WechatOfficialAccount, dbRet);
     }
     async test(ctx) {
@@ -28,7 +30,7 @@ let WechatController = class WechatController {
         const config = await config_1.Config.instance();
         ctx.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
             appid: wechat.appId,
-            redirect_uri: `${config.site.host}/${id}/login`,
+            redirect_uri: `${config.site.host}/wechat/${id}/login`,
             response_type: 'code',
             scope: 'snsapi_base',
             state: '123'
@@ -39,6 +41,7 @@ let WechatController = class WechatController {
         const code = ctx.query.code;
         const wechat = await wechat_1.Wechat.create(id);
         const token = await wechat.getUserAccessToken(code);
+        ctx.session.communityId = wechat.officialAccount.id;
         if (!token.openid) {
             console.error(token);
             throw new routes_1.ResponseError('获取用户token失败');

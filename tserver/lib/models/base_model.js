@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const utils_1 = require("../utils");
-const uuid = require("uuid/v4");
+const utils_2 = require("../utils");
 class BaseModel {
     constructor() {
-        this.id = uuid().replace(/-/g, '');
+        this.id = utils_2.uuid();
     }
 }
 __decorate([

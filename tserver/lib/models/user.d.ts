@@ -1,10 +1,6 @@
-import { BaseModel } from './base_model';
-export declare class User extends BaseModel {
-    phone: string;
+export declare class User {
+    ID: string;
+    username: string;
     name: string;
-    area: string;
-    address: string;
-    avatar?: string;
-    sex?: number;
 }
-export declare const UserTableName = "t_user";
+export declare const UserTableName = "t_s_base_user";
