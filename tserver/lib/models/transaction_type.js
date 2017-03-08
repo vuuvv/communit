@@ -17,4 +17,4 @@ __decorate([
     __metadata("design:type", String)
 ], TransactionType.prototype, "name", void 0);
 exports.TransactionType = TransactionType;
-exports.ConfigTableName = 't_transaction_type';
+exports.TransactionTypeTableName = 't_transaction_type';

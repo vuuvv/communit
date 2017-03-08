@@ -12,4 +12,4 @@ export class Account extends BaseModel {
   expiresTime: Date;
 }
 
-export const ConfigTableName = 't_account';
+export const AccountTableName = 't_account';

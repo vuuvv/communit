@@ -1,9 +1,10 @@
 import * as request from 'request-promise';
 import * as qs from 'querystring';
+import * as sha1 from 'sha1';
 import { router, get, post, all, success, Response, ResponseError } from '../routes';
 import { Table } from '../db';
 import { Wechat } from './wechat';
-import { create } from '../utils';
+import { create, getJsonBody, getNonceStr, getTimesTamp } from '../utils';
 import { WechatOfficialAccount } from '../models';
 import { Config } from '../config';
 
@@ -88,6 +89,51 @@ export class WechatController {
       ]
     });
     return success(ret);
+  }
+
+  @post('/signature/jsapi')
+  async signature(ctx) {
+    const id = ctx.session.communityId;
+    if (!id) {
+      throw new ResponseError('为获取社区信息，请退出后重新进入');
+    }
+    const data = await getJsonBody(ctx);
+    const wechat = await Wechat.create(id);
+    const account = wechat.officialAccount;
+
+    let ticket = account.jsapiticket;
+    let expires = account.jsapitickettime;
+
+    console.log(new Date().getTime(), expires.getTime());
+    if (!ticket || !expires || new Date().getTime() > expires.getTime()) {
+      let accessToken = await wechat.getToken();
+      let token = await request(
+        `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${accessToken}&type=jsapi`,
+        {json: true}
+      );
+
+      if (token && !token.errcode) {
+        await Table.WechatOfficialAccount.where('id', id).update({
+          jsapiticket: token.ticket,
+          jsapitickettime: new Date(new Date().getTime() + (token.expires_in - 300) * 1000),
+        });
+        ticket = token.ticket;
+      } else {
+        throw new ResponseError('获取jsapi_token失败');
+      }
+    }
+
+    let timestamp = getTimesTamp();
+    let nonceStr = getNonceStr();
+
+    let str = `jsapi_ticket=${ticket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${data.url}`;
+
+    return {
+      signature: sha1(str),
+      appId: account.appId,
+      timestamp,
+      nonceStr,
+    };
   }
 
   @get('/url')

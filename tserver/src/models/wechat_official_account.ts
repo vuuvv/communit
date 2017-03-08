@@ -15,6 +15,10 @@ export class WechatOfficialAccount extends BaseModel {
   accessToken: string;
   @property('ADDTOEKNTIME')
   expiresIn: Date;
+  @property()
+  jsapiticket: string;
+  @property()
+  jsapitickettime: Date;
 }
 
 export const WechatOfficialAccountTableName = 'weixin_account';

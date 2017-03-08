@@ -9,3 +9,16 @@ export async function getRawBody(ctx: Context) {
     encoding: request.charset,
   });
 }
+
+export async function getJsonBody(ctx: Context) {
+  let body = await getRawBody(ctx);
+  return JSON.parse(body);
+}
+
+export function getNonceStr() {
+    return Math.random().toString(36).substr(2, 15);
+}
+
+export function getTimesTamp() {
+    return parseInt(new Date().getTime() / 1000 + '', 10);
+}

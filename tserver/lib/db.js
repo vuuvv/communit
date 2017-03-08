@@ -3,6 +3,14 @@ const knex = require("knex");
 const config = require('../knexfile');
 const env = 'development';
 exports.db = knex(config[env]);
+async function raw(sql, params) {
+    let ret = await exports.db.raw(sql, params);
+    if (ret && ret[0] && ret[0][0]) {
+        return ret[0][0];
+    }
+    return null;
+}
+exports.raw = raw;
 /*
 db.on('query', function(queryData) {
   console.log(queryData.sql);

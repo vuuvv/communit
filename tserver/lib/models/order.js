@@ -10,67 +10,67 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class TransactionType extends base_model_1.BaseModel {
+class Order extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "typeId", void 0);
+], Order.prototype, "typeId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "buyerId", void 0);
+], Order.prototype, "buyerId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "sellerId", void 0);
+], Order.prototype, "sellerId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "amount", void 0);
+], Order.prototype, "amount", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "status", void 0);
+], Order.prototype, "status", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Date)
-], TransactionType.prototype, "orderTime", void 0);
+], Order.prototype, "orderTime", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Date)
-], TransactionType.prototype, "payTime", void 0);
+], Order.prototype, "payTime", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Date)
-], TransactionType.prototype, "tradeTime", void 0);
+], Order.prototype, "tradeTime", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Date)
-], TransactionType.prototype, "refundTime", void 0);
+], Order.prototype, "refundTime", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "orderTransactionId", void 0);
+], Order.prototype, "orderTransactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "orderRefundTransactionId", void 0);
+], Order.prototype, "orderRefundTransactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "buyerTradeTransactionId", void 0);
+], Order.prototype, "buyerTradeTransactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "sellerTradeTransactionId", void 0);
+], Order.prototype, "sellerTradeTransactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "buyerRefundTransactionId", void 0);
+], Order.prototype, "buyerRefundTransactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "sellerRefundTransactionId", void 0);
-exports.TransactionType = TransactionType;
-exports.ConfigTableName = 't_transaction';
+], Order.prototype, "sellerRefundTransactionId", void 0);
+exports.Order = Order;
+exports.OrderTableName = 't_transaction';

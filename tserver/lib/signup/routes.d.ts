@@ -4,6 +4,7 @@ export declare class SignupController {
      * 用户填写注册信息, 生成用户
      */
     signup(ctx: any): Promise<Response>;
+    sendVerifyCode(ctx: any): Promise<Response>;
     /**
      * 手机号验证
      */

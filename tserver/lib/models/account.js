@@ -33,4 +33,4 @@ __decorate([
     __metadata("design:type", Date)
 ], Account.prototype, "expiresTime", void 0);
 exports.Account = Account;
-exports.ConfigTableName = 't_account';
+exports.AccountTableName = 't_account';

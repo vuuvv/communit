@@ -1,7 +1,7 @@
 import { BaseModel } from './base_model';
 import { property } from '../utils';
 
-export class TransactionType extends BaseModel {
+export class Transaction extends BaseModel {
   @property()
   userId: string;
   @property()
@@ -12,4 +12,4 @@ export class TransactionType extends BaseModel {
   amount: number;
 }
 
-export const ConfigTableName = 't_transaction';
+export const TransactionTableName = 't_transaction';

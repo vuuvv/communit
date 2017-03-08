@@ -10,23 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class TransactionType extends base_model_1.BaseModel {
+class TransactionDetail extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "transactionId", void 0);
+], TransactionDetail.prototype, "transactionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "userId", void 0);
+], TransactionDetail.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionType.prototype, "accountId", void 0);
+], TransactionDetail.prototype, "accountId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
-], TransactionType.prototype, "amount", void 0);
-exports.TransactionType = TransactionType;
-exports.ConfigTableName = 't_transaction_detail';
+], TransactionDetail.prototype, "amount", void 0);
+exports.TransactionDetail = TransactionDetail;
+exports.TransactionDetailTableName = 't_transaction_detail';

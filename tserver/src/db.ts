@@ -5,6 +5,14 @@ const env = 'development';
 
 export const db = knex(config[env]);
 
+export async function raw(sql: string, params: any[]) {
+  let ret = await db.raw(sql, params);
+  if (ret && ret[0] && ret[0][0]) {
+    return ret[0][0];
+  }
+  return null;
+}
+
 /*
 db.on('query', function(queryData) {
   console.log(queryData.sql);

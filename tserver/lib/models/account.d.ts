@@ -5,4 +5,4 @@ export declare class Account extends BaseModel {
     balance: number;
     expiresTime: Date;
 }
-export declare const ConfigTableName = "t_account";
+export declare const AccountTableName = "t_account";

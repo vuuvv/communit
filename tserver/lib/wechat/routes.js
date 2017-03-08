@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const request = require("request-promise");
 const qs = require("querystring");
+const sha1 = require("sha1");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
 const wechat_1 = require("./wechat");
@@ -90,6 +91,41 @@ let WechatController = class WechatController {
         });
         return routes_1.success(ret);
     }
+    async signature(ctx) {
+        const id = ctx.session.communityId;
+        if (!id) {
+            throw new routes_1.ResponseError('为获取社区信息，请退出后重新进入');
+        }
+        const data = await utils_1.getJsonBody(ctx);
+        const wechat = await wechat_1.Wechat.create(id);
+        const account = wechat.officialAccount;
+        let ticket = account.jsapiticket;
+        let expires = account.jsapitickettime;
+        console.log(new Date().getTime(), expires.getTime());
+        if (!ticket || !expires || new Date().getTime() > expires.getTime()) {
+            let accessToken = await wechat.getToken();
+            let token = await request(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${accessToken}&type=jsapi`, { json: true });
+            if (token && !token.errcode) {
+                await db_1.Table.WechatOfficialAccount.where('id', id).update({
+                    jsapiticket: token.ticket,
+                    jsapitickettime: new Date(new Date().getTime() + (token.expires_in - 300) * 1000),
+                });
+                ticket = token.ticket;
+            }
+            else {
+                throw new routes_1.ResponseError('获取jsapi_token失败');
+            }
+        }
+        let timestamp = utils_1.getTimesTamp();
+        let nonceStr = utils_1.getNonceStr();
+        let str = `jsapi_ticket=${ticket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${data.url}`;
+        return {
+            signature: sha1(str),
+            appId: account.appId,
+            timestamp,
+            nonceStr,
+        };
+    }
     async url() {
         return await request('http://www.163.com');
     }
@@ -121,6 +157,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], WechatController.prototype, "createMenu", null);
+__decorate([
+    routes_1.post('/signature/jsapi'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], WechatController.prototype, "signature", null);
 __decorate([
     routes_1.get('/url'),
     __metadata("design:type", Function),

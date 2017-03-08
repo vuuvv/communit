@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+const request = require("request-promise");
+const crypto = require("crypto");
 const routes_1 = require("../routes");
 const utils_1 = require("../utils");
 const db_1 = require("../db");
@@ -20,6 +22,9 @@ let SignupController = class SignupController {
         const wechatAccountId = ctx.session.communityId;
         const tel = ctx.session.verifiedPhone;
         const wechatUserId = ctx.session.wechatUserId;
+        if (!tel) {
+            throw new routes_1.ResponseError('还未验证手机号，请先验证手机号', '10002');
+        }
         let account = await db_1.Table.WechatOfficialAccount.where('id', wechatAccountId);
         if (!account) {
             throw new routes_1.ResponseError('无效的公众号: ' + wechatAccountId);
@@ -79,6 +84,25 @@ let SignupController = class SignupController {
         delete ctx.session.wechatUserid;
         return routes_1.success();
     }
+    async sendVerifyCode(ctx) {
+        let phone = ctx.query.phone;
+        if (!phone) {
+            throw new routes_1.ResponseError('请填写手机号');
+        }
+        let secret = '974F9794089F41598DBF8F441B693156';
+        let h = crypto.createHmac('sha1', secret);
+        let callid = utils_2.uuid();
+        h.update(callid);
+        let signature = h.digest('hex').toUpperCase();
+        let ret = await request(`http://www.crowdnear.com/pc/api.do?route&method=sendMsg&callId=${callid}&appId=zengying&signature=${signature}&phone=${phone}`, { json: true });
+        console.log(ret);
+        if (ret.success) {
+            ctx.session.verified = ret.attributes;
+            console.log(ctx.session.verified);
+            return routes_1.success();
+        }
+        throw new routes_1.ResponseError(ret.msg);
+    }
     /**
      * 手机号验证
      */
@@ -92,6 +116,16 @@ let SignupController = class SignupController {
             throw new routes_1.ResponseError('请填写验证码');
         }
         // TODO: 加入验证逻辑
+        let verify = ctx.session.verified;
+        if (!verify) {
+            throw new routes_1.ResponseError('认证失败，请重新发送短信验证');
+        }
+        if (data.tel !== verify.phone) {
+            throw new routes_1.ResponseError('错误的手机号');
+        }
+        if (data.code !== verify.verifyCode) {
+            throw new routes_1.ResponseError('错误的验证码');
+        }
         ctx.session.verifiedPhone = data.tel;
         return routes_1.success();
     }
@@ -117,6 +151,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "signup", null);
+__decorate([
+    routes_1.get('/verify/send'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "sendVerifyCode", null);
 __decorate([
     routes_1.post('/verify'),
     __metadata("design:type", Function),

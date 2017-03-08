@@ -6,4 +6,4 @@ export class TransactionType extends BaseModel {
   name: string;
 }
 
-export const ConfigTableName = 't_transaction_type';
+export const TransactionTypeTableName = 't_transaction_type';

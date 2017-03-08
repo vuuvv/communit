@@ -10,6 +10,7 @@ export class UserController {
   async me(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
+    console.log(communityId, userId);
     if (!communityId) {
       throw new ResponseError('没有社区信息, 请退出后重新从微信进入');
     }

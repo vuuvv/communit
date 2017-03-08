@@ -6,5 +6,7 @@ export declare class WechatOfficialAccount extends BaseModel {
     token: string;
     accessToken: string;
     expiresIn: Date;
+    jsapiticket: string;
+    jsapitickettime: Date;
 }
 export declare const WechatOfficialAccountTableName = "weixin_account";

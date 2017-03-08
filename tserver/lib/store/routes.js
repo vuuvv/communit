@@ -10,39 +10,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const routes_1 = require("../routes");
 const db_1 = require("../db");
-let UserController = class UserController {
-    async me(ctx) {
+let StoreController = class StoreController {
+    async store(ctx) {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
-        console.log(communityId, userId);
         if (!communityId) {
             throw new routes_1.ResponseError('没有社区信息, 请退出后重新从微信进入');
         }
-        let user = await db_1.db.raw(`
-    select wu.headimgurl as avatar, wu.realname as name, wa.accountname as community from t_wechat_user as wu
-    join weixin_account as wa on wu.officialAccountId=wa.id
-    where wu.officialAccountId=? and wu.userId=?
+        let store = await db_1.raw(`
+    select * from t_store
+    where communityId=? and userId=?
     `, [communityId, userId]);
-        return routes_1.success(user[0][0]);
+        return routes_1.success(store);
     }
-    async hello() {
-        return 'hello';
+    async add(ctx) {
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
+        if (!communityId) {
+            throw new routes_1.ResponseError('没有社区信息, 请退出后重新从微信进入');
+        }
+        let store = await db_1.raw(`
+    select * from t_store
+    where communityId=? and userId=?
+    `, [communityId, userId]);
+        if (!store.name) {
+        }
     }
 };
 __decorate([
-    routes_1.get('/me'),
+    routes_1.get('/'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "me", null);
+], StoreController.prototype, "store", null);
 __decorate([
-    routes_1.get('/test'),
+    routes_1.post('/add'),
+    routes_1.login,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "hello", null);
-UserController = __decorate([
-    routes_1.router('/user')
-], UserController);
-exports.UserController = UserController;
+], StoreController.prototype, "add", null);
+StoreController = __decorate([
+    routes_1.router('/store')
+], StoreController);
+exports.StoreController = StoreController;

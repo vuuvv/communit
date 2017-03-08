@@ -1,7 +1,7 @@
 import { BaseModel } from './base_model';
 import { property } from '../utils';
 
-export class TransactionType extends BaseModel {
+export class Order extends BaseModel {
   @property()
   typeId: string;
   /**
@@ -76,4 +76,4 @@ export class TransactionType extends BaseModel {
   sellerRefundTransactionId: string;
 }
 
-export const ConfigTableName = 't_transaction';
+export const OrderTableName = 't_transaction';

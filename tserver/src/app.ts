@@ -59,6 +59,7 @@ import { WechatController } from './wechat';
 import { SignupController } from './signup';
 import { UserController } from './user';
 import { ArticleController, ArticlesController } from './article';
+import { StoreController } from './store';
 
 import { route } from './routes';
 
@@ -67,6 +68,7 @@ route(router, SignupController);
 route(router, UserController);
 route(router, ArticleController);
 route(router, ArticlesController);
+route(router, StoreController);
 
 // console.log(router.stack);
 

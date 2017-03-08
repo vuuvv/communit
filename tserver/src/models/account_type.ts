@@ -6,4 +6,4 @@ export class AccountType extends BaseModel {
   name: string;
 }
 
-export const ConfigTableName = 't_account_type';
+export const AccountTypeTableName = 't_account_type';

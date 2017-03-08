@@ -17,4 +17,4 @@ __decorate([
     __metadata("design:type", String)
 ], AccountType.prototype, "name", void 0);
 exports.AccountType = AccountType;
-exports.ConfigTableName = 't_account_type';
+exports.AccountTypeTableName = 't_account_type';

@@ -1,5 +1,5 @@
 import { BaseModel } from './base_model';
-export declare class TransactionType extends BaseModel {
+export declare class Order extends BaseModel {
     typeId: string;
     /**
      * 买家Id
@@ -58,4 +58,4 @@ export declare class TransactionType extends BaseModel {
      */
     sellerRefundTransactionId: string;
 }
-export declare const ConfigTableName = "t_transaction";
+export declare const OrderTableName = "t_transaction";

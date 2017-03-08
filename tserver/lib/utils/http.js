@@ -9,3 +9,16 @@ async function getRawBody(ctx) {
     });
 }
 exports.getRawBody = getRawBody;
+async function getJsonBody(ctx) {
+    let body = await getRawBody(ctx);
+    return JSON.parse(body);
+}
+exports.getJsonBody = getJsonBody;
+function getNonceStr() {
+    return Math.random().toString(36).substr(2, 15);
+}
+exports.getNonceStr = getNonceStr;
+function getTimesTamp() {
+    return parseInt(new Date().getTime() / 1000 + '', 10);
+}
+exports.getTimesTamp = getTimesTamp;
