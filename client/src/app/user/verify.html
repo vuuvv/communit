@@ -5,7 +5,7 @@
     <v-group>
       <v-cell class="weui-cell_vcode">
         <input class="weui-input" type="tel" name="tel" placeholder="请输入手机号" required [(ngModel)]="verify.tel">
-        <button slot="value" class="weui-vcode-btn" type="button" (act)="getCode($event)" [v-cooldown]="5">获取验证码</button>
+        <button slot="value" class="weui-vcode-btn" type="button" (act)="getCode($event)" [v-cooldown]="60">获取验证码</button>
       </v-cell>
       <v-cell>
         <input class="weui-input" type="number" name="code" placeholder="请输入验证码" required [(ngModel)]="verify.code">

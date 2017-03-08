@@ -1,0 +1,31 @@
+<v-page>
+  <v-header slot="header">{{title}}</v-header>
+
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group gutter="0">
+      <v-cell label="商品种类">
+        <input class="weui-input" type="text" name="categoryId" placeholder="商品名称" required [(ngModel)]="product.categoryId">
+      </v-cell>
+      <v-cell label="商品名称">
+        <input class="weui-input" type="text" name="name" placeholder="商品名称" required [(ngModel)]="product.name">
+      </v-cell>
+      <v-cell label="积分">
+        <input class="weui-input" type="text" name="points" placeholder="商品所需积分" required [(ngModel)]="product.points">
+      </v-cell>
+      <v-cell label="积分售价">
+        <input class="weui-input" type="text" name="price" placeholder="使用积分后的价格(元)" required [(ngModel)]="product.price">
+      </v-cell>
+      <v-cell label="原价格">
+        <input class="weui-input" type="text" name="normalPrice" placeholder="原价格，不使用积分时的价格(元)" required [(ngModel)]="product.normalPrice">
+      </v-cell>
+    </v-group>
+    <v-group title="商品简介">
+      <v-cell>
+        <textarea class="weui-textarea" placeholder="商品简介" rows="3" [(ngModel)]="product.description" name="description"></textarea>
+      </v-cell>
+    </v-group>
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
+</v-page>

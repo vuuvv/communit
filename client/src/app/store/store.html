@@ -1,7 +1,17 @@
-<v-page>
+<v-page *ngIf="!isNormal">
   <v-header slot="header">我的店铺</v-header>
   <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/store/add']">申请开店</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/store/add']" *ngIf="!store">申请开店</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/user']" *ngIf="isSubmit">返回</v-tabbar-btn>
   </v-tabbar>
   <empty-page *ngIf="!store">您还没有店铺</empty-page>
+  <empty-page *ngIf="isSubmit">您的店铺正在审核中，请等待审核完成</empty-page>
+</v-page>
+
+<v-page *ngIf="isNormal">
+  <v-header slot="header">我的店铺</v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/store/edit']">编辑店铺</v-tabbar-btn>
+    <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
+  </v-tabbar>
 </v-page>

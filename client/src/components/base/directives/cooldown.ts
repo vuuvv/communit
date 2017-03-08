@@ -24,7 +24,6 @@ export class CooldownDirective {
 
     let valid = { success: true };
     let ret = this.act.emit(valid);
-    console.log(valid);
     if (!valid.success) {
       return;
     }

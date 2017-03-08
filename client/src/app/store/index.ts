@@ -7,7 +7,8 @@ import { NgvModule } from '../../components';
 
 import { SharedModule } from '../shared';
 
-import { StoreComponent, StoreAddComponent } from './store';
+import { StoreComponent, StoreAddComponent, StoreEditComponent } from './store';
+import { ProductAddComponent } from './product';
 
 const routes: Routes = [
   {
@@ -22,6 +23,16 @@ const routes: Routes = [
         path: 'add',
         pathMatch: 'full',
         component: StoreAddComponent,
+      },
+      {
+        path: 'edit',
+        pathMatch: 'full',
+        component: StoreEditComponent,
+      },
+      {
+        path: 'product/add',
+        pathMatch: 'full',
+        component: ProductAddComponent,
       },
     ],
   },
@@ -39,6 +50,8 @@ const routes: Routes = [
   declarations: [
     StoreComponent,
     StoreAddComponent,
+    StoreEditComponent,
+    ProductAddComponent,
   ]
 })
 export class StoreModule {

@@ -9,7 +9,6 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 export class RankComponent {
   @Input() points: number = 0;
   @Input() color: string = '#F4EB26';
-  @Input() size: string = '16px';
 
   get full(): number {
     return parseInt(this.points + '', 10);
