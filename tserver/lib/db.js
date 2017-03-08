@@ -41,5 +41,11 @@ class Table {
     static get Config() {
         return new Table(models_1.Config, models_1.ConfigTableName).database;
     }
+    static get Store() {
+        return new Table(models_1.Store, models_1.StoreTableName).database;
+    }
+    static get Product() {
+        return new Table(models_1.Product, models_1.ProductTableName).database;
+    }
 }
 exports.Table = Table;

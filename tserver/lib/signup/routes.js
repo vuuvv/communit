@@ -95,10 +95,8 @@ let SignupController = class SignupController {
         h.update(callid);
         let signature = h.digest('hex').toUpperCase();
         let ret = await request(`http://www.crowdnear.com/pc/api.do?route&method=sendMsg&callId=${callid}&appId=zengying&signature=${signature}&phone=${phone}`, { json: true });
-        console.log(ret);
         if (ret.success) {
             ctx.session.verified = ret.attributes;
-            console.log(ctx.session.verified);
             return routes_1.success();
         }
         throw new routes_1.ResponseError(ret.msg);
@@ -127,6 +125,7 @@ let SignupController = class SignupController {
             throw new routes_1.ResponseError('错误的验证码');
         }
         ctx.session.verifiedPhone = data.tel;
+        delete ctx.session.verified;
         return routes_1.success();
     }
     async getVerify(ctx) {
@@ -141,7 +140,6 @@ let SignupController = class SignupController {
         const user = await db_1.Table.WechatUser.first();
         ctx.session.userId = user.userId;
         ctx.session.communityId = user.officialAccountId;
-        console.log(user.userId, user.officialAccountId);
         return user;
     }
 };

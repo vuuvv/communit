@@ -9,7 +9,7 @@ export declare class Store extends BaseModel {
      */
     communityId: string;
     /**
-     * 店铺状态, 审核中, 正常运行, 关闭
+     * 店铺状态, 审核中(submit), 正常运行(normal), 关闭(closed), 审核不通过(reject)
      */
     status: string;
     /**
@@ -28,5 +28,6 @@ export declare class Store extends BaseModel {
      * 联系人
      */
     contact: string;
+    constructor();
 }
 export declare const StoreTableName = "t_store";

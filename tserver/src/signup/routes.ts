@@ -100,11 +100,8 @@ export class SignupController　{
       {json: true}
     );
 
-    console.log(ret);
-
     if (ret.success) {
       ctx.session.verified = ret.attributes;
-      console.log(ctx.session.verified);
       return success();
     }
     throw new ResponseError(ret.msg);
@@ -135,6 +132,7 @@ export class SignupController　{
       throw new ResponseError('错误的验证码');
     }
     ctx.session.verifiedPhone = data.tel;
+    delete ctx.session.verified;
     return success();
   }
 
@@ -155,7 +153,6 @@ export class SignupController　{
     const user = await Table.WechatUser.first();
     ctx.session.userId = user.userId;
     ctx.session.communityId = user.officialAccountId;
-    console.log(user.userId, user.officialAccountId);
     return user;
   }
 }

@@ -26,6 +26,8 @@ import {
   WechatLog, WechatLogTableName,
   User, UserTableName,
   Config, ConfigTableName,
+  Store, StoreTableName,
+  Product, ProductTableName,
 } from './models';
 
 export interface Model<T> {
@@ -63,5 +65,13 @@ export class Table<T> {
 
   static get Config() {
     return new Table<Config>(Config, ConfigTableName).database;
+  }
+
+  static get Store() {
+    return new Table<Store>(Store, StoreTableName).database;
+  }
+
+  static get Product() {
+    return new Table<Product>(Product, ProductTableName).database;
   }
 }

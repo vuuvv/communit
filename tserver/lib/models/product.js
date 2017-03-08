@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class Store extends base_model_1.BaseModel {
+class Product extends base_model_1.BaseModel {
     constructor() {
         super();
         this.status = 'submit';
@@ -19,30 +19,30 @@ class Store extends base_model_1.BaseModel {
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Store.prototype, "userId", void 0);
+], Product.prototype, "storeId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Store.prototype, "communityId", void 0);
+], Product.prototype, "categoryId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Store.prototype, "status", void 0);
+], Product.prototype, "status", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Store.prototype, "description", void 0);
+], Product.prototype, "description", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", String)
-], Store.prototype, "address", void 0);
+    __metadata("design:type", Number)
+], Product.prototype, "price", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", String)
-], Store.prototype, "tel", void 0);
+    __metadata("design:type", Number)
+], Product.prototype, "points", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", String)
-], Store.prototype, "contact", void 0);
-exports.Store = Store;
-exports.StoreTableName = 't_store';
+    __metadata("design:type", Number)
+], Product.prototype, "normalPrice", void 0);
+exports.Product = Product;
+exports.ProductTableName = 't_product';
