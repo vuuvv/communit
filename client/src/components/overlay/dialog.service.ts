@@ -47,6 +47,7 @@ export class DialogService {
   }
 
   alert(content: string, title: string = null): AlertResult {
+    this.overlayService.hideToast();
     if (content && content.length > 200) {
       content = content.substring(0, 200);
     }
@@ -70,6 +71,7 @@ export class DialogService {
   }
 
   confirm(content: string, title: string = null): ConfirmResult {
+    this.overlayService.hideToast();
     if (content && content.length > 200) {
       content = content.substring(0, 200);
     }

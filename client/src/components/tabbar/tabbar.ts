@@ -22,4 +22,15 @@ export class TabbarComponent {
 export class TabbarItemComponent {
   @Input() badge: string;
   @Input() showDot: boolean = false;
+  @Input() hasIcon: boolean = true;
+}
+
+@Component({
+  selector: 'v-tabbar-btn',
+  templateUrl: './tabbar-btn.html',
+  host: {
+    '[class.weui-tabbar__item]': 'true',
+  },
+})
+export class TabbarButtonComponent {
 }

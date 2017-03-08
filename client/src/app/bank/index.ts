@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { NgvModule } from '../../components';
 
@@ -10,6 +11,7 @@ import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
 import { ActivityComponent } from './activity';
 import { WorkerComponent } from './worker';
+import { WorkerAddComponent } from './worker-add';
 import { AgencyComponent } from './agency';
 import { OrganizationComponent } from './organization';
 import { ProfessionComponent } from './profession';
@@ -33,6 +35,11 @@ const routes: Routes = [
         path: 'worker',
         pathMatch: 'full',
         component: WorkerComponent,
+      },
+      {
+        path: 'worker/add',
+        pathMatch: 'full',
+        component: WorkerAddComponent,
       },
       {
         path: 'agency',
@@ -66,6 +73,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    FormsModule,
 
     SharedModule,
     NgvModule,
@@ -75,6 +83,7 @@ const routes: Routes = [
     ServiceComponent,
     ActivityComponent,
     WorkerComponent,
+    WorkerAddComponent,
     AgencyComponent,
     OrganizationComponent,
     ProfessionComponent,

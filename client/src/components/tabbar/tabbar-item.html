@@ -1,4 +1,4 @@
-<div class="weui-tabbar__icon" [class.ngv-reddot]="showDot">
+<div class="weui-tabbar__icon" [class.ngv-reddot]="showDot" *ngIf="hasIcon">
   <ng-content select="[slot=icon]"></ng-content>
   <sup>
     <v-badge *ngIf="badge" [text]="badge"></v-badge>

@@ -1,0 +1,30 @@
+<v-page>
+  <v-header slot="header">申请开店</v-header>
+
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group gutter="0">
+      <v-cell label="店铺名称">
+        <input class="weui-input" type="text" name="name" placeholder="店铺名称" required [(ngModel)]="store.name">
+      </v-cell>
+      <v-cell label="联系电话">
+        <input class="weui-input" type="text" name="tel" placeholder="联系电话" required [(ngModel)]="store.tel">
+      </v-cell>
+      <v-cell label="联系人">
+        <input class="weui-input" type="text" name="birth" placeholder="联系人" required [(ngModel)]="store.contact">
+      </v-cell>
+    </v-group>
+    <v-group title="店铺简介">
+      <v-cell>
+        <textarea class="weui-textarea" placeholder="店铺简介" rows="3" [(ngModel)]="store.description" name="description"></textarea>
+      </v-cell>
+    </v-group>
+    <v-group title="店铺地址">
+      <v-cell>
+        <textarea class="weui-textarea" placeholder="店铺地址" rows="3" [(ngModel)]="store.address" name="address"></textarea>
+      </v-cell>
+    </v-group>
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
+</v-page>

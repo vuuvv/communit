@@ -11,7 +11,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   }
 })
 export class CellComponent {
-  @Input() title: string;
+  @Input() label: string;
   @Input() value: string;
   @Input() isLink: boolean;
   @Input() hasMore: boolean;

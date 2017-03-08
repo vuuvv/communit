@@ -1,0 +1,31 @@
+<v-page>
+  <v-header slot="header">社工加入申请</v-header>
+
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group gutter="0">
+      <v-cell label="姓名">
+        <input class="weui-input" type="text" name="name" placeholder="姓名" required [(ngModel)]="user.name">
+      </v-cell>
+      <v-cell label="性别">
+        <input class="weui-input" type="text" name="sex" placeholder="性别" required [(ngModel)]="user.sex">
+      </v-cell>
+      <v-cell label="出生日期">
+        <input class="weui-input" type="text" name="birth" placeholder="出生日期" required [(ngModel)]="user.birth">
+      </v-cell>
+      <v-cell label="文化程度">
+        <input class="weui-input" type="text" name="education" placeholder="文化程度" required [(ngModel)]="user.education">
+      </v-cell>
+      <v-cell label="工作单位">
+        <input class="weui-input" type="text" name="company" placeholder="工作单位" required [(ngModel)]="user.company">
+      </v-cell>
+    </v-group>
+    <v-group title="个人简介">
+      <v-cell>
+        <textarea class="weui-textarea" placeholder="个人简介" rows="3"></textarea>
+      </v-cell>
+    </v-group>
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
+</v-page>

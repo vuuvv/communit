@@ -1,0 +1,7 @@
+<v-page>
+  <v-header slot="header">我的店铺</v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/store/add']">申请开店</v-tabbar-btn>
+  </v-tabbar>
+  <empty-page *ngIf="!store">您还没有店铺</empty-page>
+</v-page>

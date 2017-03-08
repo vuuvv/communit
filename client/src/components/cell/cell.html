@@ -1,5 +1,6 @@
 <div class="weui-cell__hd">
   <ng-content select="[slot=icon]"></ng-content>
+  <div class="weui-label" *ngIf="label">{{ label }}</div>
 </div>
 <div class="weui-cell__bd" [class.weui-cell__primary]="primary==='title'">
   <p>

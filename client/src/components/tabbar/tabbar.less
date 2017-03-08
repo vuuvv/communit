@@ -1,5 +1,39 @@
+@import '../../styles/variable';
+
 v-tabbar {
   display: block;
+
+  v-tabbar-btn {
+    .weui-tabbar__label {
+      height: 50px;
+      line-height: 50px;
+      font-size: 18px;
+    }
+
+    &.primary {
+      background: @main-color;
+
+      .weui-tabbar__label {
+        color: #fff;
+      }
+    }
+
+    &.default {
+      background: #f8f8f8;
+
+      .weui-tabbar__label {
+        color: #000000;
+      }
+    }
+
+    &.warn {
+      background: #E64340;
+
+      .weui-tabbar__label {
+        color: #fff;
+      }
+    }
+  }
 }
 
 .weui-tabbar__icon {
@@ -23,3 +57,4 @@ v-tabbar {
 v-tabbar-item .weui-tabbar__label {
   color: inherit;
 }
+

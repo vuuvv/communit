@@ -10,10 +10,10 @@
 
   <section>
     <div class="info-box ngv-flexbox ngv-flexbox-vcenter">
-      <img src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0">
+      <img [src]="user?.avatar">
       <div class="user-info ngv-flexbox-item">
         <p>{{ user?.name }}</p>
-        <p><v-icon type="iphone"></v-icon><span>{{ user?.phone }}</span></p>
+        <p><span>{{ user?.community }}</span></p>
       </div>
       <div class="arrow">
         <v-icon type="right"></v-icon>
@@ -54,7 +54,7 @@
   </v-group>
 
   <v-group>
-    <v-cell [isLink]="true"><v-icon slot="icon" type="store" color="#4AA5F0"></v-icon>我的店铺</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/store']"><v-icon slot="icon" type="store" color="#4AA5F0"></v-icon>我的店铺</v-cell>
   </v-group>
 
   <v-group>
