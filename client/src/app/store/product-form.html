@@ -3,20 +3,22 @@
 
   <form (ngSubmit)="submit()" #form="ngForm">
     <v-group gutter="0">
-      <v-cell label="商品种类">
-        <input class="weui-input" type="text" name="categoryId" placeholder="商品名称" required [(ngModel)]="product.categoryId">
+      <v-cell class="weui-cell_select weui-cell_select-after" label="商品种类">
+        <select class="weui-select" name="power" [(ngModel)]="product.categoryId" required>
+          <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+        </select>
       </v-cell>
       <v-cell label="商品名称">
-        <input class="weui-input" type="text" name="name" placeholder="商品名称" required [(ngModel)]="product.name">
+        <input class="weui-input" type="text" name="title" placeholder="商品名称" required [(ngModel)]="product.title">
       </v-cell>
       <v-cell label="积分">
-        <input class="weui-input" type="text" name="points" placeholder="商品所需积分" required [(ngModel)]="product.points">
+        <input class="weui-input" type="number" name="points" placeholder="商品所需积分" min="0" required [(ngModel)]="product.points">
       </v-cell>
       <v-cell label="积分售价">
-        <input class="weui-input" type="text" name="price" placeholder="使用积分后的价格(元)" required [(ngModel)]="product.price">
+        <input class="weui-input" type="number" name="price" placeholder="使用积分后的价格(元)" min="0" required [(ngModel)]="product.price">
       </v-cell>
       <v-cell label="原价格">
-        <input class="weui-input" type="text" name="normalPrice" placeholder="原价格，不使用积分时的价格(元)" required [(ngModel)]="product.normalPrice">
+        <input class="weui-input" type="number" name="normalPrice" placeholder="原价格，不使用积分时的价格(元)" min="0" required [(ngModel)]="product.normalPrice">
       </v-cell>
     </v-group>
     <v-group title="商品简介">

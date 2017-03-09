@@ -5,10 +5,18 @@ const env = 'development';
 
 export const db = knex(config[env]);
 
+export async function first(sql: string, params: any[]) {
+  let ret = await raw(sql, params);
+  if (ret) {
+    return ret[0];
+  }
+  return null;
+}
+
 export async function raw(sql: string, params: any[]) {
   let ret = await db.raw(sql, params);
-  if (ret && ret[0] && ret[0][0]) {
-    return ret[0][0];
+  if (ret && ret[0]) {
+    return ret[0];
   }
   return null;
 }
@@ -28,6 +36,7 @@ import {
   Config, ConfigTableName,
   Store, StoreTableName,
   Product, ProductTableName,
+  ProductCategory, ProductCategoryTableName,
 } from './models';
 
 export interface Model<T> {
@@ -73,5 +82,9 @@ export class Table<T> {
 
   static get Product() {
     return new Table<Product>(Product, ProductTableName).database;
+  }
+
+  static get ProductCategory() {
+    return new Table<ProductCategory>(ProductCategory, ProductCategoryTableName).database;
   }
 }

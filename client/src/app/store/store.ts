@@ -21,6 +21,8 @@ export class StoreComponent implements OnInit {
     this.overlayService.loading();
     this.http.get('/store').subscribe((ret: any) => {
       this.store = ret.store;
+      this.products = ret.products;
+      console.log(this.products);
       this.overlayService.hideToast();
     });
   }
@@ -64,6 +66,8 @@ export class StoreAddComponent {
 export class StoreEditComponent implements OnInit {
   title: '编辑店铺';
   store: any = {};
+  products: any[] = [];
+
   constructor(
     private http: Http,
     private router: Router,

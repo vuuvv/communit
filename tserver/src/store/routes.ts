@@ -1,45 +1,8 @@
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
-import { Table, raw, db } from '../db';
+import { router, get, post, success, Response, ResponseError, login } from '../routes';
+import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Store } from '../models';
-
-async function getStore(ctx) {
-    let communityId = ctx.session.communityId;
-    let userId = ctx.session.userId;
-    if (!communityId) {
-      throw new ResponseError('没有社区信息, 请退出后重新进入');
-    }
-
-    return await Table.Store.where({
-      communityId: communityId,
-      userId: userId,
-    }).first();
-}
-
-async function getStoreModel(ctx) {
-  let store = await getJsonBody(ctx);
-  if (!store.name) {
-    throw new ResponseError('请填写店铺名称');
-  }
-
-  if (!store.tel) {
-    throw new ResponseError('请填写联系电话');
-  }
-
-  if (!store.contact) {
-    throw new ResponseError('请填写联系人');
-  }
-
-  if (!store.address) {
-    throw new ResponseError('请填写店铺地址');
-  }
-
-  if (!store.description) {
-    throw new ResponseError('请填写店铺简介');
-  }
-
-  return store;
-}
+import { getStore, getStoreModel } from './store';
 
 @router('/store')
 export class StoreController {
@@ -51,7 +14,13 @@ export class StoreController {
     ret.store = await getStore(ctx);
 
     if (ret.store) {
-      ret.products = await Table.Product.where('storeId', ret.store.id).orderBy('updatedAt', 'desc');
+      // ret.products = await Table.Product.where('storeId', ret.store.id).orderBy('updatedAt', 'desc');
+      ret.products = await raw(`
+      select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId from t_product as p
+      join t_product_category as c on p.categoryId = c.id
+      where p.storeId = ?
+      order by p.updatedAt desc
+      `, [ret.store.id]);
     }
 
     return success(ret);

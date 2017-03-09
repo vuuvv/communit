@@ -8,6 +8,7 @@ import { YuanPipe } from './yuan.pipe';
 import { GenderPipe } from './gender.pipe';
 import { SplitePipe } from './split.pipe';
 import { FirstPipe } from './first.pipe';
+import { LimitPipe } from './limit.pipe';
 
 export const CORE_PIPES: Type<any>[] = [
   BackgroundUrlPipe,
@@ -20,4 +21,5 @@ export const CORE_PIPES: Type<any>[] = [
   GenderPipe,
   SplitePipe,
   FirstPipe,
+  LimitPipe,
 ];

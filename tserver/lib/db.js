@@ -3,10 +3,18 @@ const knex = require("knex");
 const config = require('../knexfile');
 const env = 'development';
 exports.db = knex(config[env]);
+async function first(sql, params) {
+    let ret = await raw(sql, params);
+    if (ret) {
+        return ret[0];
+    }
+    return null;
+}
+exports.first = first;
 async function raw(sql, params) {
     let ret = await exports.db.raw(sql, params);
-    if (ret && ret[0] && ret[0][0]) {
-        return ret[0][0];
+    if (ret && ret[0]) {
+        return ret[0];
     }
     return null;
 }
@@ -46,6 +54,9 @@ class Table {
     }
     static get Product() {
         return new Table(models_1.Product, models_1.ProductTableName).database;
+    }
+    static get ProductCategory() {
+        return new Table(models_1.ProductCategory, models_1.ProductCategoryTableName).database;
     }
 }
 exports.Table = Table;

@@ -7,6 +7,7 @@ import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { MarketComponent } from './market';
+import { ProductComponent } from './product';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: MarketComponent,
+      },
+      {
+        path: 'product/:id',
+        pathMatch: 'full',
+        component: ProductComponent,
       },
     ],
   },
@@ -31,6 +37,7 @@ const routes: Routes = [
   ],
   declarations: [
     MarketComponent,
+    ProductComponent,
   ]
 })
 export class MarketModule {

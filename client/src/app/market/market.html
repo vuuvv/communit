@@ -4,56 +4,25 @@
 
   <div class="quickentry-nav ngv-1px-b">
     <quickentry>
-      <quickentry-item icon="ms" [routerLink]="['./summary']">
-        美食
-      </quickentry-item>
-      <quickentry-item icon="lr">
-        丽人
-      </quickentry-item>
-      <quickentry-item icon="ac">
-        爱车
-      </quickentry-item>
-      <quickentry-item icon="gw">
-        购物
-      </quickentry-item>
-      <quickentry-item icon="qz">
-        亲子
+      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 0:5">
+        {{ c.name}}
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item icon="jd" [routerLink]="['./summary']">
-        酒店
-      </quickentry-item>
-      <quickentry-item icon="shfw">
-        生活服务
-      </quickentry-item>
-      <quickentry-item icon="xxyl">
-        休闲娱乐
-      </quickentry-item>
-      <quickentry-item icon="ydjs">
-        运动健身
-      </quickentry-item>
-      <quickentry-item icon="xxpx">
-        学习培训
+      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 5:5">
+        {{ c.name}}
       </quickentry-item>
     </quickentry>
   </div>
 
-  <div class="product-list">
-    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
-    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
-    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
-    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
-    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
-    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
-    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
-    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
-    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
-    <product-list-item icon="ms" class="ngv-1px-b" title="佳客来牛排专家师" desc="雪花精致牛排1份" price="38" credit="30" realPrice="58"></product-list-item>
-    <product-list-item icon="jd" class="ngv-1px-b" title="泉州铂金酒店" desc="标准大床房" price="228" realPrice="320"></product-list-item>
-    <product-list-item icon="qz" class="ngv-1px-b" title="石狮方块糖儿童摄影" desc="单人儿童摄影套餐" price="228" credit="85" realPrice="258"></product-list-item>
- </div>
-
-
+  <div class="product-list ngv-bg-white">
+    <product-list-item
+      class="ngv-1px-b"
+      [product]="p"
+      [routerLink]="['./product/' + p.id]"
+      *ngFor="let p of products"
+    >
+   </product-list-item>
+  </div>
 </v-page>
 

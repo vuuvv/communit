@@ -20,6 +20,9 @@ export class Product extends BaseModel {
   @property()
   status: string;
 
+  @property()
+  title: string;
+
   /**
    * 描述
    */
@@ -43,6 +46,16 @@ export class Product extends BaseModel {
    */
   @property()
   normalPrice: number;
+
+  /**
+   * 销量
+   */
+  sales: number = 0;
+
+  /**
+   * 评价
+   */
+  rank: number = 0;
 
   constructor() {
     super();

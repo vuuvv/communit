@@ -12,42 +12,19 @@ const routes_1 = require("../routes");
 const db_1 = require("../db");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
-async function getStore(ctx) {
-    let communityId = ctx.session.communityId;
-    let userId = ctx.session.userId;
-    if (!communityId) {
-        throw new routes_1.ResponseError('没有社区信息, 请退出后重新进入');
-    }
-    return await db_1.Table.Store.where({
-        communityId: communityId,
-        userId: userId,
-    }).first();
-}
-async function getStoreModel(ctx) {
-    let store = await utils_1.getJsonBody(ctx);
-    if (!store.name) {
-        throw new routes_1.ResponseError('请填写店铺名称');
-    }
-    if (!store.tel) {
-        throw new routes_1.ResponseError('请填写联系电话');
-    }
-    if (!store.contact) {
-        throw new routes_1.ResponseError('请填写联系人');
-    }
-    if (!store.address) {
-        throw new routes_1.ResponseError('请填写店铺地址');
-    }
-    if (!store.description) {
-        throw new routes_1.ResponseError('请填写店铺简介');
-    }
-    return store;
-}
+const store_1 = require("./store");
 let StoreController = class StoreController {
     async store(ctx) {
         let ret = {};
-        ret.store = await getStore(ctx);
+        ret.store = await store_1.getStore(ctx);
         if (ret.store) {
-            ret.products = await db_1.Table.Product.where('storeId', ret.store.id).orderBy('updatedAt', 'desc');
+            // ret.products = await Table.Product.where('storeId', ret.store.id).orderBy('updatedAt', 'desc');
+            ret.products = await db_1.raw(`
+      select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId from t_product as p
+      join t_product_category as c on p.categoryId = c.id
+      where p.storeId = ?
+      order by p.updatedAt desc
+      `, [ret.store.id]);
         }
         return routes_1.success(ret);
     }
@@ -64,7 +41,7 @@ let StoreController = class StoreController {
         if (!user) {
             throw new routes_1.ResponseError('用户和社区不匹配，请关闭页面后重新进入');
         }
-        let model = await getStoreModel(ctx);
+        let model = await store_1.getStoreModel(ctx);
         await db_1.db.transaction(async (trx) => {
             let store = await db_1.Table.Store.where({
                 communityId: communityId,
@@ -81,8 +58,8 @@ let StoreController = class StoreController {
         return routes_1.success();
     }
     async edit(ctx) {
-        let model = await getStoreModel(ctx);
-        let store = await getStore(ctx);
+        let model = await store_1.getStoreModel(ctx);
+        let store = await store_1.getStore(ctx);
         if (!store) {
             throw new routes_1.ResponseError('您现在还没有店铺');
         }

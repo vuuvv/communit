@@ -22,7 +22,10 @@ export class QuickentryItemComponent {
   @Input() height: string = '40';
 
   get src() {
-    return `assets/images/ios/@2x/${this.icon}@2x.png`;
+    if (!this.icon) {
+      return null;
+    }
+    return this.icon.startsWith('http://') ? this.icon : `assets/images/ios/@2x/${this.icon}@2x.png`;
   }
 }
 

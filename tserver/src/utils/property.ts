@@ -26,6 +26,9 @@ export function property(...names: string[]) {
 }
 
 export function create<T>(type: Type<T>, source: any, ...keys: string[]) {
+  if (_.isNil(source)) {
+    return source;
+  }
   const keyMap = Reflect.getMetadata(PROPERTY_METADATA, type.prototype);
   const target = new type();
   return assign<T>(type, target, source, ...keys);

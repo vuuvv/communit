@@ -10,51 +10,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class Product extends base_model_1.BaseModel {
-    constructor() {
-        super();
-        /**
-         * 销量
-         */
-        this.sales = 0;
-        /**
-         * 评价
-         */
-        this.rank = 0;
-        this.status = 'submit';
-    }
+class ProductCategory extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Product.prototype, "storeId", void 0);
+], ProductCategory.prototype, "name", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Product.prototype, "categoryId", void 0);
+], ProductCategory.prototype, "parentId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Product.prototype, "status", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Product.prototype, "title", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Product.prototype, "description", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], Product.prototype, "price", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], Product.prototype, "points", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], Product.prototype, "normalPrice", void 0);
-exports.Product = Product;
-exports.ProductTableName = 't_product';
+], ProductCategory.prototype, "icon", void 0);
+exports.ProductCategory = ProductCategory;
+exports.ProductCategoryTableName = 't_product_category';

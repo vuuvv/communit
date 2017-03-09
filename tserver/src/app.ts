@@ -60,6 +60,7 @@ import { SignupController } from './signup';
 import { UserController } from './user';
 import { ArticleController, ArticlesController } from './article';
 import { StoreController } from './store';
+import { ProductController } from './product';
 
 import { route } from './routes';
 
@@ -69,6 +70,7 @@ route(router, UserController);
 route(router, ArticleController);
 route(router, ArticlesController);
 route(router, StoreController);
+route(router, ProductController);
 
 // console.log(router.stack);
 

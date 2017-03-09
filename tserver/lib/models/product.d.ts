@@ -12,6 +12,7 @@ export declare class Product extends BaseModel {
      * 状态, 审核中(submit), 正常(online), 已下架(offline), 审核不通过(reject)
      */
     status: string;
+    title: string;
     /**
      * 描述
      */
@@ -28,6 +29,14 @@ export declare class Product extends BaseModel {
      * 原始价格
      */
     normalPrice: number;
+    /**
+     * 销量
+     */
+    sales: number;
+    /**
+     * 评价
+     */
+    rank: number;
     constructor();
 }
 export declare const ProductTableName = "t_product";

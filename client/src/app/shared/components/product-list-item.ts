@@ -14,11 +14,17 @@ export class ProductListItemComponent {
   @Input() realPrice: number;
   @Input() price: number;
 
+  @Input() product: any;
+
   get src() {
-    if (this.icon) {
-      return `assets/images/ios/@2x/${this.icon}@2x.png`;
-    } else {
+    let icon: string = this.product.categoryIcon;
+    if (!icon) {
       return null;
     }
+
+    if (icon.startsWith('http://')) {
+      return icon;
+    }
+    return `assets/images/ios/@2x/${this.product.categoryIcon}@2x.png`;
   }
 }

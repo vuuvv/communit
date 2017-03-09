@@ -1,5 +1,6 @@
 "use strict";
 require("reflect-metadata");
+const _ = require("lodash");
 const PROPERTY_METADATA = Symbol('property:meta');
 function property(...names) {
     return function (target, targetKey) {
@@ -19,6 +20,9 @@ function property(...names) {
 }
 exports.property = property;
 function create(type, source, ...keys) {
+    if (_.isNil(source)) {
+        return source;
+    }
     const keyMap = Reflect.getMetadata(PROPERTY_METADATA, type.prototype);
     const target = new type();
     return assign(type, target, source, ...keys);

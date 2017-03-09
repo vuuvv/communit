@@ -3,6 +3,7 @@ import { QuickentryComponent, QuickentryItemComponent } from './quickentry';
 import { EmptyPageComponent } from './empty-page';
 import { ServiceListItemComponent } from './service-list-item';
 import { ProductListItemComponent } from './product-list-item';
+import { ProductDetailComponent } from './product-detail';
 
 export const SHARED_COMPONENTS = [
   TabbarComponent,
@@ -11,6 +12,7 @@ export const SHARED_COMPONENTS = [
   EmptyPageComponent,
   ServiceListItemComponent,
   ProductListItemComponent,
+  ProductDetailComponent,
 ];
 
 export * from './tabbar';

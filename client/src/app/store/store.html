@@ -14,4 +14,13 @@
     <v-tabbar-btn class="primary" [routerLink]="['/store/edit']">编辑店铺</v-tabbar-btn>
     <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
   </v-tabbar>
+
+  <div class="product-list ngv-bg-white">
+    <product-list-item
+      class="ngv-1px-b"
+      [product]="p"
+      *ngFor="let p of products"
+    >
+   </product-list-item>
+ </div>
 </v-page>

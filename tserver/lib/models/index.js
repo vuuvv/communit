@@ -9,3 +9,4 @@ __export(require("./user"));
 __export(require("./config"));
 __export(require("./store"));
 __export(require("./product"));
+__export(require("./product_category"));
