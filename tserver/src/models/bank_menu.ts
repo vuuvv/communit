@@ -1,7 +1,7 @@
 import { BaseModel } from './base_model';
 import { property } from '../utils';
 
-export class ProductCategory extends BaseModel {
+export class BankMenu extends BaseModel {
   /**
    * 名称
    */
@@ -21,10 +21,16 @@ export class ProductCategory extends BaseModel {
   icon?: string;
 
   /**
+   * 路径
+   */
+  @property()
+  url?: string;
+
+  /**
    * 排序
    */
   @property()
   sort: number;
 }
 
-export const ProductCategoryTableName = 't_product_category';
+export const BankMenuTableName = 't_bank_menu';

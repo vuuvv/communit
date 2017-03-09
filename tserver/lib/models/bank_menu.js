@@ -10,23 +10,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class ProductCategory extends base_model_1.BaseModel {
+class BankMenu extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], ProductCategory.prototype, "name", void 0);
+], BankMenu.prototype, "name", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], ProductCategory.prototype, "parentId", void 0);
+], BankMenu.prototype, "parentId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], ProductCategory.prototype, "icon", void 0);
+], BankMenu.prototype, "icon", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], BankMenu.prototype, "url", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
-], ProductCategory.prototype, "sort", void 0);
-exports.ProductCategory = ProductCategory;
-exports.ProductCategoryTableName = 't_product_category';
+], BankMenu.prototype, "sort", void 0);
+exports.BankMenu = BankMenu;
+exports.BankMenuTableName = 't_bank_menu';

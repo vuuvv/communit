@@ -5,7 +5,7 @@ const env = 'development';
 
 export const db = knex(config[env]);
 
-export async function first(sql: string, params: any[]) {
+export async function first(sql: string, params: any) {
   let ret = await raw(sql, params);
   if (ret) {
     return ret[0];
@@ -13,7 +13,7 @@ export async function first(sql: string, params: any[]) {
   return null;
 }
 
-export async function raw(sql: string, params: any[]) {
+export async function raw(sql: string, params: any) {
   let ret = await db.raw(sql, params);
   if (ret && ret[0]) {
     return ret[0];

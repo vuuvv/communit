@@ -30,4 +30,8 @@ export class SearchbarComponent {
     this.focused = true;
     this.renderer.invokeElementMethod(this.input.nativeElement, 'focus', []);
   }
+
+  search() {
+    this.submit.emit(this.keyword);
+  }
 }

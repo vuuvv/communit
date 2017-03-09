@@ -1,15 +1,15 @@
 <v-page class="page-market">
-  <v-searchbar slot="header"></v-searchbar>
+  <v-searchbar slot="header" (submit)="search($event)"></v-searchbar>
   <tabbar slot="footer"></tabbar>
 
   <div class="quickentry-nav ngv-1px-b">
     <quickentry>
-      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 0:5">
-        {{ c.name}}
+      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 0:5" [routerLink]="['/market/search', {categoryId: c.id}]">
+        {{ c.name }}
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 5:5">
+      <quickentry-item [icon]="c.icon" *ngFor="let c of categories | slice: 5:5" [routerLink]="['/market/search', {categoryId: c.id}]">
         {{ c.name}}
       </quickentry-item>
     </quickentry>

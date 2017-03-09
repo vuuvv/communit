@@ -53,6 +53,11 @@ export class Product extends BaseModel {
   sales: number = 0;
 
   /**
+   * 库存
+   */
+  stock: number = 0;
+
+  /**
    * 评价
    */
   rank: number = 0;

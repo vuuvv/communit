@@ -78,7 +78,7 @@ export class StoreController {
       throw new ResponseError('店铺的状态不正常，不能修改店铺信息');
     }
 
-    await Table.Store.update({
+    await Table.Store.where('id', store.id).update({
       id: model.id,
       name: model.name,
       tel: model.tel,

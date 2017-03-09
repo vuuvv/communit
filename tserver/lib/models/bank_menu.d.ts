@@ -1,5 +1,5 @@
 import { BaseModel } from './base_model';
-export declare class ProductCategory extends BaseModel {
+export declare class BankMenu extends BaseModel {
     /**
      * 名称
      */
@@ -13,8 +13,12 @@ export declare class ProductCategory extends BaseModel {
      */
     icon?: string;
     /**
+     * 路径
+     */
+    url?: string;
+    /**
      * 排序
      */
     sort: number;
 }
-export declare const ProductCategoryTableName = "t_product_category";
+export declare const BankMenuTableName = "t_bank_menu";

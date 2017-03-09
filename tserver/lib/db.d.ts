@@ -1,7 +1,7 @@
 import * as knex from 'knex';
 export declare const db: knex;
-export declare function first(sql: string, params: any[]): Promise<any>;
-export declare function raw(sql: string, params: any[]): Promise<any>;
+export declare function first(sql: string, params: any): Promise<any>;
+export declare function raw(sql: string, params: any): Promise<any>;
 export interface Model<T> {
     new (): T;
 }

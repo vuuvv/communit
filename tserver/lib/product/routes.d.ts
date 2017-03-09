@@ -4,4 +4,5 @@ export declare class ProductController {
     list(ctx: any): Promise<Response>;
     item(ctx: any): Promise<Response>;
     add(ctx: any): Promise<Response>;
+    edit(ctx: any): Promise<Response>;
 }

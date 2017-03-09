@@ -34,6 +34,10 @@ export declare class Product extends BaseModel {
      */
     sales: number;
     /**
+     * 库存
+     */
+    stock: number;
+    /**
      * 评价
      */
     rank: number;

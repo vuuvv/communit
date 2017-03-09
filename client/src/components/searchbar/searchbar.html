@@ -13,7 +13,7 @@
   <a class="weui-search-bar__cancel-btn" (click)="cancel()">取消</a>
 </div>
 <div class="weui-cells searchbar-result" *ngIf="keyword">
-  <div class="weui-cell weui-cell_access">
+  <div class="weui-cell weui-cell_access" (click)="search()">
     <div class="weui-cell__bd weui-cell_primary">
       <p>{{ keyword }}</p>
     </div>

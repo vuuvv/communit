@@ -44,6 +44,7 @@
     "@types/request-promise": "^4.1.33",
     "@types/xml2js": "0.0.32",
     "@types/yargs": "^6.5.0",
+    "ejs": "^2.5.6",
     "kcors": "^2.2.1",
     "knex": "^0.12.6",
     "koa": "^2.0.0-alpha.7",

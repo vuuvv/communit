@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
@@ -18,6 +19,7 @@ export class MarketComponent implements OnInit {
   constructor(
     private http: Http,
     private overlayService: OverlayService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -30,5 +32,9 @@ export class MarketComponent implements OnInit {
       this.categories = value[0];
       this.products = value[1];
     });
+  }
+
+  search(keyword) {
+    this.router.navigate(['/market/search', {keyword: keyword}]);
   }
 }

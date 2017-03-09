@@ -66,7 +66,7 @@ let StoreController = class StoreController {
         if (store.status !== 'normal') {
             throw new routes_1.ResponseError('店铺的状态不正常，不能修改店铺信息');
         }
-        await db_1.Table.Store.update({
+        await db_1.Table.Store.where('id', store.id).update({
             id: model.id,
             name: model.name,
             tel: model.tel,

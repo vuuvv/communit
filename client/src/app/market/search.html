@@ -1,0 +1,16 @@
+<v-page>
+  <v-searchbar slot="header"></v-searchbar>
+  <tabbar slot="footer"></tabbar>
+
+  <div class="product-list ngv-bg-white">
+    <product-list-item
+      class="ngv-1px-b"
+      [product]="p"
+      [routerLink]="['/market/product/' + p.id]"
+      *ngFor="let p of products"
+    >
+   </product-list-item>
+  </div>
+  <empty-page *ngIf="!products || !products.length">{{ tip }}</empty-page>
+</v-page>
+

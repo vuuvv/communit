@@ -18,6 +18,10 @@ class Product extends base_model_1.BaseModel {
          */
         this.sales = 0;
         /**
+         * 库存
+         */
+        this.stock = 0;
+        /**
          * 评价
          */
         this.rank = 0;

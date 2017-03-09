@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const _ = require("lodash");
+const ejs = require("ejs");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
 const utils_1 = require("../utils");
@@ -21,11 +22,20 @@ let ProductController = class ProductController {
         return routes_1.success(ret);
     }
     async list(ctx) {
-        let ret = await db_1.raw(`
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
+        let sql = `
       select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId from t_product as p
       join t_product_category as c on p.categoryId = c.id
+      join t_store as s on p.storeId = s.id
+      where
+        s.communityId = :communityId and
+        <% if (query.categoryId) { %> p.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
+        <% if (query.keyword) { %> p.title like :keyword  <% } else { %> 1 = 1 <% } %>
       order by p.updatedAt desc
-      `, []);
+    `;
+        sql = ejs.render(sql, ctx);
+        let ret = await db_1.raw(sql, Object.assign({ communityId: communityId }, ctx.query, { keyword: `%${ctx.query.keyword}%` }));
         return routes_1.success(ret);
     }
     async item(ctx) {
@@ -46,6 +56,29 @@ let ProductController = class ProductController {
         let product = utils_1.create(models_1.Product, model);
         product.storeId = store.id;
         await db_1.Table.Product.insert(product);
+        return routes_1.success();
+    }
+    async edit(ctx) {
+        let store = await store_1.getStore(ctx);
+        if (_.isNil(store)) {
+            throw new routes_1.ResponseError('您现在还没有店铺');
+        }
+        let model = await product_1.getProductModel(ctx);
+        let product = await db_1.Table.Product.where('id', model.id).first();
+        if (!product) {
+            throw new routes_1.ResponseError('该产品不存在');
+        }
+        if (product.storeId !== store.id) {
+            throw new routes_1.ResponseError('不可编辑其他店铺的商品');
+        }
+        await db_1.Table.Product.where('id', model.id).update({
+            categoryId: model.categoryId,
+            title: model.title,
+            description: model.description,
+            price: model.price,
+            points: model.points,
+            normalPrice: model.normalPrice,
+        });
         return routes_1.success();
     }
 };
@@ -77,6 +110,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "add", null);
+__decorate([
+    routes_1.post('/edit'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "edit", null);
 ProductController = __decorate([
     routes_1.router('/product')
 ], ProductController);
