@@ -2,6 +2,7 @@
   <v-header [showBack]="false" slot="header">
     <span>众邻</span>
     <span style="font-size: 14px">...好邻里·轻松自己</span>
+    <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -14,60 +15,13 @@
     </div>
   </div>
 
-  <div class="ngv-1px-t">
+  <div class="ngv-1px-t" *ngIf="menus && menus.length">
     <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" icon="sgcy" [routerLink]="['./worker']">
-        社工参与
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="bgt" [routerLink]="['./summary']">
-        活动公告
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="sxgs" [routerLink]="['./summary']">
-        事项公示
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="llhz" [routerLink]="['./summary']">
-        邻里互助
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="fwzx" [routerLink]="['./summary']">
-        服务自选
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="cstx" [routerLink]="['./summary']">
-        慈善同行
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="gyph" [routerLink]="['./summary']">
-        公益排行
-      </quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon" *ngFor="let m of getMenus()" [class.selected]="m.id === activeMenuId" (click)="clickMainMenu(m)">{{ m.name }}</quickentry-item>
     </v-xscroll>
-    <v-xscroll class="sub-nav">
-      <quickentry-item class="ngv-xscroll-item" icon="zx" width="20" height="20">
-        咨询
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="js" width="20" height="20">
-        介绍
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="fd" width="20" height="20">
-        辅导
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="ph" width="20" height="20">
-        陪护
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="wx" width="20" height="20">
-        维修
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="dg" width="20" height="20">
-        代购
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="tg" width="20" height="20">
-        托管
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="cj" width="20" height="20">
-        出借
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="ph" width="20" height="20">
-        折送
-      </quickentry-item>
-      <quickentry-item class="ngv-xscroll-item" icon="fd" width="20" height="20">
-        顺搭
+    <v-xscroll class="sub-nav" *ngIf="getMenus(activeMenuId)">
+      <quickentry-item class="ngv-xscroll-item" [icon]="sm.icon" width="20" height="20" *ngFor="let sm of getMenus(activeMenuId)">
+        {{ sm.name }}
       </quickentry-item>
     </v-xscroll>
   </div>

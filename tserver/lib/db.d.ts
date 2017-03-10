@@ -18,4 +18,7 @@ export declare class Table<T> {
     static readonly Store: knex.QueryBuilder;
     static readonly Product: knex.QueryBuilder;
     static readonly ProductCategory: knex.QueryBuilder;
+    static readonly BankMenu: knex.QueryBuilder;
+    static readonly Organization: knex.QueryBuilder;
+    static readonly OrganizationUser: knex.QueryBuilder;
 }

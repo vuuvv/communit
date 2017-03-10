@@ -12,10 +12,8 @@ import { ServiceComponent } from './service';
 import { ActivityComponent } from './activity';
 import { WorkerComponent } from './worker';
 import { WorkerAddComponent } from './worker-add';
-import { AgencyComponent } from './agency';
 import { OrganizationComponent } from './organization';
-import { ProfessionComponent } from './profession';
-import { ProfessionListComponent } from './profession-list';
+import { OrganizationDetailComponent } from './organization-detail';
 
 const routes: Routes = [
   {
@@ -42,24 +40,14 @@ const routes: Routes = [
         component: WorkerAddComponent,
       },
       {
-        path: 'agency',
+        path: 'organization/detail/:id',
         pathMatch: 'full',
-        component: AgencyComponent,
+        component: OrganizationDetailComponent,
       },
       {
-        path: 'organization',
+        path: 'organization/:id',
         pathMatch: 'full',
         component: OrganizationComponent,
-      },
-      {
-        path: 'profession',
-        pathMatch: 'full',
-        component: ProfessionComponent,
-      },
-      {
-        path: 'profession-list',
-        pathMatch: 'full',
-        component: ProfessionListComponent,
       },
       {
         path: 'activity/:id',
@@ -84,10 +72,8 @@ const routes: Routes = [
     ActivityComponent,
     WorkerComponent,
     WorkerAddComponent,
-    AgencyComponent,
     OrganizationComponent,
-    ProfessionComponent,
-    ProfessionListComponent,
+    OrganizationDetailComponent,
   ]
 })
 export class BankModule {
@@ -95,4 +81,3 @@ export class BankModule {
 
 export * from './bank';
 export * from './service';
-export * from './agency';

@@ -1,31 +1,14 @@
 <v-page>
-  <v-header [showBack]="false" slot="header">
+  <v-header [showBack]="false">
     <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
       <span>返回</span>
       <div class="left-arrow"></div>
     </a>
+    请选择
   </v-header>
-
   <tabbar slot="footer"></tabbar>
 
-  <v-mask slot="other" #mask [closeByClickMask]="true">
-    <div style="background: red; width: 100px; height: 100px;"></div>
-  </v-mask>
-
-  <v-image src="assets/images/ios/@3x/logo@3x.png" width="30" height="30"></v-image>
-  <v-slider>
-    <v-slider-item>
-      <v-image width="100%" height="200" src="https://ustbhuangyi.github.io/better-scroll/images/slider1.jpg" size="cover"></v-image>
-    </v-slider-item>
-    <v-slider-item>
-      <v-image width="100%" height="200" src="https://ustbhuangyi.github.io/better-scroll/images/slider2.jpg" size="cover"></v-image>
-    </v-slider-item>
-    <v-slider-item>
-      <v-image width="100%" height="200" src="https://ustbhuangyi.github.io/better-scroll/images/slider3.jpg" size="cover"></v-image>
-    </v-slider-item>
-  </v-slider>
-  <button class="weui-btn weui-btn_primary" (click)="mask.show()">确定</button>
-
-
-
+  <v-group gutter="0">
+    <v-cell [isLink]="true" [routerLink]="['/publish/action/' + i]" *ngFor="let c of categories; let i = index">{{ c }}</v-cell>
+  </v-group>
 </v-page>

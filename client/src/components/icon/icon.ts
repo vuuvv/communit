@@ -13,8 +13,13 @@ export class IconComponent {
   @Input() type: string;
   @Input() bg: string;
   @Input() color: string;
+  @Input() headerButton: boolean = false;
 
   get iconClass(): string {
-    return `ngv-icon icon-${this.type}`;
+    let ret = `ngv-icon icon-${this.type}`;
+    if (this.headerButton) {
+      ret += ' ngv-header-button';
+    }
+    return ret;
   }
 }

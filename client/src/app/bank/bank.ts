@@ -1,11 +1,15 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { Http } from '../shared';
+import { OverlayService } from '../../components';
 
 @Component({
   templateUrl: './bank.html',
   styleUrls: ['./bank.less'],
   encapsulation: ViewEncapsulation.None,
 })
-export class BankComponent {
+export class BankComponent implements OnInit {
   private list = [{
     id: '1',
     organization: '老年人协会',
@@ -55,6 +59,54 @@ export class BankComponent {
     desc: '1月20日上午，戎苑社区组织居民代表召开了2016年年终总结大会并接受考核。会上，社区党委书记、主任曹淑萍首先对本社区全年工作进行汇报',
     url: '/component/cell'
   }];
+
+  menus: any[] = [];
+  activeMenuId: string;
+
+  constructor(
+    private http: Http,
+    private router: Router,
+    private overlayService: OverlayService,
+  ) {}
+
+  ngOnInit() {
+    this.overlayService.loading();
+    this.http.get('/menu/bank').subscribe((resp: any) => {
+      this.menus = resp;
+      let roots = this.getMenus();
+      for (let i = 0; i < roots.length; i++) {
+        if (this.hasChilrend(roots[i])) {
+          this.activeMenuId = roots[i].id;
+          break;
+        }
+      }
+      this.overlayService.hideToast();
+    });
+  }
+
+  getMenus(pid = null) {
+    if (!this.menus) {
+      return [];
+    }
+
+    let ret = this.menus.filter((item) => {
+      return item.parentId == pid;
+    });
+
+    return ret;
+  }
+
+  hasChilrend(menu) {
+    return this.getMenus(menu.id).length > 0;
+  }
+
+  clickMainMenu(m) {
+    if (m.url) {
+      this.router.navigate([m.url]);
+      return;
+    }
+    this.activeMenuId = m.id;
+  }
 
   click() {
     console.log('click');

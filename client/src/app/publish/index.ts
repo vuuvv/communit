@@ -8,19 +8,14 @@ import { SharedModule } from '../shared';
 
 import { PublishComponent } from './publish.component';
 import { ActionComponent } from './action.component';
-import { CatetoryComponent } from './category.component';
 
 const routes: Routes = [
   {
     path: 'publish',
     children: [
       {
-        path: 'action',
+        path: 'action/:type',
         component: ActionComponent,
-      },
-      {
-        path: 'category',
-        component: CatetoryComponent,
       },
       {
         path: '',
@@ -41,7 +36,6 @@ const routes: Routes = [
   ],
   declarations: [
     ActionComponent,
-    CatetoryComponent,
     PublishComponent,
   ]
 })

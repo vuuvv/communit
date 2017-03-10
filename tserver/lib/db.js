@@ -58,5 +58,14 @@ class Table {
     static get ProductCategory() {
         return new Table(models_1.ProductCategory, models_1.ProductCategoryTableName).database;
     }
+    static get BankMenu() {
+        return new Table(models_1.BankMenu, models_1.BankMenuTableName).database;
+    }
+    static get Organization() {
+        return new Table(models_1.Organization, models_1.OrganizationTableName).database;
+    }
+    static get OrganizationUser() {
+        return new Table(models_1.OrganizationUser, models_1.OrganizationUserTableName).database;
+    }
 }
 exports.Table = Table;

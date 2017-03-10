@@ -1,10 +1,10 @@
 
 @font-face {font-family: "ngv-icon";
-  src: url('iconfont.eot?t=1488634590192'); /* IE9*/
-  src: url('iconfont.eot?t=1488634590192#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1488634590192') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1488634590192') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1488634590192#ngv-icon') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1489103792995'); /* IE9*/
+  src: url('iconfont.eot?t=1489103792995#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1489103792995') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1489103792995') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1489103792995#ngv-icon') format('svg'); /* iOS 4.1- */
 }
 
 .ngv-icon {
@@ -28,6 +28,8 @@
 .icon-service:before { content: "\e605"; }
 
 .icon-deliver:before { content: "\e606"; }
+
+.icon-plus:before { content: "\e640"; }
 
 .icon-weixiu:before { content: "\e630"; }
 

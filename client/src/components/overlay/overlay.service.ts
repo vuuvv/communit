@@ -90,7 +90,7 @@ export class OverlayService {
     this.toastEmitter.next({
       show: false,
       duration: 0,
-    })
+    });
   }
 
   loading(text: string = '数据加载中...') {

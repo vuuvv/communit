@@ -4,12 +4,12 @@
       <span>返回</span>
       <div class="left-arrow"></div>
     </a>
-    社团组织
+    {{ typeName }}
   </v-header>
   <tabbar slot="footer"></tabbar>
 
   <v-group gutter="0">
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">老年人协会</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/bank/organization/detail/' + o.id]" *ngFor="let o of organizations">{{ o.organizationname }}</v-cell>
   </v-group>
 
 </v-page>

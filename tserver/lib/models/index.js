@@ -10,3 +10,6 @@ __export(require("./config"));
 __export(require("./store"));
 __export(require("./product"));
 __export(require("./product_category"));
+__export(require("./bank_menu"));
+__export(require("./organization"));
+__export(require("./organuser"));

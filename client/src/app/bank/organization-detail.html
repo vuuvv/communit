@@ -1,0 +1,33 @@
+<v-page>
+  <v-header backText="返回">
+    {{ organization?.organizationname }}
+  </v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add']">我要加入</v-tabbar-btn>
+  </v-tabbar>
+
+  <div class="detail-info">
+    <header>
+      <div class="item-info">
+        <div class="item-title">
+          <h3>{{ organization?.organizationname }}</h3>
+        </div>
+      </div>
+    </header>
+
+    <section *ngIf="organization?.description">
+      <p class="title ngv-1px-b">
+        <i class="arrow"></i><span>详情说明：</span>
+      </p>
+      <div class="description">
+        <p>{{ organization?.description }}</p>
+      </div>
+    </section>
+
+    <v-group *ngIf="hasUsers">
+      <v-cell [isLink]="true" *ngFor="let u of users">{{ u.realname }}</v-cell>
+    </v-group>
+    <empty-page *ngIf="!hasUsers">机构还没有成员</empty-page>
+  </div>
+
+</v-page>

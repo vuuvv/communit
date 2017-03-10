@@ -37,6 +37,9 @@ import {
   Store, StoreTableName,
   Product, ProductTableName,
   ProductCategory, ProductCategoryTableName,
+  BankMenu, BankMenuTableName,
+  Organization, OrganizationTableName,
+  OrganizationUser, OrganizationUserTableName,
 } from './models';
 
 export interface Model<T> {
@@ -86,5 +89,17 @@ export class Table<T> {
 
   static get ProductCategory() {
     return new Table<ProductCategory>(ProductCategory, ProductCategoryTableName).database;
+  }
+
+  static get BankMenu() {
+    return new Table<BankMenu>(BankMenu, BankMenuTableName).database;
+  }
+
+  static get Organization() {
+    return new Table<Organization>(Organization, OrganizationTableName).database;
+  }
+
+  static get OrganizationUser() {
+    return new Table<OrganizationUser>(OrganizationUser, OrganizationUserTableName).database;
   }
 }
