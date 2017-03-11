@@ -40,6 +40,8 @@ import {
   BankMenu, BankMenuTableName,
   Organization, OrganizationTableName,
   OrganizationUser, OrganizationUserTableName,
+  Service, ServiceTableName,
+  ServiceCategory, ServiceCategoryTableName,
 } from './models';
 
 export interface Model<T> {
@@ -102,4 +104,13 @@ export class Table<T> {
   static get OrganizationUser() {
     return new Table<OrganizationUser>(OrganizationUser, OrganizationUserTableName).database;
   }
+
+  static get Service() {
+    return new Table<Service>(Service, ServiceTableName).database;
+  }
+
+  static get ServiceCategory() {
+    return new Table<ServiceCategory>(ServiceCategory, ServiceCategoryTableName).database;
+  }
+
 }

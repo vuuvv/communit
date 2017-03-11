@@ -2,27 +2,37 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Http } from '../shared';
-
-const titles = ['求助', '服务自选', '慈善活动'];
+import { InputBase, InputSelect, InputText, OverlayService } from '../../components';
 
 @Component({
   templateUrl: './action.component.html',
 })
 export class ActionComponent implements OnInit {
-  type: number;
+  category: any;
+  questions: any;
+  type: string;
 
   constructor(
     private http: Http,
     private route: ActivatedRoute,
+    private overlayService: OverlayService,
   ) {}
 
   ngOnInit() {
-    this.route.params.forEach((params: Params) => {
+    this.overlayService.loading();
+    this.route.params.concatMap((params: Params) => {
       this.type = params['type'];
+      return this.http.get('/service/category/' + this.type);
+    }).subscribe((value: any) => {
+      this.category = value;
+      this.questions = JSON.parse(value.fields);
+      this.overlayService.hideToast();
     });
   }
 
-  get typeName() {
-    return titles[this.type];
+  submit() {
+    this.http.json(`/service/add/${this.type}`).subscribe(() => {
+      this.overlayService.toast('操作成功');
+    });
   }
 }

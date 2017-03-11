@@ -13,3 +13,5 @@ __export(require("./product_category"));
 __export(require("./bank_menu"));
 __export(require("./organization"));
 __export(require("./organuser"));
+__export(require("./service_category"));
+__export(require("./service"));

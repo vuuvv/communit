@@ -4,10 +4,10 @@
       <span>返回</span>
       <div class="left-arrow"></div>
     </a>
-    请填写{{ typeName }}信息
+    请填写{{ category?.name }}信息
   </v-header>
-  <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add']">我要加入</v-tabbar-btn>
-  </v-tabbar>
+  <tabbar slot="footer"></tabbar>
+
+  <dynamic-form [inputs]="questions" *ngIf="questions" (submit)="submit()"></dynamic-form>
 </v-page>
 

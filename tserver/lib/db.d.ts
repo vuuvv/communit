@@ -21,4 +21,6 @@ export declare class Table<T> {
     static readonly BankMenu: knex.QueryBuilder;
     static readonly Organization: knex.QueryBuilder;
     static readonly OrganizationUser: knex.QueryBuilder;
+    static readonly Service: knex.QueryBuilder;
+    static readonly ServiceCategory: knex.QueryBuilder;
 }

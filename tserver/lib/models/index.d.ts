@@ -9,3 +9,5 @@ export * from './product_category';
 export * from './bank_menu';
 export * from './organization';
 export * from './organuser';
+export * from './service_category';
+export * from './service';

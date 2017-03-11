@@ -21,6 +21,7 @@ import { PickerModule } from './picker';
 import { XSCrollModule } from './xscroll';
 import { RankModule } from './rank';
 import { SearchbarModule } from './searchbar';
+import { DynamicFormModule } from './dynamic-form';
 
 const MODULES = [
   BaseModule,
@@ -44,6 +45,7 @@ const MODULES = [
   XSCrollModule,
   RankModule,
   SearchbarModule,
+  DynamicFormModule,
 ];
 
 @NgModule({
@@ -69,6 +71,7 @@ const MODULES = [
     XSCrollModule.forRoot(),
     RankModule.forRoot(),
     SearchbarModule.forRoot(),
+    DynamicFormModule.forRoot(),
   ],
   exports: MODULES,
 })

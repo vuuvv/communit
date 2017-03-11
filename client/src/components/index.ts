@@ -20,3 +20,4 @@ export * from './picker';
 export * from './xscroll';
 export * from './rank';
 export * from './searchbar';
+export * from './dynamic-form';

@@ -1,0 +1,25 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
+  <v-group gutter="0">
+    <v-cell [class.weui-cell_select]="input.isSelect" [class.weui-cell_select-after]="input.isSelect" [label]="input.label" *ngFor="let input of inputs">
+      <ng-container [ngSwitch]="input.type">
+        <ng-container *ngSwitchCase="'text'">
+          <input class="weui-input" type="text" [formControlName]="input.key" [placeholder]="input.label">
+        </ng-container>
+        <ng-container *ngSwitchCase="'number'">
+          <input class="weui-input" type="number" [formControlName]="input.key" [placeholder]="input.label" [step]="input.step">
+        </ng-container>
+        <ng-container *ngSwitchCase="'textarea'">
+          <textarea class="weui-textarea" [placeholder]="input.label" rows="3" [formControlName]="input.key"></textarea>
+         </ng-container>
+        <ng-container *ngSwitchCase="'select'">
+          <select class="weui-select" [formControlName]="input.key">
+            <option *ngFor="let opt of input.options" [value]="opt.key">{{opt.value}}</option>
+          </select>
+        </ng-container>
+      </ng-container>
+    </v-cell>
+  </v-group>
+  <div class="weui-btn-area">
+    <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+  </div>
+</form>

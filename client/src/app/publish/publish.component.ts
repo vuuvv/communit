@@ -1,11 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-const categories = ['我要求助', '我要提供服务', '发起慈善活动'];
+import { Http } from '../shared';
 
 @Component({
   templateUrl: './publish.component.html',
   styleUrls: ['./publish.component.less'],
 })
-export class PublishComponent {
-  categories: any = categories;
+export class PublishComponent implements OnInit {
+  categories: any;
+  constructor(
+    private http: Http,
+  ) {}
+
+  ngOnInit() {
+    this.http.get('/service/categories').subscribe((value) => {
+      this.categories = value;
+    });
+  }
 }
