@@ -23,4 +23,5 @@ export declare class Table<T> {
     static readonly OrganizationUser: knex.QueryBuilder;
     static readonly Service: knex.QueryBuilder;
     static readonly ServiceCategory: knex.QueryBuilder;
+    static readonly ServiceType: knex.QueryBuilder;
 }

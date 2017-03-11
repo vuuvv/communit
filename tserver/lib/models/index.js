@@ -15,3 +15,4 @@ __export(require("./organization"));
 __export(require("./organuser"));
 __export(require("./service_category"));
 __export(require("./service"));
+__export(require("./service_type"));

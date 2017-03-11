@@ -11,3 +11,4 @@ export * from './organization';
 export * from './organuser';
 export * from './service_category';
 export * from './service';
+export * from './service_type';

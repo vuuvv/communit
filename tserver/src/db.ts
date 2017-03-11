@@ -42,6 +42,7 @@ import {
   OrganizationUser, OrganizationUserTableName,
   Service, ServiceTableName,
   ServiceCategory, ServiceCategoryTableName,
+  ServiceType, ServiceTypeTableName,
 } from './models';
 
 export interface Model<T> {
@@ -111,6 +112,10 @@ export class Table<T> {
 
   static get ServiceCategory() {
     return new Table<ServiceCategory>(ServiceCategory, ServiceCategoryTableName).database;
+  }
+
+  static get ServiceType() {
+    return new Table<ServiceType>(ServiceType, ServiceTypeTableName).database;
   }
 
 }

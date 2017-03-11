@@ -22,6 +22,13 @@ export class ServiceController {
     return success(ret);
   }
 
+  @get('/types/:id')
+  @login
+  async types(ctx) {
+    let ret = await Table.ServiceType.where('categoryId', ctx.params.id).orderBy('sort');
+    return success(ret);
+  }
+
   @get('/list')
   @login
   async list(ctx) {

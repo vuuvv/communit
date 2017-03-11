@@ -15,10 +15,18 @@ class ServiceType extends base_model_1.BaseModel {
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], ServiceType.prototype, "categoryId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], ServiceType.prototype, "name", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], ServiceType.prototype, "icon", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], ServiceType.prototype, "sort", void 0);
 exports.ServiceType = ServiceType;
-exports.ServiceCategoryTableName = 't_service_type';
+exports.ServiceTypeTableName = 't_service_type';

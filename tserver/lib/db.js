@@ -73,5 +73,8 @@ class Table {
     static get ServiceCategory() {
         return new Table(models_1.ServiceCategory, models_1.ServiceCategoryTableName).database;
     }
+    static get ServiceType() {
+        return new Table(models_1.ServiceType, models_1.ServiceTypeTableName).database;
+    }
 }
 exports.Table = Table;

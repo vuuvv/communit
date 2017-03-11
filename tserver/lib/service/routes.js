@@ -21,6 +21,10 @@ let ServiceController = class ServiceController {
         let ret = await db_1.Table.ServiceCategory.where('id', ctx.params.id).first();
         return routes_1.success(ret);
     }
+    async types(ctx) {
+        let ret = await db_1.Table.ServiceType.where('categoryId', ctx.params.id).orderBy('sort');
+        return routes_1.success(ret);
+    }
     async list(ctx) {
     }
     async search(ctx) {
@@ -57,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "category", null);
+__decorate([
+    routes_1.get('/types/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "types", null);
 __decorate([
     routes_1.get('/list'),
     routes_1.login,
