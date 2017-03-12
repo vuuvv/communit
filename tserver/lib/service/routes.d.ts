@@ -4,7 +4,8 @@ export declare class ServiceController {
     category(ctx: any): Promise<Response>;
     types(ctx: any): Promise<Response>;
     list(ctx: any): Promise<void>;
-    search(ctx: any): Promise<void>;
+    search(ctx: any): Promise<Response>;
+    item(ctx: any): Promise<Response>;
     add(ctx: any): Promise<Response>;
     join(ctx: any): Promise<Response>;
 }

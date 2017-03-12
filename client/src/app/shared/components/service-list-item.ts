@@ -14,11 +14,17 @@ export class ServiceListItemComponent {
   @Input() type: string;
   @Input() status: string;
 
+  @Input() service: any;
+
   get src() {
-    if (this.icon) {
-      return `assets/images/ios/@2x/${this.icon}@2x.png`;
-    } else {
+    let icon: string = this.service.typeIcon;
+    if (!icon) {
       return null;
     }
+
+    if (icon.startsWith('http://')) {
+      return icon;
+    }
+    return `assets/images/ios/@2x/${icon}@2x.png`;
   }
 }

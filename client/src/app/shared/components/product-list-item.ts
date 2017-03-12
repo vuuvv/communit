@@ -7,13 +7,6 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None,
 })
 export class ProductListItemComponent {
-  @Input() icon: string;
-  @Input() title: string;
-  @Input() desc: string;
-  @Input() credit: number;
-  @Input() realPrice: number;
-  @Input() price: number;
-
   @Input() product: any;
 
   get src() {
@@ -25,6 +18,6 @@ export class ProductListItemComponent {
     if (icon.startsWith('http://')) {
       return icon;
     }
-    return `assets/images/ios/@2x/${this.product.categoryIcon}@2x.png`;
+    return `assets/images/ios/@2x/${icon}@2x.png`;
   }
 }

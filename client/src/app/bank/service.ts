@@ -1,51 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Params } from'@angular/router';
+
+import { Http } from '../shared';
+import { OverlayService } from '../../components';
 
 @Component({
   templateUrl: './service.html',
   styleUrls: ['./service.less'],
+  encapsulation: ViewEncapsulation.None,
 })
-export class ServiceComponent {
-  private tabs = ['服务自选', '邻里互助', '慈善同行'];
+export class ServiceComponent implements OnInit {
+  service: any;
+  details: any[] = [];
 
-  private list = [{
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚招助教3名',
-    desc: '鲤城不限, 大地幼儿园',
-    url: '/component/cell'
-  }, {
-    src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-    title: '诚聘小学数学老师',
-    desc: '惠安不限, 惠安县黄塘优优教育',
-    url: '/component/cell'
-  }];
+  constructor(
+    private http: Http,
+    private route: ActivatedRoute,
+    private overlayService: OverlayService,
+  ) {}
+
+  ngOnInit() {
+    this.overlayService.loading();
+    this.route.params.concatMap((params: Params) => {
+      return this.http.get(`/service/item/${params['id']}`);
+    }).subscribe((service) => {
+      this.overlayService.hideToast();
+      this.service = service;
+      this.parseData();
+    });
+  }
+
+  parseData() {
+    let fields = JSON.parse(this.service.fields);
+    let contents = JSON.parse(this.service.content);
+
+    this.details = fields.map((f) => {
+      let v = contents[f.key];
+      return f.key === 'type' ? {
+        label: f.label,
+        content: this.service.typeName,
+        type: f.type,
+      } : {
+        label: f.label,
+        content: v,
+        type: f.type,
+      };
+    });
+  }
 }

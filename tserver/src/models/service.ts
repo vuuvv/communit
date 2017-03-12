@@ -3,10 +3,16 @@ import { property } from '../utils';
 
 export class Service extends BaseModel {
   /**
-   * 类型Id
+   * 种类Id
    */
   @property()
   categoryId: string;
+
+  /**
+   * 类型Id
+   */
+  @property()
+  typeId: string;
 
   /**
    * 用户Id
@@ -25,6 +31,12 @@ export class Service extends BaseModel {
    */
   @property()
   content: string;
+
+  /**
+   * 所需积分
+   */
+  @property()
+  points: number;
 
   /**
    * 排序

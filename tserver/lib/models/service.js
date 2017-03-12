@@ -19,6 +19,10 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Service.prototype, "typeId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Service.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
@@ -28,6 +32,10 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], Service.prototype, "content", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Service.prototype, "points", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Number)

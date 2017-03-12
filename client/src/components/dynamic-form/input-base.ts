@@ -24,8 +24,4 @@ export class InputBase<T>{
     this.type = options.type || '';
     this.group = options.group || '';
   }
-
-  get isSelect() {
-    return this.type === 'select';
-  }
 }

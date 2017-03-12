@@ -17,25 +17,17 @@
 
   <div class="ngv-1px-t" *ngIf="menus && menus.length">
     <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon" *ngFor="let m of getMenus()" [class.selected]="m.id === activeMenuId" (click)="clickMainMenu(m)">{{ m.name }}</quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon" *ngFor="let m of roots" [class.selected]="m.id === activeMenuId" (click)="clickMainMenu(m)">{{ m.name }}</quickentry-item>
     </v-xscroll>
     <v-xscroll class="sub-nav" *ngIf="getMenus(activeMenuId)">
-      <quickentry-item class="ngv-xscroll-item" [icon]="sm.icon" width="20" height="20" *ngFor="let sm of getMenus(activeMenuId)">
+      <quickentry-item class="ngv-xscroll-item" [icon]="sm.icon" width="20" height="20" *ngFor="let sm of getMenus(activeMenuId)" [routerLink]="['/bank/services', {typeName: sm.name}]">
         {{ sm.name }}
       </quickentry-item>
     </v-xscroll>
   </div>
 
   <div class="service-list">
-    <service-list-item icon="zx2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
-    </service-list-item>
-    <service-list-item icon="fd2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
-    </service-list-item>
-    <service-list-item icon="ydjs2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
-    </service-list-item>
-    <service-list-item icon="tg2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
-    </service-list-item>
-    <service-list-item icon="ph2" class="ngv-1px-b" title="北京盈科(泉州)律师事务所专职律" desc="建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处建筑行业的民商事纠纷处理" meta="5积分/小时" type="服务自选">
+    <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
     </service-list-item>
   </div>
 </v-page>

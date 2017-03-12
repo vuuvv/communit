@@ -8,6 +8,6 @@
   </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <dynamic-form [inputs]="questions" *ngIf="questions" (submit)="submit()"></dynamic-form>
+  <dynamic-form [inputs]="fields" *ngIf="fields" (submit)="submit($event)"></dynamic-form>
 </v-page>
 

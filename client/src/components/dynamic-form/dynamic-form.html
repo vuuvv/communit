@@ -1,6 +1,6 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="form">
+<form [formGroup]="form">
   <v-group gutter="0">
-    <v-cell [class.weui-cell_select]="input.isSelect" [class.weui-cell_select-after]="input.isSelect" [label]="input.label" *ngFor="let input of inputs">
+    <v-cell [class.weui-cell_select]="input.type === 'select'" [class.weui-cell_select-after]="input.type === 'select'" [label]="input.label" *ngFor="let input of inputs">
       <ng-container [ngSwitch]="input.type">
         <ng-container *ngSwitchCase="'text'">
           <input class="weui-input" type="text" [formControlName]="input.key" [placeholder]="input.label">
@@ -20,6 +20,6 @@
     </v-cell>
   </v-group>
   <div class="weui-btn-area">
-    <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid" type="button" (click)="onSubmit()">确定</button>
   </div>
 </form>
