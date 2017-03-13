@@ -10,6 +10,12 @@ export class Transaction extends BaseModel {
   typeId: string;
   @property()
   amount: number;
+  @property()
+  remain: number;
+  @property()
+  remainDetail: string;
+  @property()
+  reverseTransactionId: string;
 }
 
 export const TransactionTableName = 't_transaction';

@@ -16,5 +16,9 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], AccountType.prototype, "name", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], AccountType.prototype, "sort", void 0);
 exports.AccountType = AccountType;
 exports.AccountTypeTableName = 't_account_type';

@@ -4,5 +4,8 @@ export declare class Transaction extends BaseModel {
     communityId: string;
     typeId: string;
     amount: number;
+    remain: number;
+    remainDetail: string;
+    reverseTransactionId: string;
 }
 export declare const TransactionTableName = "t_transaction";

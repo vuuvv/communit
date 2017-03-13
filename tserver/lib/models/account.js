@@ -26,11 +26,11 @@ __decorate([
 ], Account.prototype, "communityId", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", Number)
-], Account.prototype, "balance", void 0);
+    __metadata("design:type", String)
+], Account.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", Date)
-], Account.prototype, "expiresTime", void 0);
+    __metadata("design:type", Object)
+], Account.prototype, "balance", void 0);
 exports.Account = Account;
 exports.AccountTableName = 't_account';

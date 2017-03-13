@@ -28,5 +28,17 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
 ], Transaction.prototype, "amount", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Transaction.prototype, "remain", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Transaction.prototype, "remainDetail", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Transaction.prototype, "reverseTransactionId", void 0);
 exports.Transaction = Transaction;
 exports.TransactionTableName = 't_transaction';

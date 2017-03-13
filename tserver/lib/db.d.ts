@@ -1,7 +1,7 @@
 import * as knex from 'knex';
 export declare const db: knex;
-export declare function first(sql: string, params: any): Promise<any>;
-export declare function raw(sql: string, params: any): Promise<any>;
+export declare function first(sql: string, params: any, trx?: any): Promise<any>;
+export declare function raw(sql: string, params: any, trx?: any): Promise<any>;
 export interface Model<T> {
     new (): T;
 }
@@ -24,4 +24,10 @@ export declare class Table<T> {
     static readonly Service: knex.QueryBuilder;
     static readonly ServiceCategory: knex.QueryBuilder;
     static readonly ServiceType: knex.QueryBuilder;
+    static readonly Account: knex.QueryBuilder;
+    static readonly AccountDetail: knex.QueryBuilder;
+    static readonly AccountType: knex.QueryBuilder;
+    static readonly Transaction: knex.QueryBuilder;
+    static readonly TransactionType: knex.QueryBuilder;
+    static readonly TransactionDetail: knex.QueryBuilder;
 }

@@ -5,11 +5,15 @@ export class TransactionDetail extends BaseModel {
   @property()
   transactionId: string;
   @property()
+  communityId: string;
+  @property()
   userId: string;
   @property()
-  accountId: string;
+  accountDetailId: string;
   @property()
   amount: number;
+  @property()
+  remain: number;
 }
 
 export const TransactionDetailTableName = 't_transaction_detail';

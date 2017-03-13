@@ -3,16 +3,16 @@ const knex = require("knex");
 const config = require('../knexfile');
 const env = 'development';
 exports.db = knex(config[env]);
-async function first(sql, params) {
-    let ret = await raw(sql, params);
+async function first(sql, params, trx = null) {
+    let ret = await raw(sql, params, trx);
     if (ret) {
         return ret[0];
     }
     return null;
 }
 exports.first = first;
-async function raw(sql, params) {
-    let ret = await exports.db.raw(sql, params);
+async function raw(sql, params, trx = null) {
+    let ret = trx ? await trx.raw(sql, params) : await exports.db.raw(sql, params);
     if (ret && ret[0]) {
         return ret[0];
     }
@@ -75,6 +75,24 @@ class Table {
     }
     static get ServiceType() {
         return new Table(models_1.ServiceType, models_1.ServiceTypeTableName).database;
+    }
+    static get Account() {
+        return new Table(models_1.Account, models_1.AccountTableName).database;
+    }
+    static get AccountDetail() {
+        return new Table(models_1.AccountDetail, models_1.AccountDetailTableName).database;
+    }
+    static get AccountType() {
+        return new Table(models_1.AccountType, models_1.AccountTypeTableName).database;
+    }
+    static get Transaction() {
+        return new Table(models_1.Transaction, models_1.TransactionTableName).database;
+    }
+    static get TransactionType() {
+        return new Table(models_1.TransactionType, models_1.TransactionTypeTableName).database;
+    }
+    static get TransactionDetail() {
+        return new Table(models_1.TransactionDetail, models_1.TransactionDetailTableName).database;
     }
 }
 exports.Table = Table;

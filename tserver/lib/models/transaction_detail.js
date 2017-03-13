@@ -19,14 +19,22 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], TransactionDetail.prototype, "communityId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], TransactionDetail.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], TransactionDetail.prototype, "accountId", void 0);
+], TransactionDetail.prototype, "accountDetailId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
 ], TransactionDetail.prototype, "amount", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], TransactionDetail.prototype, "remain", void 0);
 exports.TransactionDetail = TransactionDetail;
 exports.TransactionDetailTableName = 't_transaction_detail';

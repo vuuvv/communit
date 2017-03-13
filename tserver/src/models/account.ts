@@ -7,9 +7,9 @@ export class Account extends BaseModel {
   @property()
   communityId: string;
   @property()
-  balance: number = 0;
+  userId: string;
   @property()
-  expiresTime: Date;
+  balance = 0;
 }
 
 export const AccountTableName = 't_account';

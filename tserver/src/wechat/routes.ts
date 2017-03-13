@@ -104,7 +104,6 @@ export class WechatController {
     let ticket = account.jsapiticket;
     let expires = account.jsapitickettime;
 
-    console.log(new Date().getTime(), expires.getTime());
     if (!ticket || !expires || new Date().getTime() > expires.getTime()) {
       let accessToken = await wechat.getToken();
       let token = await request(

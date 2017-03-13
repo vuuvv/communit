@@ -5,16 +5,16 @@ const env = 'development';
 
 export const db = knex(config[env]);
 
-export async function first(sql: string, params: any) {
-  let ret = await raw(sql, params);
+export async function first(sql: string, params: any, trx: any = null) {
+  let ret = await raw(sql, params, trx);
   if (ret) {
     return ret[0];
   }
   return null;
 }
 
-export async function raw(sql: string, params: any) {
-  let ret = await db.raw(sql, params);
+export async function raw(sql: string, params: any, trx: any = null) {
+  let ret = trx ? await trx.raw(sql, params) : await db.raw(sql, params);
   if (ret && ret[0]) {
     return ret[0];
   }
@@ -43,6 +43,12 @@ import {
   Service, ServiceTableName,
   ServiceCategory, ServiceCategoryTableName,
   ServiceType, ServiceTypeTableName,
+  Account, AccountTableName,
+  AccountType, AccountTypeTableName,
+  AccountDetail, AccountDetailTableName,
+  Transaction, TransactionTableName,
+  TransactionType, TransactionTypeTableName,
+  TransactionDetail, TransactionDetailTableName,
 } from './models';
 
 export interface Model<T> {
@@ -118,4 +124,27 @@ export class Table<T> {
     return new Table<ServiceType>(ServiceType, ServiceTypeTableName).database;
   }
 
+  static get Account() {
+    return new Table<Account>(Account, AccountTableName).database;
+  }
+
+  static get AccountDetail() {
+    return new Table<AccountDetail>(AccountDetail, AccountDetailTableName).database;
+  }
+
+  static get AccountType() {
+    return new Table<AccountType>(AccountType, AccountTypeTableName).database;
+  }
+
+  static get Transaction() {
+    return new Table<Transaction>(Transaction, TransactionTableName).database;
+  }
+
+  static get TransactionType() {
+    return new Table<TransactionType>(TransactionType, TransactionTypeTableName).database;
+  }
+
+  static get TransactionDetail() {
+    return new Table<TransactionDetail>(TransactionDetail, TransactionDetailTableName).database;
+  }
 }

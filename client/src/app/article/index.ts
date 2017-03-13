@@ -8,6 +8,7 @@ import { SharedModule } from '../shared';
 
 import { ArticleComponent } from './article';
 import { ArticleListComponent } from './article-list';
+import { EmptyComponent } from './empty';
 
 const routes: Routes = [
   {
@@ -30,6 +31,16 @@ const routes: Routes = [
       }
     ],
   },
+  {
+    path: 'empty',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: EmptyComponent,
+      }
+    ],
+  },
 ];
 
 @NgModule({
@@ -43,6 +54,7 @@ const routes: Routes = [
   declarations: [
     ArticleComponent,
     ArticleListComponent,
+    EmptyComponent,
   ]
 })
 export class ArticleModule {

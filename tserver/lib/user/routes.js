@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const routes_1 = require("../routes");
 const db_1 = require("../db");
+const account_1 = require("../account");
 let UserController = class UserController {
     async me(ctx) {
         let communityId = ctx.session.communityId;
@@ -27,6 +28,26 @@ let UserController = class UserController {
     async hello() {
         return 'hello';
     }
+    async addAccount(ctx) {
+        let user = await db_1.Table.WechatUser.first();
+        await db_1.db.transaction(async (trx) => {
+            await account_1.addPoints(trx, user.officialAccountId, user.userId, 'c7892688f90948e28008f82dbbd7f648', '68c5a973a00c4f33a10b9ae9d60879fa', 100);
+        });
+        return routes_1.success();
+    }
+    async deductAccount() {
+        let user = await db_1.Table.WechatUser.first();
+        await db_1.db.transaction(async (trx) => {
+            await account_1.deductPoints(trx, user.officialAccountId, user.userId, '68c5a973a00c4f33a10b9ae9d60879fa', 13160);
+        });
+        return routes_1.success();
+    }
+    async reverse(ctx) {
+        await db_1.db.transaction(async (trx) => {
+            await account_1.reverseTransaction(trx, ctx.params.id);
+        });
+        return routes_1.success();
+    }
 };
 __decorate([
     routes_1.get('/me'),
@@ -41,6 +62,24 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "hello", null);
+__decorate([
+    routes_1.get('/add/account'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "addAccount", null);
+__decorate([
+    routes_1.get('/deduct/account'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "deductAccount", null);
+__decorate([
+    routes_1.get('/reverse/:id'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "reverse", null);
 UserController = __decorate([
     routes_1.router('/user')
 ], UserController);
