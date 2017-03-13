@@ -1,4 +1,5 @@
 "use strict";
+const qs = require("querystring");
 const xml2js = require("xml2js");
 const sha1 = require("sha1");
 const request = require("request-promise");
@@ -196,6 +197,16 @@ class Wechat {
     }
     constructor(officialAccount) {
         this.officialAccount = officialAccount;
+    }
+    redirectUrl(url, state = '') {
+        let account = this.officialAccount;
+        return 'https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
+            appid: account.appId,
+            redirect_uri: url,
+            response_type: 'code',
+            scope: 'snsapi_base',
+            state: state
+        }) + '#wechat_redirect';
     }
     checkSignature(query) {
         const text = [this.officialAccount.token, query.nonce, query.timestamp].sort().join('');

@@ -18,3 +18,4 @@ export * from './account_detail';
 export * from './transaction';
 export * from './transaction_type';
 export * from './transaction_detail';
+export * from './qrcode';

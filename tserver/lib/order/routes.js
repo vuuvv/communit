@@ -8,45 +8,47 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+const _ = require("lodash");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
-let AccountController = class AccountController {
-    async balance(ctx) {
-        let communityId = ctx.session.communityId;
-        let userId = ctx.session.userId;
-        let balance = await db_1.Table.Account.where({ communityId, userId }).sum('balance as balance').first();
-        if (!balance || !balance.balance) {
-            return routes_1.success(0);
+const models_1 = require("../models");
+let OrderController = class OrderController {
+    async GenerateProductQrcode(ctx) {
+        let product = await db_1.Table.Product.where('id', ctx.params.id).first();
+        if (!product) {
+            throw new Error('无效的产品');
         }
-        return routes_1.success(balance.balance);
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let accounts = await db_1.Table.Account.where({ communityId, userId });
+        let balance = _.sumBy(accounts, a => a.balance);
+        if (balance < product.points) {
+            throw new Error('您的积分不足');
+        }
+        let code = new models_1.Qrcode(models_1.QrCodeType.OrderProduct, product.id);
+        await db_1.Table.Qrcode.insert(code);
+        return routes_1.success(code.id);
     }
-    async add(ctx) {
-    }
-    async edit(ctx) {
+    async GetQrcode(ctx) {
+        let qr = await db_1.Table.Qrcode.where('id', ctx.params.id).first();
+        return routes_1.success(qr);
     }
 };
 __decorate([
-    routes_1.get('/balance'),
+    routes_1.post('/buy/:id/qr'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AccountController.prototype, "balance", null);
+], OrderController.prototype, "GenerateProductQrcode", null);
 __decorate([
-    routes_1.post('/add'),
+    routes_1.get('/qr/:id'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AccountController.prototype, "add", null);
-__decorate([
-    routes_1.post('/edit'),
-    routes_1.login,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AccountController.prototype, "edit", null);
-AccountController = __decorate([
-    routes_1.router('/account')
-], AccountController);
-exports.AccountController = AccountController;
+], OrderController.prototype, "GetQrcode", null);
+OrderController = __decorate([
+    routes_1.router('/order')
+], OrderController);
+exports.OrderController = OrderController;

@@ -73,4 +73,4 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "sellerRefundTransactionId", void 0);
 exports.Order = Order;
-exports.OrderTableName = 't_transaction';
+exports.OrderTableName = 't_order';

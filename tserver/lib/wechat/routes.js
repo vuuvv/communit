@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const request = require("request-promise");
-const qs = require("querystring");
 const sha1 = require("sha1");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
@@ -27,15 +26,9 @@ let WechatController = class WechatController {
     }
     async test(ctx) {
         const id = ctx.params.id;
-        const wechat = await this.getWechat(id);
+        const wechat = await wechat_1.Wechat.create(id);
         const config = await config_1.Config.instance();
-        ctx.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
-            appid: wechat.appId,
-            redirect_uri: `${config.site.host}/wechat/${id}/login`,
-            response_type: 'code',
-            scope: 'snsapi_base',
-            state: '123'
-        }) + '#wechat_redirect');
+        ctx.redirext(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
     }
     async login(ctx) {
         const id = ctx.params.id;

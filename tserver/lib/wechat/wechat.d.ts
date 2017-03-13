@@ -126,6 +126,7 @@ export declare class Wechat {
     officialAccount: WechatOfficialAccount;
     static create(id: any): Promise<Wechat>;
     constructor(officialAccount: WechatOfficialAccount);
+    redirectUrl(url: string, state?: string): string;
     checkSignature(query: any): boolean;
     updateToken(officialAccount: WechatOfficialAccount): Promise<void>;
     fetchToken(): Promise<any>;

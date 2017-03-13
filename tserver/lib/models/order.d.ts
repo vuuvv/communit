@@ -10,7 +10,7 @@ export declare class Order extends BaseModel {
      */
     sellerId: string;
     /**
-     * 订单状态
+     * 订单金额
      */
     amount: string;
     /**
@@ -58,4 +58,4 @@ export declare class Order extends BaseModel {
      */
     sellerRefundTransactionId: string;
 }
-export declare const OrderTableName = "t_transaction";
+export declare const OrderTableName = "t_order";

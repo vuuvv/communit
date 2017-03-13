@@ -15,7 +15,7 @@ export class Order extends BaseModel {
   @property()
   sellerId: string;
   /**
-   * 订单状态
+   * 订单金额
    */
   @property()
   amount: string;
@@ -76,4 +76,4 @@ export class Order extends BaseModel {
   sellerRefundTransactionId: string;
 }
 
-export const OrderTableName = 't_transaction';
+export const OrderTableName = 't_order';

@@ -22,6 +22,7 @@ import { XSCrollModule } from './xscroll';
 import { RankModule } from './rank';
 import { SearchbarModule } from './searchbar';
 import { DynamicFormModule } from './dynamic-form';
+import { QrcodeModule } from './qrcode';
 
 const MODULES = [
   BaseModule,
@@ -46,6 +47,7 @@ const MODULES = [
   RankModule,
   SearchbarModule,
   DynamicFormModule,
+  QrcodeModule,
 ];
 
 @NgModule({
@@ -72,6 +74,7 @@ const MODULES = [
     RankModule.forRoot(),
     SearchbarModule.forRoot(),
     DynamicFormModule.forRoot(),
+    QrcodeModule.forRoot(),
   ],
   exports: MODULES,
 })

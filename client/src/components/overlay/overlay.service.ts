@@ -86,6 +86,10 @@ export class OverlayService {
     });
   }
 
+  errorToast(text: string = '操作失败', duration: number = 1000) {
+    this.toast(text, null, duration);
+  }
+
   hideToast() {
     this.toastEmitter.next({
       show: false,

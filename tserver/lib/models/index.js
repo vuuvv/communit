@@ -22,3 +22,4 @@ __export(require("./account_detail"));
 __export(require("./transaction"));
 __export(require("./transaction_type"));
 __export(require("./transaction_detail"));
+__export(require("./qrcode"));

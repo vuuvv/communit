@@ -10,6 +10,7 @@ import { SharedModule } from '../shared';
 import { UserComponent } from './user';
 import { VerifyComponent } from './verify';
 import { SignupComponent } from './signup';
+import { QrcodeComponent } from './qrcode';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: SignupComponent,
       },
+      {
+        path: 'qr/:id',
+        pathMatch: 'full',
+        component: QrcodeComponent,
+      },
     ],
   },
 ];
@@ -47,6 +53,7 @@ const routes: Routes = [
     UserComponent,
     VerifyComponent,
     SignupComponent,
+    QrcodeComponent,
   ]
 })
 export class UserModule {

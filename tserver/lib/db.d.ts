@@ -30,4 +30,5 @@ export declare class Table<T> {
     static readonly Transaction: knex.QueryBuilder;
     static readonly TransactionType: knex.QueryBuilder;
     static readonly TransactionDetail: knex.QueryBuilder;
+    static readonly Qrcode: knex.QueryBuilder;
 }

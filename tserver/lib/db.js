@@ -94,5 +94,8 @@ class Table {
     static get TransactionDetail() {
         return new Table(models_1.TransactionDetail, models_1.TransactionDetailTableName).database;
     }
+    static get Qrcode() {
+        return new Table(models_1.Qrcode, models_1.QrcodeTableName).database;
+    }
 }
 exports.Table = Table;

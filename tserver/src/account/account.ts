@@ -96,22 +96,22 @@ export async function reverseTransaction(trx: any, transactionId: string) {
 /**
  * 增加积分
  * @param trx 事务对象
- * @param communitId 社区Id
+ * @param communityId 社区Id
  * @param userId 用户Id
  * @param accountTypeId 用户账户类型的Id
  * @param transactionTypeId 交易类型的Id
  * @param points 增加的积分数
  * @param expiresIn 有效期限(天)
  */
-export async function addPoints(trx, communitId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180) {
+export async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180) {
   let account: Account = await Table.Account.transacting(trx).where({
-    communityId: communitId,
+    communityId: communityId,
     userId: userId,
     typeId: accountTypeId,
   }).forUpdate().first();
 
   let accountDetail = new AccountDetail();
-  accountDetail.communityId = communitId;
+  accountDetail.communityId = communityId;
   accountDetail.userId = userId;
   accountDetail.typeId = accountTypeId;
   accountDetail.total = points;
@@ -121,7 +121,7 @@ export async function addPoints(trx, communitId, userId, accountTypeId, transact
   await Table.AccountDetail.transacting(trx).insert(accountDetail);
   if (!account) {
     account = new Account();
-    account.communityId = communitId;
+    account.communityId = communityId;
     account.userId = userId;
     account.typeId = accountTypeId;
     account.balance = points;
@@ -140,9 +140,9 @@ export async function addPoints(trx, communitId, userId, accountTypeId, transact
   await insertTransactionDetail(trx, accountDetail, points, t.id);
 }
 
-export async function deductPoints(trx, communitId, userId, transactionTypeId, points) {
+export async function deductPoints(trx, communityId, userId, transactionTypeId, points) {
   let accounts: Account[] = await Table.Account.transacting(trx).where({
-    communityId: communitId,
+    communityId: communityId,
     userId: userId,
   }).forUpdate();
 
@@ -151,7 +151,7 @@ export async function deductPoints(trx, communitId, userId, transactionTypeId, p
   }
 
   let details: AccountDetail[] = await Table.AccountDetail.transacting(trx)
-    .where('communityId', communitId)
+    .where('communityId', communityId)
     .where('userId', userId)
     .where('remain', '>', 0)
     .orderBy('expiresIn');

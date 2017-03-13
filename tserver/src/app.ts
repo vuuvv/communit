@@ -64,6 +64,8 @@ import { ProductController } from './product';
 import { MenuController } from './menu';
 import { OrganizationController } from './orgnization';
 import { ServiceController } from './service';
+import { AccountController } from './account';
+import { OrderController } from './order';
 
 import { route } from './routes';
 
@@ -77,6 +79,8 @@ route(router, ProductController);
 route(router, MenuController);
 route(router, OrganizationController);
 route(router, ServiceController);
+route(router, AccountController);
+route(router, OrderController);
 
 // console.log(router.stack);
 

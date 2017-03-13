@@ -1,0 +1,6 @@
+<v-page *ngIf="qrcode" class="page-qrcode">
+  <v-header slot="header">{{qrcode.tip}}</v-header>
+  <div class="ngv-qr-container">
+    <v-qrcode [value]="qrcode.id" [size]="250"></v-qrcode>
+  </div>
+</v-page>

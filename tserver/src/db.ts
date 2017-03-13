@@ -49,6 +49,7 @@ import {
   Transaction, TransactionTableName,
   TransactionType, TransactionTypeTableName,
   TransactionDetail, TransactionDetailTableName,
+  Qrcode, QrcodeTableName,
 } from './models';
 
 export interface Model<T> {
@@ -147,4 +148,9 @@ export class Table<T> {
   static get TransactionDetail() {
     return new Table<TransactionDetail>(TransactionDetail, TransactionDetailTableName).database;
   }
+
+  static get Qrcode() {
+    return new Table<Qrcode>(Qrcode, QrcodeTableName).database;
+  }
+
 }

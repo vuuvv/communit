@@ -1,3 +1,4 @@
+import * as qs from 'querystring';
 import * as xml2js from 'xml2js';
 import * as sha1 from 'sha1';
 import * as request from 'request-promise';
@@ -315,6 +316,17 @@ export class Wechat {
 
   constructor(officialAccount: WechatOfficialAccount) {
     this.officialAccount = officialAccount;
+  }
+
+  redirectUrl(url: string, state = '') {
+    let account = this.officialAccount;
+    return 'https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
+      appid: account.appId,
+      redirect_uri: url,
+      response_type: 'code',
+      scope: 'snsapi_base',
+      state: state
+    }) + '#wechat_redirect';
   }
 
   checkSignature(query: any) {

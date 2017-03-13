@@ -1,13 +1,20 @@
 import { router, get, post, success, Response, ResponseError, login } from '../routes';
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
-import { Store } from '../models';
+import { Account } from '../models';
 
-@router('/store')
-export class StoreController {
-  @get('/')
+@router('/account')
+export class AccountController {
+  @get('/balance')
   @login
-  async store(ctx) {
+  async balance(ctx) {
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+    let balance = await Table.Account.where({communityId, userId}).sum('balance as balance').first();
+    if (!balance || !balance.balance) {
+      return success(0);
+    }
+    return success(balance.balance);
   }
 
   @post('/add')

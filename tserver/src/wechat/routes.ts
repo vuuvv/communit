@@ -21,15 +21,9 @@ export class WechatController {
   @get('/:id/entry')
   async test(ctx) {
     const id = ctx.params.id;
-    const wechat = await this.getWechat(id);
+    const wechat = await Wechat.create(id);
     const config = await Config.instance();
-    ctx.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?' + qs.stringify({
-      appid: wechat.appId,
-      redirect_uri: `${config.site.host}/wechat/${id}/login`,
-      response_type: 'code',
-      scope: 'snsapi_base',
-      state: '123'
-    }) + '#wechat_redirect');
+    ctx.redirext(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
   }
 
   @get('/:id/login')
