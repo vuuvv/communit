@@ -97,5 +97,14 @@ class Table {
     static get Qrcode() {
         return new Table(models_1.Qrcode, models_1.QrcodeTableName).database;
     }
+    static get Order() {
+        return new Table(models_1.Order, models_1.OrderTableName).database;
+    }
+    static get OrderDetail() {
+        return new Table(models_1.OrderDetail, models_1.OrderDetailTableName).database;
+    }
+    static get Carousel() {
+        return new Table(models_1.Carousel, models_1.CarouselTableName).database;
+    }
 }
 exports.Table = Table;

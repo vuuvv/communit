@@ -1,3 +1,11 @@
+export declare class AccountType {
+    static Normal: string;
+    static Buy: string;
+}
+export declare class TransactionType {
+    static PayProduct: string;
+    static GetProduct: string;
+}
 export declare function reverseTransaction(trx: any, transactionId: string): Promise<void>;
 /**
  * 增加积分
@@ -9,5 +17,5 @@ export declare function reverseTransaction(trx: any, transactionId: string): Pro
  * @param points 增加的积分数
  * @param expiresIn 有效期限(天)
  */
-export declare function addPoints(trx: any, communityId: any, userId: any, accountTypeId: any, transactionTypeId: any, points: any, expiresIn?: number): Promise<void>;
-export declare function deductPoints(trx: any, communityId: any, userId: any, transactionTypeId: any, points: any): Promise<void>;
+export declare function addPoints(trx: any, communityId: any, userId: any, accountTypeId: any, transactionTypeId: any, points: any, expiresIn?: number): Promise<string>;
+export declare function deductPoints(trx: any, communityId: any, userId: any, transactionTypeId: any, points: any): Promise<any>;

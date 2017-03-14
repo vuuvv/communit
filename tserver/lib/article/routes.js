@@ -9,9 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const routes_1 = require("../routes");
+const db_1 = require("../db");
 let ArticlesController = class ArticlesController {
+    async home(ctx) {
+        let ret = await db_1.raw(`
+      select * from weixin_cms_article as a
+      join weixin_cms_menu as m on m.id=a.column_id
+      where m.accountid=? and m.name="社区动态" order by a.create_date desc
+    `, [ctx.session.communityId]);
+        return routes_1.success(ret);
+    }
     async item(ctx) {
         const id = ctx.params.id;
+        let ret = await db_1.db.raw('select * from weixin_cms_article as a join weixin_cms_menu as m on m.id=a.column_id where m.accountid=? and m.name="社区动态"');
         let articles = [
             {
                 title: '戎苑播报：戎苑社区召开社区年终总结大会',
@@ -60,6 +70,13 @@ let ArticlesController = class ArticlesController {
         });
     }
 };
+__decorate([
+    routes_1.get('/home'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ArticlesController.prototype, "home", null);
 __decorate([
     routes_1.get('/:id'),
     __metadata("design:type", Function),

@@ -4,6 +4,8 @@ import * as Router from 'koa-router';
 import * as session from 'koa-session';
 import * as convert from 'koa-convert';
 import * as cors from 'kcors';
+import * as views from 'koa-views';
+
 
 import { error } from './routes';
 
@@ -48,6 +50,11 @@ const CONFIG = {
 };
 app.use(convert(session(CONFIG, app)));
 
+/**
+ * views
+ */
+
+app.use(views(__dirname + '/views', { map: { html: 'ejs' } }));
 
 /**
  * router middleware
@@ -55,6 +62,7 @@ app.use(convert(session(CONFIG, app)));
 app.use(router.routes());
 app.use(router.allowedMethods());
 
+import { PageController } from './page';
 import { WechatController } from './wechat';
 import { SignupController } from './signup';
 import { UserController } from './user';
@@ -66,9 +74,11 @@ import { OrganizationController } from './orgnization';
 import { ServiceController } from './service';
 import { AccountController } from './account';
 import { OrderController } from './order';
+import { QrcodeController } from './qr';
 
 import { route } from './routes';
 
+route(router, PageController);
 route(router, WechatController);
 route(router, SignupController);
 route(router, UserController);
@@ -81,6 +91,7 @@ route(router, OrganizationController);
 route(router, ServiceController);
 route(router, AccountController);
 route(router, OrderController);
+route(router, QrcodeController);
 
 // console.log(router.stack);
 

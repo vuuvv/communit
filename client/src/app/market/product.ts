@@ -42,12 +42,19 @@ export class ProductComponent implements OnInit {
     return this.product && this.account && this.product.points <= this.account;
   }
 
+  get buttonText() {
+    if (this.product && this.account && this.product.points > this.account) {
+      return '积分不足';
+    }
+    return '购买';
+  }
+
   buy() {
     if (!this.canBuy) {
       return;
     }
     this.overlayService.loading();
-    this.http.post(`/order/buy/${this.product.id}/qr`).subscribe((value) => {
+    this.http.post(`/qr/g/product/${this.product.id}`).subscribe((value) => {
       this.router.navigate([`/user/qr/${value}`]);
     });
   }

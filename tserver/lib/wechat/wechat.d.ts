@@ -135,6 +135,7 @@ export declare class Wechat {
     createUser(openid: any): Promise<any>;
     getUserAccessToken(code: string): Promise<any>;
     getWechatUser(openid: string): Promise<WechatUser>;
+    login(ctx: any): Promise<WechatUser>;
     createMenu(menu: any): Promise<any>;
     dispatch(ctx: any): Promise<any>;
     transferCustomerServiceMessage(notify: Notify): string;

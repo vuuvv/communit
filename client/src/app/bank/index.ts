@@ -41,7 +41,7 @@ const routes: Routes = [
         component: WorkerComponent,
       },
       {
-        path: 'worker/add',
+        path: 'worker/add/:id',
         pathMatch: 'full',
         component: WorkerAddComponent,
       },

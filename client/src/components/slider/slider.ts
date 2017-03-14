@@ -18,13 +18,19 @@ export class SliderComponent implements AfterViewInit {
 
   pages: number = 0;
 
+  itemsLength: number = 0;
+
   ngAfterViewInit() {
+    this.reload();
+  }
+
+  reload() {
     let viewportDom = this.viewportRef.nativeElement;
     let contentDom = this.contentRef.nativeElement;
 
     let width = parseInt(window.getComputedStyle(viewportDom).width, 10);
     let items = contentDom.children;
-    let length = this.pages = items.length;
+    let length = this.itemsLength = items.length;
     let contentWidth = width * length;
 
     contentDom.style.width = contentWidth + 'px';
@@ -34,6 +40,10 @@ export class SliderComponent implements AfterViewInit {
     }
 
     this.scroll.reload();
+
+    setTimeout(() => {
+      this.pages = this.itemsLength;
+    });
   }
 
   autoScroll() {

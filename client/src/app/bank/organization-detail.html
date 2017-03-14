@@ -3,7 +3,7 @@
     {{ organization?.organizationname }}
   </v-header>
   <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add']">我要加入</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add/' + organization.id]" *ngIf="organization">我要加入</v-tabbar-btn>
   </v-tabbar>
 
   <div class="detail-info">

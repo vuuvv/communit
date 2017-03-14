@@ -3,7 +3,7 @@
     {{ product?.title }}
   </v-header>
   <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" (click)="buy()">购买</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="buy()" [class.weui-btn_disabled]="!canBuy">{{ buttonText }}</v-tabbar-btn>
   </v-tabbar>
 
   <product-detail [product]="product"></product-detail>

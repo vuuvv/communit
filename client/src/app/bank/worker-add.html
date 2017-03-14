@@ -9,9 +9,6 @@
       <v-cell label="性别">
         <input class="weui-input" type="text" name="sex" placeholder="性别" required [(ngModel)]="user.sex">
       </v-cell>
-      <v-cell label="出生日期">
-        <input class="weui-input" type="text" name="birth" placeholder="出生日期" required [(ngModel)]="user.birth">
-      </v-cell>
       <v-cell label="文化程度">
         <input class="weui-input" type="text" name="education" placeholder="文化程度" required [(ngModel)]="user.education">
       </v-cell>
@@ -21,7 +18,7 @@
     </v-group>
     <v-group title="个人简介">
       <v-cell>
-        <textarea class="weui-textarea" placeholder="个人简介" rows="3"></textarea>
+        <textarea class="weui-textarea" placeholder="个人简介" rows="3" name="resume" [(ngModel)]="user.resume"></textarea>
       </v-cell>
     </v-group>
     <div class="weui-btn-area">

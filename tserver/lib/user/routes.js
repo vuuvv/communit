@@ -12,6 +12,11 @@ const routes_1 = require("../routes");
 const db_1 = require("../db");
 const account_1 = require("../account");
 let UserController = class UserController {
+    async carousel(ctx) {
+        let communityId = ctx.session.communityId;
+        let ret = await db_1.Table.Carousel.where('ACCOUNTID', communityId).select('IMAGE_HREF as image');
+        return routes_1.success(ret);
+    }
     async me(ctx) {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
@@ -29,7 +34,7 @@ let UserController = class UserController {
         return 'hello';
     }
     async addAccount(ctx) {
-        let user = await db_1.Table.WechatUser.first();
+        let user = await db_1.Table.WechatUser.orderBy('createdAt').first();
         await db_1.db.transaction(async (trx) => {
             await account_1.addPoints(trx, user.officialAccountId, user.userId, 'c7892688f90948e28008f82dbbd7f648', '68c5a973a00c4f33a10b9ae9d60879fa', 100);
         });
@@ -49,6 +54,13 @@ let UserController = class UserController {
         return routes_1.success();
     }
 };
+__decorate([
+    routes_1.get('/carousel'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "carousel", null);
 __decorate([
     routes_1.get('/me'),
     routes_1.login,

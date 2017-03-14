@@ -12,6 +12,7 @@ import { OverlayService, DialogService } from '../../components';
 })
 export class QrcodeComponent implements OnInit {
   qrcode: any;
+  value: string;
 
   constructor(
     private http: Http,
@@ -25,10 +26,11 @@ export class QrcodeComponent implements OnInit {
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      return this.http.get(`/order/qr/${params['id']}`);
+      return this.http.get(`/qr/get/${params['id']}`);
     }).subscribe((resp) => {
       this.overlayService.hideToast();
       this.qrcode = resp;
+      this.value = this.http.buildUrl(`/qr/scan/${this.qrcode.id}`);
       if (this.qrcode.status !== 'submit' || new Date(this.qrcode.expiresIn) < new Date()) {
         this.dialogService.alert('二维码已失效').ok((c) => {
           this.location.back();

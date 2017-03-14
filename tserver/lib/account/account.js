@@ -3,6 +3,16 @@ const _ = require("lodash");
 const db_1 = require("../db");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
+class AccountType {
+}
+AccountType.Normal = 'c7892688f90948e28008f82dbbd7f648';
+AccountType.Buy = 'ae9215d040204b05b6ac345462c13b33';
+exports.AccountType = AccountType;
+class TransactionType {
+}
+TransactionType.PayProduct = '04b80557548d4d6588bff877afe03c6d';
+TransactionType.GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
+exports.TransactionType = TransactionType;
 async function insertTransactionDetail(trx, accountDetail, points, transactionId) {
     let td = new models_1.TransactionDetail();
     td.communityId = accountDetail.communityId;
@@ -119,6 +129,7 @@ async function addPoints(trx, communityId, userId, accountTypeId, transactionTyp
     }
     let t = await insertTransaction(trx, account, transactionTypeId, points);
     await insertTransactionDetail(trx, accountDetail, points, t.id);
+    return t.id;
 }
 exports.addPoints = addPoints;
 async function deductPoints(trx, communityId, userId, transactionTypeId, points) {
@@ -126,6 +137,7 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points)
         communityId: communityId,
         userId: userId,
     }).forUpdate();
+    console.log(communityId, userId);
     if (!accounts || !accounts.length) {
         throw new Error('余额不足');
     }
@@ -176,5 +188,6 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points)
         await db_1.Table.Account.transacting(trx).where('id', account.id).update('balance', account.balance + v[1]);
     }
     await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid);
+    return tid;
 }
 exports.deductPoints = deductPoints;

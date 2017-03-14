@@ -10,12 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
+class OrderType {
+}
+OrderType.Product = 'product';
+OrderType.Service = 'service';
+exports.OrderType = OrderType;
+class OrderStatus {
+}
+OrderStatus.Done = 'done';
+exports.OrderStatus = OrderStatus;
 class Order extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Order.prototype, "typeId", void 0);
+], Order.prototype, "type", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
@@ -26,7 +35,7 @@ __decorate([
 ], Order.prototype, "sellerId", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Order.prototype, "amount", void 0);
 __decorate([
     utils_1.property(),

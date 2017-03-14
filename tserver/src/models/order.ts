@@ -1,9 +1,18 @@
 import { BaseModel } from './base_model';
 import { property } from '../utils';
 
+export class OrderType {
+  static Product = 'product';
+  static Service = 'service';
+}
+
+export class OrderStatus {
+  static Done = 'done';
+}
+
 export class Order extends BaseModel {
   @property()
-  typeId: string;
+  type: string;
   /**
    * 买家Id
    */
@@ -18,7 +27,7 @@ export class Order extends BaseModel {
    * 订单金额
    */
   @property()
-  amount: string;
+  amount: number;
   /**
    * 订单状态
    */

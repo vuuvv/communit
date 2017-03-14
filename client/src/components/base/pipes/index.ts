@@ -9,3 +9,4 @@ export * from './gender.pipe';
 export * from './split.pipe';
 export * from './first.pipe';
 export * from './limit.pipe';
+export * from './left.pipe';

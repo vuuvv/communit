@@ -1,13 +1,14 @@
 import { BaseModel } from './base_model';
-export declare enum QrCodeType {
-    OrderProduct = 1,
+export declare class QrcodeAction {
+    static OrderProduct: string;
 }
 export declare class Qrcode extends BaseModel {
-    action: QrCodeType;
+    communityId: string;
+    action: string;
     data: string;
     tip: string;
     status: string;
     expiresIn: Date;
-    constructor(action?: QrCodeType, data?: any);
+    constructor(communityId?: string, action?: string, data?: any);
 }
 export declare const QrcodeTableName = "t_qrcode";

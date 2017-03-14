@@ -50,6 +50,9 @@ import {
   TransactionType, TransactionTypeTableName,
   TransactionDetail, TransactionDetailTableName,
   Qrcode, QrcodeTableName,
+  Order, OrderTableName,
+  OrderDetail, OrderDetailTableName,
+  Carousel, CarouselTableName,
 } from './models';
 
 export interface Model<T> {
@@ -151,6 +154,18 @@ export class Table<T> {
 
   static get Qrcode() {
     return new Table<Qrcode>(Qrcode, QrcodeTableName).database;
+  }
+
+  static get Order() {
+    return new Table<Order>(Order, OrderTableName).database;
+  }
+
+  static get OrderDetail() {
+    return new Table<OrderDetail>(OrderDetail, OrderDetailTableName).database;
+  }
+
+  static get Carousel() {
+    return new Table<Carousel>(Carousel, CarouselTableName).database;
   }
 
 }

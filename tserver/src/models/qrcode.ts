@@ -1,17 +1,19 @@
 import { BaseModel } from './base_model';
 import { property, uuid } from '../utils';
 
-export enum QrCodeType {
-  OrderProduct = 1,
+export class QrcodeAction {
+  static OrderProduct = 'orderProduct';
 }
 
 const tips = {};
 
-tips[QrCodeType.OrderProduct] = '向商家支付积分';
+tips[QrcodeAction.OrderProduct] = '向商家支付积分';
 
 export class Qrcode extends BaseModel {
   @property()
-  action: QrCodeType;
+  communityId: string;
+  @property()
+  action: string;
   @property()
   data: string;
   @property()
@@ -21,8 +23,9 @@ export class Qrcode extends BaseModel {
   @property()
   expiresIn: Date;
 
-  constructor(action?: QrCodeType, data?: any) {
+  constructor(communityId?: string, action?: string, data?: any) {
     super();
+    this.communityId = communityId;
     this.action = action;
     this.status = 'submit';
     this.data = data ? JSON.stringify(data) : null;

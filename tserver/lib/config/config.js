@@ -8,6 +8,12 @@ class Config {
         }
         return config;
     }
+    hostUrl(url) {
+        return `${config.site.host}${url}`;
+    }
+    clientUrl(url) {
+        return `${config.site.client}/#/${url}`;
+    }
 }
 exports.Config = Config;
 async function load() {

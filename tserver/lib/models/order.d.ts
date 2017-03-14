@@ -1,6 +1,13 @@
 import { BaseModel } from './base_model';
+export declare class OrderType {
+    static Product: string;
+    static Service: string;
+}
+export declare class OrderStatus {
+    static Done: string;
+}
 export declare class Order extends BaseModel {
-    typeId: string;
+    type: string;
     /**
      * 买家Id
      */
@@ -12,7 +19,7 @@ export declare class Order extends BaseModel {
     /**
      * 订单金额
      */
-    amount: string;
+    amount: number;
     /**
      * 订单状态
      */

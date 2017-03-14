@@ -23,3 +23,6 @@ __export(require("./transaction"));
 __export(require("./transaction_type"));
 __export(require("./transaction_detail"));
 __export(require("./qrcode"));
+__export(require("./order"));
+__export(require("./order_detail"));
+__export(require("./carousel"));

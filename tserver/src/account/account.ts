@@ -4,6 +4,16 @@ import { uuid } from '../utils';
 
 import { Account, AccountDetail, Transaction, TransactionDetail } from '../models';
 
+export class AccountType {
+  static Normal = 'c7892688f90948e28008f82dbbd7f648';
+  static Buy = 'ae9215d040204b05b6ac345462c13b33';
+}
+
+export class TransactionType {
+  static PayProduct = '04b80557548d4d6588bff877afe03c6d';
+  static GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
+}
+
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
   let td = new TransactionDetail();
   td.communityId = accountDetail.communityId;
@@ -138,6 +148,8 @@ export async function addPoints(trx, communityId, userId, accountTypeId, transac
   let t = await insertTransaction(trx, account, transactionTypeId, points);
 
   await insertTransactionDetail(trx, accountDetail, points, t.id);
+
+  return t.id;
 }
 
 export async function deductPoints(trx, communityId, userId, transactionTypeId, points) {
@@ -145,6 +157,8 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
     communityId: communityId,
     userId: userId,
   }).forUpdate();
+
+  console.log(communityId, userId);
 
   if (!accounts || !accounts.length) {
     throw new Error('余额不足');
@@ -191,6 +205,7 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
     await Table.AccountDetail.transacting(trx).where('id', detail.id).update('remain', detail.remain);
     await insertTransactionDetail(trx, detail, -currentDeduct, tid);
     map[1] -= currentDeduct;
+
   }
 
   // 更新账户
@@ -205,4 +220,5 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
   }
 
   await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid);
+  return tid;
 }

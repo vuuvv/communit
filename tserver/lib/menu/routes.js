@@ -15,6 +15,10 @@ let MenuController = class MenuController {
         let ret = await db_1.Table.BankMenu.orderBy('sort');
         return routes_1.success(ret);
     }
+    async community(ctx) {
+        let ret = await db_1.raw('select name, IMAGE_HREF as image from weixin_cms_menu where accountid = ? and (parentmenuid is null or parentmenuid = "") order by seq', ctx.session.communityId);
+        return routes_1.success(ret);
+    }
 };
 __decorate([
     routes_1.get('/bank'),
@@ -23,6 +27,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MenuController.prototype, "bank", null);
+__decorate([
+    routes_1.get('/community'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], MenuController.prototype, "community", null);
 MenuController = __decorate([
     routes_1.router('/menu')
 ], MenuController);

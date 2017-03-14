@@ -142,6 +142,10 @@ export class Http {
     return JSON.stringify(ret);
   }
 
+  buildUrl(url: string, data: any = null, noCache = true) {
+    return buildUrl(url, data, noCache);
+  }
+
   private _get<T>(url: string, data: any = null, noCache = true, errorTip: ErrorTipType = 'dialog'): Observable<T> {
     url = buildUrl(url, data, noCache);
     return this.http.get(url, {withCredentials: true}).map(res => this.resultHanlder(res)).catch(err => this.errorHandler(err, errorTip));

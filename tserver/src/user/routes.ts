@@ -6,6 +6,13 @@ import { addPoints, deductPoints, reverseTransaction } from '../account';
 
 @router('/user')
 export class UserController {
+  @get('/carousel')
+  @login
+  async carousel(ctx) {
+    let communityId = ctx.session.communityId;
+    let ret = await Table.Carousel.where('ACCOUNTID', communityId).select('IMAGE_HREF as image');
+    return success(ret);
+  }
 
   @get('/me')
   @login
@@ -31,7 +38,7 @@ export class UserController {
 
   @get('/add/account')
   async addAccount(ctx) {
-    let user = await Table.WechatUser.first();
+    let user = await Table.WechatUser.orderBy('createdAt').first();
     await db.transaction(async (trx) => {
       await addPoints(
         trx, user.officialAccountId, user.userId,

@@ -12,6 +12,14 @@ export class Config {
     }
     return config;
   }
+
+  hostUrl(url: string): string {
+    return `${config.site.host}${url}`;
+  }
+
+  clientUrl(url: string): string {
+    return `${config.site.client}/#/${url}`;
+  }
 }
 
 async function load() {

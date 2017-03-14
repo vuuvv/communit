@@ -10,15 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-var QrCodeType;
-(function (QrCodeType) {
-    QrCodeType[QrCodeType["OrderProduct"] = 1] = "OrderProduct";
-})(QrCodeType = exports.QrCodeType || (exports.QrCodeType = {}));
+class QrcodeAction {
+}
+QrcodeAction.OrderProduct = 'orderProduct';
+exports.QrcodeAction = QrcodeAction;
 const tips = {};
-tips[QrCodeType.OrderProduct] = '向商家支付积分';
+tips[QrcodeAction.OrderProduct] = '向商家支付积分';
 class Qrcode extends base_model_1.BaseModel {
-    constructor(action, data) {
+    constructor(communityId, action, data) {
         super();
+        this.communityId = communityId;
         this.action = action;
         this.status = 'submit';
         this.data = data ? JSON.stringify(data) : null;
@@ -28,7 +29,11 @@ class Qrcode extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
+], Qrcode.prototype, "communityId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Qrcode.prototype, "action", void 0);
 __decorate([
     utils_1.property(),

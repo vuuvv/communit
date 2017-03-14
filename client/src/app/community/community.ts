@@ -1,13 +1,16 @@
-import { Component, Type } from '@angular/core';
+import { Component, Type, OnInit, ViewChild } from '@angular/core';
 
-import { OverlayService, DialogService } from '../../components';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+
+import { OverlayService, DialogService, SliderComponent } from '../../components';
 import { Http } from '../shared';
 
 @Component({
   templateUrl: './community.html',
   styleUrls: ['./community.less'],
 })
-export class CommunityComponent {
+export class CommunityComponent implements OnInit {
   private type = '3';
   private list = [{
     title: '戎苑播报：戎苑社区召开社区年终总结大会',
@@ -46,7 +49,30 @@ export class CommunityComponent {
     title: '查看更多',
     url: 'http://vux.li'
   };
-  constructor(private overlayService: OverlayService, private dialogService: DialogService, private http: Http) {
+
+  @ViewChild(SliderComponent) slider: SliderComponent;
+  carousel: any[];
+  icons: any[];
+  articles: any[];
+
+  constructor(
+    private overlayService: OverlayService,
+    private dialogService: DialogService,
+    private http: Http
+  ) { }
+
+  ngOnInit() {
+    this.overlayService.loading();
+    Observable.forkJoin(
+     this.http.get('/user/carousel'),
+     this.http.get('/menu/community'),
+     this.http.get('/articles/home'),
+    ).subscribe((values: any[]) => {
+      this.overlayService.hideToast();
+      this.carousel = values[0];
+      this.icons = values[1];
+      this.articles = values[2];
+    });
   }
 
   toast() {

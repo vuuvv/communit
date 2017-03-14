@@ -28,23 +28,12 @@ let WechatController = class WechatController {
         const id = ctx.params.id;
         const wechat = await wechat_1.Wechat.create(id);
         const config = await config_1.Config.instance();
-        ctx.redirext(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
+        ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
     }
     async login(ctx) {
         const id = ctx.params.id;
-        const code = ctx.query.code;
         const wechat = await wechat_1.Wechat.create(id);
-        const token = await wechat.getUserAccessToken(code);
-        ctx.session.communityId = wechat.officialAccount.id;
-        if (!token.openid) {
-            console.error(token);
-            throw new routes_1.ResponseError('获取用户token失败');
-        }
-        let wechatUser = await wechat.getWechatUser(token.openid);
-        if (!wechatUser) {
-            throw new routes_1.ResponseError(`公众号${wechat.officialAccount.name}无此微信用户: ${token.openid}`);
-        }
-        ctx.session.wechatUserId = wechatUser.id;
+        const wechatUser = await wechat.login(ctx);
         const config = await config_1.Config.instance();
         if (!wechatUser.userId) {
             ctx.redirect(`${config.site.client}/#/user/verify`);

@@ -1,12 +1,24 @@
 import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
-import { Table } from '../db';
+import { Table, db, raw } from '../db';
 import { create } from '../utils';
 
 @router('/articles')
 export class ArticlesController {
+  @get('/home')
+  @login
+  async home(ctx) {
+    let ret = await raw(`
+      select * from weixin_cms_article as a
+      join weixin_cms_menu as m on m.id=a.column_id
+      where m.accountid=? and m.name="社区动态" order by a.create_date desc
+    `, [ctx.session.communityId]);
+    return success(ret);
+  }
+
   @get('/:id')
   async item(ctx) {
     const id = ctx.params.id;
+    let ret = await db.raw('select * from weixin_cms_article as a join weixin_cms_menu as m on m.id=a.column_id where m.accountid=? and m.name="社区动态"')
     let articles = [
       {
         title: '戎苑播报：戎苑社区召开社区年终总结大会',

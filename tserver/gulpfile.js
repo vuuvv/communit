@@ -12,7 +12,19 @@ var tsProject = ts.createProject('src/tsconfig.json');
 
 gulp.task('default', ['compile', 'test']);
 
-gulp.task('compile', function() {
+gulp.task('clean', function() {
+  gulp.src('lib').pipe(clean({force: true}));
+})
+
+
+gulp.task('views', ['compile'], function () {
+  return gulp.src(['src/views/**/*'], {
+    base: 'src'
+  }).pipe(gulp.dest('lib'));
+});
+
+
+gulp.task('compile', ['clean'], function() {
   var tsResult = gulp.src('src/**/*.ts')
       .pipe(tsProject());
 
@@ -22,9 +34,16 @@ gulp.task('compile', function() {
    ])
 })
 
-gulp.task('watch', ['clean', 'compile'], function(event) {
+gulp.task('build', ['views']);
+
+gulp.task('watch', ['build'], function(event) {
   // gulp.watch('src/**/*.ts', ['compile']);
-  gulp.watch('src/**/*.ts', function (event) {
+  gulp.watch('src/**/*.html', function(event) {
+    return gulp.src(['src/views/**/*'], {
+      base: 'src'
+    }).pipe(gulp.dest('lib'));
+  });
+  gulp.watch(['src/**/*.ts'], function (event) {
     var tsResult = gulp.src(event.path)
       .pipe(tsProject());
 
@@ -64,12 +83,6 @@ gulp.task('watch', ['clean', 'compile'], function(event) {
     }
   });
 })
-
-gulp.task('clean', function() {
-  gulp.src('lib').pipe(clean({force: true}));
-})
-
-gulp.task('build', ['clean', 'compile']);
 
 gulp.task('test', function() {
   return gulp.src(['test/**/*.ts'], { read: false })

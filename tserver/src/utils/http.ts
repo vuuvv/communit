@@ -1,5 +1,6 @@
 import { Context } from 'koa';
 import * as getRawBody_ from 'raw-body';
+import { Config } from '../config';
 
 export async function getRawBody(ctx: Context) {
   const request = ctx.request;
@@ -16,9 +17,14 @@ export async function getJsonBody(ctx: Context) {
 }
 
 export function getNonceStr() {
-    return Math.random().toString(36).substr(2, 15);
+  return Math.random().toString(36).substr(2, 15);
 }
 
 export function getTimesTamp() {
-    return parseInt(new Date().getTime() / 1000 + '', 10);
+  return parseInt(new Date().getTime() / 1000 + '', 10);
+}
+
+export async function errorPage(ctx, message) {
+  let config = await Config.instance();
+  await ctx.render('error', { message: '二维码已失效', home: config.clientUrl('/')});
 }

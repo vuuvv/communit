@@ -5,6 +5,7 @@ const Router = require("koa-router");
 const session = require("koa-session");
 const convert = require("koa-convert");
 const cors = require("kcors");
+const views = require("koa-views");
 const routes_1 = require("./routes");
 const argv = yargs.argv;
 const PORT = process.env.PORT || argv.port || 8383;
@@ -43,10 +44,15 @@ const CONFIG = {
 };
 app.use(convert(session(CONFIG, app)));
 /**
+ * views
+ */
+app.use(views(__dirname + '/views', { map: { html: 'ejs' } }));
+/**
  * router middleware
  */
 app.use(router.routes());
 app.use(router.allowedMethods());
+const page_1 = require("./page");
 const wechat_1 = require("./wechat");
 const signup_1 = require("./signup");
 const user_1 = require("./user");
@@ -58,7 +64,9 @@ const orgnization_1 = require("./orgnization");
 const service_1 = require("./service");
 const account_1 = require("./account");
 const order_1 = require("./order");
+const qr_1 = require("./qr");
 const routes_2 = require("./routes");
+routes_2.route(router, page_1.PageController);
 routes_2.route(router, wechat_1.WechatController);
 routes_2.route(router, signup_1.SignupController);
 routes_2.route(router, user_1.UserController);
@@ -71,6 +79,7 @@ routes_2.route(router, orgnization_1.OrganizationController);
 routes_2.route(router, service_1.ServiceController);
 routes_2.route(router, account_1.AccountController);
 routes_2.route(router, order_1.OrderController);
+routes_2.route(router, qr_1.QrcodeController);
 // console.log(router.stack);
 app.listen(PORT, HOST);
 console.log(`Listening at ${HOST}:${PORT}`);

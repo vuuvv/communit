@@ -303,6 +303,20 @@ class Wechat {
         }
         return await this.createUser(openid);
     }
+    async login(ctx) {
+        const token = await this.getUserAccessToken(ctx.query.code);
+        if (!token.openid) {
+            console.error(token);
+            throw new Error('获取用户token失败');
+        }
+        let wechatUser = await this.getWechatUser(token.openid);
+        if (!wechatUser) {
+            throw new Error(`公众号${this.officialAccount.name}无此微信用户: ${token.openid}`);
+        }
+        ctx.session.communityId = this.officialAccount.id;
+        ctx.session.wechatUserId = wechatUser.id;
+        return wechatUser;
+    }
     async createMenu(menu) {
         let token = await this.getToken();
         let ret = await request({
