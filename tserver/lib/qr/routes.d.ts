@@ -15,7 +15,7 @@ export declare class QrcodeController {
      * 二维码的确认操作， 有扫描二维码的人员完成
      * @param ctx
      */
-    SellByQr(ctx: any): Promise<Response>;
+    SellByQr(ctx: any): Promise<void>;
     /**
      * 获取二维码信息
      */

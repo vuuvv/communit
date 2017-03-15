@@ -1,5 +1,5 @@
 import { Table, db } from '../db';
-import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product, QrcodeAction } from '../models';
+import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product, QrcodeAction, Service } from '../models';
 import { addPoints, deductPoints, AccountType, TransactionType } from '../account';
 
 export interface OrderProductConfirm {
@@ -35,8 +35,9 @@ export class QrcodeConfirm {
 
     let order = new Order();
     order.type = OrderType.Product;
-    order.sellerId = seller.id;
-    order.buyerId = buyer.id;
+    order.communityId = qrcode.communityId;
+    order.sellerId = seller.userId;
+    order.buyerId = buyer.userId;
     order.orderTime = order.payTime = order.tradeTime = new Date();
 
     let detail = new OrderDetail();
@@ -44,6 +45,7 @@ export class QrcodeConfirm {
     detail.type = OrderType.Product;
     detail.productId = data.productId;
 
+    let ret = '';
     await db.transaction(async (trx) => {
       qrcode = await Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
       if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
@@ -79,8 +81,9 @@ export class QrcodeConfirm {
         status: 'done',
       });
 
-      return order;
+      ret = `${product.title} 交易金额: ${order.amount}积分`;
     });
+    return ret;
   }
 
   async orderService(qrcode: Qrcode, confirmerId: string, action: string) {
@@ -99,29 +102,26 @@ export class QrcodeConfirm {
       throw new Error('无效的卖家');
     }
 
-    if (action === QrcodeAction.OrderHelp) {
-      let a = buyer;
-      buyer = seller;
-      seller = buyer;
-    }
-
     let order = new Order();
     order.type = OrderType.Product;
-    order.sellerId = seller.id;
-    order.buyerId = buyer.id;
+    order.communityId = qrcode.communityId;
+    order.sellerId = seller.userId;
+    order.buyerId = buyer.userId;
     order.orderTime = order.payTime = order.tradeTime = new Date();
 
     let detail = new OrderDetail();
     detail.orderId = order.id;
     detail.type = OrderType.Service;
     detail.productId = data.serviceId;
+
+    let ret = '';
     await db.transaction(async (trx) => {
       qrcode = await Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
       if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
         throw new Error('二维码已失效');
       }
 
-      let service: Product = await Table.Service.transacting(trx).where('id', data.serviceId).first();
+      let service: Service = await Table.Service.transacting(trx).where('id', data.serviceId).first();
       if (!service) {
         throw new Error('无效的产品');
       }
@@ -129,12 +129,22 @@ export class QrcodeConfirm {
 
       let amount = order.amount = service.points;
 
-      order.buyerTradeTransactionId = await deductPoints(
-        trx, qrcode.communityId, buyer.userId, TransactionType.PayService, amount
-      );
-      order.sellerTradeTransactionId = await addPoints(
-        trx, qrcode.communityId, seller.userId, AccountType.Normal, TransactionType.GetService, amount
-      );
+      if (action === QrcodeAction.OrderHelp) {
+        order.buyerTradeTransactionId = await addPoints(
+          trx, qrcode.communityId, buyer.userId, AccountType.Normal, TransactionType.GetService, amount
+        );
+        order.sellerTradeTransactionId = await deductPoints(
+          trx, qrcode.communityId, seller.userId, TransactionType.PayService, amount
+        );
+      } else {
+        order.buyerTradeTransactionId = await deductPoints(
+          trx, qrcode.communityId, buyer.userId, TransactionType.PayService, amount
+        );
+        order.sellerTradeTransactionId = await addPoints(
+          trx, qrcode.communityId, seller.userId, AccountType.Normal, TransactionType.GetService, amount
+        );
+      }
+
 
       order.status = OrderStatus.Done;
 
@@ -149,16 +159,20 @@ export class QrcodeConfirm {
         status: 'done',
       });
 
-      return order;
+      ret = `${service.content} 交易金额: ${order.amount}积分`;
     });
+    return ret;
   }
 
   async orderHelp(qrcode: Qrcode, confirmerId: string) {
+    return await this.orderService(qrcode, confirmerId, QrcodeAction.OrderHelp);
   }
 
   async orderCustom(qrcode: Qrcode, confirmerId: string) {
+    return await this.orderService(qrcode, confirmerId, QrcodeAction.OrderCustom);
   }
 
   async orderPublic(qrcode: Qrcode, confirmerId: string) {
+    return await this.orderService(qrcode, confirmerId, QrcodeAction.OrderPublic);
   }
 }

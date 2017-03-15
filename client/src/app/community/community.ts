@@ -17,6 +17,7 @@ export class CommunityComponent implements OnInit {
   carousel: any[];
   icons: any[];
   articles: any[];
+  logo: any;
 
   constructor(
     private overlayService: OverlayService,
@@ -31,11 +32,13 @@ export class CommunityComponent implements OnInit {
      this.http.get('/user/carousel'),
      this.http.get('/menu/community'),
      this.http.get('/articles/home'),
+     this.http.get('/user/logo')
     ).subscribe((values: any[]) => {
       this.overlayService.hideToast();
       this.carousel = values[0];
       this.icons = values[1];
       this.articles = values[2];
+      this.logo = values[3];
     });
   }
 

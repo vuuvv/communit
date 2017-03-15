@@ -21,13 +21,15 @@ class QrcodeConfirm {
         }
         let order = new models_1.Order();
         order.type = models_1.OrderType.Product;
-        order.sellerId = seller.id;
-        order.buyerId = buyer.id;
+        order.communityId = qrcode.communityId;
+        order.sellerId = seller.userId;
+        order.buyerId = buyer.userId;
         order.orderTime = order.payTime = order.tradeTime = new Date();
         let detail = new models_1.OrderDetail();
         detail.orderId = order.id;
         detail.type = models_1.OrderType.Product;
         detail.productId = data.productId;
+        let ret = '';
         await db_1.db.transaction(async (trx) => {
             qrcode = await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
             if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
@@ -49,8 +51,9 @@ class QrcodeConfirm {
             await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
                 status: 'done',
             });
-            return order;
+            ret = `${product.title} 交易金额: ${order.amount}积分`;
         });
+        return ret;
     }
     async orderService(qrcode, confirmerId, action) {
         let data = JSON.parse(qrcode.data);
@@ -65,20 +68,17 @@ class QrcodeConfirm {
         if (!seller) {
             throw new Error('无效的卖家');
         }
-        if (action === models_1.QrcodeAction.OrderHelp) {
-            let a = buyer;
-            buyer = seller;
-            seller = buyer;
-        }
         let order = new models_1.Order();
         order.type = models_1.OrderType.Product;
-        order.sellerId = seller.id;
-        order.buyerId = buyer.id;
+        order.communityId = qrcode.communityId;
+        order.sellerId = seller.userId;
+        order.buyerId = buyer.userId;
         order.orderTime = order.payTime = order.tradeTime = new Date();
         let detail = new models_1.OrderDetail();
         detail.orderId = order.id;
         detail.type = models_1.OrderType.Service;
         detail.productId = data.serviceId;
+        let ret = '';
         await db_1.db.transaction(async (trx) => {
             qrcode = await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
             if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
@@ -90,8 +90,14 @@ class QrcodeConfirm {
             }
             // TODO: 检查商品状态
             let amount = order.amount = service.points;
-            order.buyerTradeTransactionId = await account_1.deductPoints(trx, qrcode.communityId, buyer.userId, account_1.TransactionType.PayService, amount);
-            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, seller.userId, account_1.AccountType.Normal, account_1.TransactionType.GetService, amount);
+            if (action === models_1.QrcodeAction.OrderHelp) {
+                order.buyerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, buyer.userId, account_1.AccountType.Normal, account_1.TransactionType.GetService, amount);
+                order.sellerTradeTransactionId = await account_1.deductPoints(trx, qrcode.communityId, seller.userId, account_1.TransactionType.PayService, amount);
+            }
+            else {
+                order.buyerTradeTransactionId = await account_1.deductPoints(trx, qrcode.communityId, buyer.userId, account_1.TransactionType.PayService, amount);
+                order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, seller.userId, account_1.AccountType.Normal, account_1.TransactionType.GetService, amount);
+            }
             order.status = models_1.OrderStatus.Done;
             await db_1.Table.Order.transacting(trx).insert(order);
             detail.points = amount;
@@ -100,14 +106,18 @@ class QrcodeConfirm {
             await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
                 status: 'done',
             });
-            return order;
+            ret = `${service.content} 交易金额: ${order.amount}积分`;
         });
+        return ret;
     }
     async orderHelp(qrcode, confirmerId) {
+        return await this.orderService(qrcode, confirmerId, models_1.QrcodeAction.OrderHelp);
     }
     async orderCustom(qrcode, confirmerId) {
+        return await this.orderService(qrcode, confirmerId, models_1.QrcodeAction.OrderCustom);
     }
     async orderPublic(qrcode, confirmerId) {
+        return await this.orderService(qrcode, confirmerId, models_1.QrcodeAction.OrderPublic);
     }
 }
 exports.QrcodeConfirm = QrcodeConfirm;

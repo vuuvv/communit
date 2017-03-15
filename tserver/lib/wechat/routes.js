@@ -25,8 +25,12 @@ let WechatController = class WechatController {
         return utils_1.create(models_1.WechatOfficialAccount, dbRet);
     }
     async test(ctx) {
-        const id = ctx.params.id;
+        const id = ctx.params.id.trim();
         const wechat = await wechat_1.Wechat.create(id);
+        if (!wechat) {
+            await utils_1.errorPage(ctx, '无效的微信公众号');
+            return;
+        }
         const config = await config_1.Config.instance();
         ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
     }

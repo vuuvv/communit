@@ -8,9 +8,9 @@ export interface OrderServiceConfirm {
     serviceId: string;
 }
 export declare class QrcodeConfirm {
-    orderProduct(qrcode: Qrcode, confirmerId: string): Promise<void>;
-    orderService(qrcode: Qrcode, confirmerId: string, action: string): Promise<void>;
-    orderHelp(qrcode: Qrcode, confirmerId: string): Promise<void>;
-    orderCustom(qrcode: Qrcode, confirmerId: string): Promise<void>;
-    orderPublic(qrcode: Qrcode, confirmerId: string): Promise<void>;
+    orderProduct(qrcode: Qrcode, confirmerId: string): Promise<string>;
+    orderService(qrcode: Qrcode, confirmerId: string, action: string): Promise<string>;
+    orderHelp(qrcode: Qrcode, confirmerId: string): Promise<string>;
+    orderCustom(qrcode: Qrcode, confirmerId: string): Promise<string>;
+    orderPublic(qrcode: Qrcode, confirmerId: string): Promise<string>;
 }

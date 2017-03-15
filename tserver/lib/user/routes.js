@@ -17,6 +17,10 @@ let UserController = class UserController {
         let ret = await db_1.Table.Carousel.where('ACCOUNTID', communityId).select('IMAGE_HREF as image');
         return routes_1.success(ret);
     }
+    async logo(ctx) {
+        let account = await db_1.Table.WechatOfficialAccount.where('id', ctx.session.communityId).first().select('logo');
+        return routes_1.success(account);
+    }
     async me(ctx) {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
@@ -68,6 +72,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "carousel", null);
+__decorate([
+    routes_1.get('/logo'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "logo", null);
 __decorate([
     routes_1.get('/me'),
     routes_1.login,

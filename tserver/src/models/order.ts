@@ -13,6 +13,8 @@ export class OrderStatus {
 export class Order extends BaseModel {
   @property()
   type: string;
+  @property()
+  communityId: string;
   /**
    * 买家Id
    */

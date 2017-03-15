@@ -8,6 +8,7 @@ export declare class OrderStatus {
 }
 export declare class Order extends BaseModel {
     type: string;
+    communityId: string;
     /**
      * 买家Id
      */

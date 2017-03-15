@@ -1,6 +1,6 @@
 import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
 import { Table, db, first, raw } from '../db';
-import { create } from '../utils';
+import { create, successPage } from '../utils';
 
 import { addPoints, deductPoints, reverseTransaction } from '../account';
 
@@ -12,6 +12,13 @@ export class UserController {
     let communityId = ctx.session.communityId;
     let ret = await Table.Carousel.where('ACCOUNTID', communityId).select('IMAGE_HREF as image');
     return success(ret);
+  }
+
+  @get('/logo')
+  @login
+  async logo(ctx) {
+    let account = await Table.WechatOfficialAccount.where('id', ctx.session.communityId).first().select('logo');
+    return success(account);
   }
 
   @get('/me')

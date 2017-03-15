@@ -11,6 +11,7 @@ import { UserComponent } from './user';
 import { VerifyComponent } from './verify';
 import { SignupComponent } from './signup';
 import { QrcodeComponent } from './qrcode';
+import { OrderListComponent } from './order-list';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: QrcodeComponent,
       },
+      {
+        path: 'orders',
+        pathMatch: 'full',
+        component: OrderListComponent,
+      },
     ],
   },
 ];
@@ -54,6 +60,7 @@ const routes: Routes = [
     VerifyComponent,
     SignupComponent,
     QrcodeComponent,
+    OrderListComponent,
   ]
 })
 export class UserModule {

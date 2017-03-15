@@ -45,13 +45,13 @@ export class SignupController　{
       if (user) {
         // 用户已存在, 检查在该社区是否存在
         let wechatUser = await Table.WechatUser.transacting(trx).where({
-          userId: user.id,
+          userId: user.id || user.ID,
           officialAccountId: wechatAccountId,
-        });
+        }).first();
         if (wechatUser) {
           throw new ResponseError('用户已存在');
         }
-        await Table.WechatUser.transacting(trx).where('id', wechatUser.id).update({
+        await Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
           userId: user.id,
           realname: model.name,
           area: model.area,

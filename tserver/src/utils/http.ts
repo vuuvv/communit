@@ -26,5 +26,10 @@ export function getTimesTamp() {
 
 export async function errorPage(ctx, message) {
   let config = await Config.instance();
-  await ctx.render('error', { message: '二维码已失效', home: config.clientUrl('/')});
+  await ctx.render('error', { message: message, home: config.clientUrl('/')});
+}
+
+export async function successPage(ctx, message, tip = null) {
+  let config = await Config.instance();
+  await ctx.render('success', { message, tip, home: config.clientUrl('/')});
 }

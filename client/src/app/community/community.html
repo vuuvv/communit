@@ -1,6 +1,6 @@
 <v-page>
   <v-header [showBack]="false" slot="header">
-    <img src="assets/images/logo.png"/>
+    <img [src]="'http://www.crowdnear.com/pc/' + logo?.logo"/>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -27,7 +27,8 @@
     </quickentry>
   </div>
 
-  <div class="weui-panel weui-panel__access">
+  <empty-page *ngIf="!articles || !articles.length">暂无内容</empty-page>
+  <div class="weui-panel weui-panel__access" *ngIf="articles && articles.length">
     <div class="weui-panel__hd">
       <v-cell [hasMore]="true">
         <h1>社区动态</h1>

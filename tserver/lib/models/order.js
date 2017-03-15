@@ -28,6 +28,10 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Order.prototype, "communityId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Order.prototype, "buyerId", void 0);
 __decorate([
     utils_1.property(),

@@ -15,6 +15,7 @@
     </quickentry>
   </div>
 
+  <empty-page *ngIf="!products || !products.length">暂无内容</empty-page>
   <div class="product-list ngv-bg-white">
     <product-list-item
       class="ngv-1px-b"

@@ -26,6 +26,7 @@
     </v-xscroll>
   </div>
 
+  <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>
   <div class="service-list">
     <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
     </service-list-item>

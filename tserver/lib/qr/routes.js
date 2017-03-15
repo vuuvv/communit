@@ -99,7 +99,7 @@ let QrcodeController = class QrcodeController {
         let confirm = new qrcode_1.QrcodeConfirm();
         try {
             let order = await confirm[qrcode.action](qrcode, user.userId);
-            return routes_1.success(order);
+            await utils_1.successPage(ctx, '交易成功', order);
         }
         catch (err) {
             await utils_1.errorPage(ctx, err.message);

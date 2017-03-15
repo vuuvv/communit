@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { router, get, post, success, Response, ResponseError, login } from '../routes';
 import { Table, first, raw, db } from '../db';
-import { create, getJsonBody, errorPage } from '../utils';
+import { create, getJsonBody, errorPage, successPage } from '../utils';
 import { Account, Product, Service, Qrcode, QrcodeAction, ServiceCategories } from '../models';
 import { Wechat } from '../wechat';
 import { Config } from '../config';
@@ -111,7 +111,7 @@ export class QrcodeController {
     let confirm = new QrcodeConfirm();
     try {
       let order = await confirm[qrcode.action](qrcode, user.userId);
-      return success(order);
+      await successPage(ctx, '交易成功', order);
     } catch (err) {
       await errorPage(ctx, err.message);
     }

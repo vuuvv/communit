@@ -4,7 +4,7 @@ import * as sha1 from 'sha1';
 import { router, get, post, all, success, Response, ResponseError } from '../routes';
 import { Table } from '../db';
 import { Wechat } from './wechat';
-import { create, getJsonBody, getNonceStr, getTimesTamp } from '../utils';
+import { create, getJsonBody, getNonceStr, getTimesTamp, errorPage } from '../utils';
 import { WechatOfficialAccount } from '../models';
 import { Config } from '../config';
 
@@ -20,8 +20,12 @@ export class WechatController {
 
   @get('/:id/entry')
   async test(ctx) {
-    const id = ctx.params.id;
+    const id = ctx.params.id.trim();
     const wechat = await Wechat.create(id);
+    if (!wechat) {
+      await errorPage(ctx, '无效的微信公众号');
+      return;
+    }
     const config = await Config.instance();
     ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
   }

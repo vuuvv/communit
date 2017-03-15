@@ -6,6 +6,7 @@ import { create, getJsonBody, errorPage } from '../utils';
 import { Account, Product, Qrcode } from '../models';
 import { Wechat } from '../wechat';
 import { Config } from '../config';
+import { successPage } from '../utils';
 
 @router('/page')
 export class PageController {
@@ -22,5 +23,11 @@ export class PageController {
 
     console.log('here');
     await ctx.render('error', { message: 'John' });
+  }
+
+  @get('/ok')
+  @login
+  async ok(ctx) {
+    await successPage(ctx, '操作成功', '订单交易成功');
   }
 }

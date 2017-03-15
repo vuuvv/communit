@@ -4,4 +4,5 @@ export declare class PageController {
      * @param ctx
      */
     error(ctx: any): Promise<void>;
+    ok(ctx: any): Promise<void>;
 }
