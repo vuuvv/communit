@@ -6,4 +6,5 @@
 
   <v-panel [list]="articles" [mapper]="{metas: ['organization', 'date']}" type="2">
   </v-panel>
+  <empty-page *ngIf="!articles || !articles.length ">暂时没有内容</empty-page>
 </v-page>

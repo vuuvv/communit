@@ -1,15 +1,9 @@
 <v-page>
-  <v-header>社区概况</v-header>
+  <v-header>{{ parent?.name }}</v-header>
   <tabbar slot="footer"></tabbar>
 
   <v-group gutter="0">
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区简介</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区荣誉</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区机构</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区动态</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区党建</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">社区综治</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/articles/1']">人口计生</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/articles/' + item.id]" *ngFor="let item of children">{{ item.name }}</v-cell>
   </v-group>
 
 </v-page>

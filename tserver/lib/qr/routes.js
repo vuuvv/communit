@@ -40,6 +40,39 @@ let QrcodeController = class QrcodeController {
         await db_1.Table.Qrcode.insert(code);
         return routes_1.success(code.id);
     }
+    async GenerateServiceQr(ctx) {
+        let service = await db_1.Table.Service.where('id', ctx.params.id).first();
+        if (!service) {
+            throw new Error('无效的活动');
+        }
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let action = models_1.QrcodeAction.OrderHelp;
+        switch (service.categoryId) {
+            case models_1.ServiceCategories.Help:
+                action = models_1.QrcodeAction.OrderHelp;
+                break;
+            case models_1.ServiceCategories.Custom:
+                action = models_1.QrcodeAction.OrderCustom;
+                break;
+            case models_1.ServiceCategories.Public:
+                action = models_1.QrcodeAction.OrderPublic;
+                break;
+        }
+        if (action !== models_1.QrcodeAction.OrderCustom) {
+            let accounts = await db_1.Table.Account.where({ communityId, userId });
+            let balance = _.sumBy(accounts, a => a.balance);
+            if (balance < service.points) {
+                throw new Error('您的积分不足');
+            }
+        }
+        let code = new models_1.Qrcode(communityId, action, {
+            scanedId: userId,
+            serviceId: service.id,
+        });
+        await db_1.Table.Qrcode.insert(code);
+        return routes_1.success(code.id);
+    }
     /**
      * 扫描二维码后的跳转链接, 微信入口
      * @param ctx
@@ -56,7 +89,6 @@ let QrcodeController = class QrcodeController {
      * @param ctx
      */
     async SellByQr(ctx) {
-        console.log('here');
         let qrcode = await db_1.Table.Qrcode.where('id', ctx.params.id).first();
         if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
             await utils_1.errorPage(ctx, '二维码已失效');
@@ -70,7 +102,6 @@ let QrcodeController = class QrcodeController {
             return routes_1.success(order);
         }
         catch (err) {
-            console.log(err);
             await utils_1.errorPage(ctx, err.message);
         }
     }
@@ -89,6 +120,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], QrcodeController.prototype, "BuyByQr", null);
+__decorate([
+    routes_1.post('/g/service/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], QrcodeController.prototype, "GenerateServiceQr", null);
 __decorate([
     routes_1.get('/scan/:id'),
     __metadata("design:type", Function),

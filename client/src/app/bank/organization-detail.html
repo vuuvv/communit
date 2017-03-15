@@ -2,8 +2,8 @@
   <v-header backText="返回">
     {{ organization?.organizationname }}
   </v-header>
-  <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add/' + organization.id]" *ngIf="organization">我要加入</v-tabbar-btn>
+  <v-tabbar slot="footer" *ngIf="organization && !joined">
+    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker/add/' + organization.id]">我要加入</v-tabbar-btn>
   </v-tabbar>
 
   <div class="detail-info">
@@ -25,7 +25,7 @@
     </section>
 
     <v-group *ngIf="hasUsers">
-      <v-cell [isLink]="true" *ngFor="let u of users">{{ u.realname }}</v-cell>
+      <v-cell *ngFor="let u of users">{{ u.realname }}</v-cell>
     </v-group>
     <empty-page *ngIf="!hasUsers">机构还没有成员</empty-page>
   </div>

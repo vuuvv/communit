@@ -16,12 +16,12 @@
 
   <div class="quickentry-nav ngv-1px-b" *ngIf="icons">
     <quickentry>
-      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" [routerLink]="['./summary']" *ngFor="let icon of icons | slice: 0:4">
+      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" (click)="goto(icon.id)" *ngFor="let icon of icons | slice: 0:4">
         {{ icon.name }}
       </quickentry-item>
     </quickentry>
     <quickentry>
-      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" [routerLink]="['./summary']" *ngFor="let icon of icons | slice: 4:4">
+      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" (click)="goto(icon.id)" *ngFor="let icon of icons | slice: 4:4">
         {{ icon.name }}
       </quickentry-item>
     </quickentry>

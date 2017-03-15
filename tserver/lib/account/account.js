@@ -12,6 +12,8 @@ class TransactionType {
 }
 TransactionType.PayProduct = '04b80557548d4d6588bff877afe03c6d';
 TransactionType.GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
+TransactionType.PayService = '88c09b4eefe345d59cba1cb55fcafe74';
+TransactionType.GetService = '469e867fb97a4f998726880ada7608c8';
 exports.TransactionType = TransactionType;
 async function insertTransactionDetail(trx, accountDetail, points, transactionId) {
     let td = new models_1.TransactionDetail();

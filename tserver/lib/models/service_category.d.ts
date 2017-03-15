@@ -1,4 +1,9 @@
 import { BaseModel } from './base_model';
+export declare class ServiceCategories {
+    static Help: string;
+    static Custom: string;
+    static Public: string;
+}
 export declare class ServiceCategory extends BaseModel {
     /**
      * 名称

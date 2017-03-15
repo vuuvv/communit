@@ -20,9 +20,31 @@ export class MenuController {
   @login
   async community(ctx) {
     let ret = await raw(
-      'select name, IMAGE_HREF as image from weixin_cms_menu where accountid = ? and (parentmenuid is null or parentmenuid = "") order by seq',
-      ctx.session.communityId
+      `
+       select id, name, IMAGE_HREF as image, showType from weixin_cms_menu
+       where accountid = ? and (parentmenuid is null or parentmenuid = "") order by seq
+      `,
+      [ctx.session.communityId]
     );
     return success(ret);
+  }
+
+  @get('/community/:id')
+  @login
+  async communityChildren(ctx) {
+    let parent = await first(`
+      select id, name from weixin_cms_menu where id = ?
+    `, [ctx.params.id]);
+    let children = await raw(
+      `
+       select id, name from weixin_cms_menu
+       where accountid = ? and parentmenuid = ? order by seq
+      `,
+      [ctx.session.communityId, ctx.params.id]
+    );
+    return success({
+      parent,
+      children,
+    });
   }
 }

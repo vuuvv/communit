@@ -19,7 +19,7 @@ const routes: Routes = [
         component: CommunityComponent,
       },
       {
-        path: 'summary',
+        path: 'summary/:id',
         component: SummaryComponent,
       }
     ],

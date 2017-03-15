@@ -3,7 +3,7 @@ import * as ejs from 'ejs';
 
 import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
 import { Table, db, raw, first } from '../db';
-import { create } from '../utils';
+import { uuid, create, getJsonBody } from '../utils';
 import { getStore } from '../store';
 import { Product } from '../models';
 
@@ -33,5 +33,33 @@ export class OrganizationController {
       organizationid: ctx.params.id,
     }).orderBy('realname');
     return success(ret);
+  }
+
+  @get('/joined/:id')
+  @login
+  async joined(ctx) {
+    let user = await Table.WechatUser.where({
+      officialAccountId: ctx.session.communityId,
+      userId: ctx.session.userId,
+    }).first();
+
+    let ouser = await Table.OrganizationUser.where({
+      organizationid: ctx.params.id,
+      subuserid: user.id,
+    }).first();
+
+    return success(ouser);
+  }
+
+  @post('/join/:id')
+  @login
+  async join(ctx) {
+    let data = await getJsonBody(ctx);
+    data.id = uuid();
+    data.username = data.realname = data.name;
+    data.organizationid = ctx.params.id;
+    delete data.name;
+    await Table.OrganizationUser.insert(data);
+    return success();
   }
 }

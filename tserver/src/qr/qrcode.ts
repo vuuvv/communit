@@ -1,10 +1,15 @@
 import { Table, db } from '../db';
-import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product } from '../models';
+import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product, QrcodeAction } from '../models';
 import { addPoints, deductPoints, AccountType, TransactionType } from '../account';
 
 export interface OrderProductConfirm {
   buyerId: string;
   productId: string;
+}
+
+export interface OrderServiceConfirm {
+  scanedId: string;
+  serviceId: string;
 }
 
 async function getWechatUser(officialAccountId, userId) {
@@ -70,7 +75,90 @@ export class QrcodeConfirm {
 
       await Table.OrderDetail.transacting(trx).insert(detail);
 
+      await Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
+        status: 'done',
+      });
+
       return order;
     });
+  }
+
+  async orderService(qrcode: Qrcode, confirmerId: string, action: string) {
+    let data: OrderServiceConfirm = JSON.parse(qrcode.data);
+    if (!data.scanedId || !data.serviceId || !confirmerId) {
+      throw new Error('错误的二维码');
+    }
+
+    let buyer = await getWechatUser(qrcode.communityId, data.scanedId);
+    if (!buyer) {
+      throw new Error('无效的买家');
+    }
+
+    let seller = await getWechatUser(qrcode.communityId, confirmerId);
+    if (!seller) {
+      throw new Error('无效的卖家');
+    }
+
+    if (action === QrcodeAction.OrderHelp) {
+      let a = buyer;
+      buyer = seller;
+      seller = buyer;
+    }
+
+    let order = new Order();
+    order.type = OrderType.Product;
+    order.sellerId = seller.id;
+    order.buyerId = buyer.id;
+    order.orderTime = order.payTime = order.tradeTime = new Date();
+
+    let detail = new OrderDetail();
+    detail.orderId = order.id;
+    detail.type = OrderType.Service;
+    detail.productId = data.serviceId;
+    await db.transaction(async (trx) => {
+      qrcode = await Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
+      if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
+        throw new Error('二维码已失效');
+      }
+
+      let service: Product = await Table.Service.transacting(trx).where('id', data.serviceId).first();
+      if (!service) {
+        throw new Error('无效的产品');
+      }
+      // TODO: 检查商品状态
+
+      let amount = order.amount = service.points;
+
+      order.buyerTradeTransactionId = await deductPoints(
+        trx, qrcode.communityId, buyer.userId, TransactionType.PayService, amount
+      );
+      order.sellerTradeTransactionId = await addPoints(
+        trx, qrcode.communityId, seller.userId, AccountType.Normal, TransactionType.GetService, amount
+      );
+
+      order.status = OrderStatus.Done;
+
+      await Table.Order.transacting(trx).insert(order);
+
+      detail.points = amount;
+      detail.data = JSON.stringify(service);
+
+      await Table.OrderDetail.transacting(trx).insert(detail);
+
+      await Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
+        status: 'done',
+      });
+
+      return order;
+    });
+  }
+
+  async orderHelp(qrcode: Qrcode, confirmerId: string) {
+  }
+
+  async orderCustom(qrcode: Qrcode, confirmerId: string) {
+  }
+
+  async orderPublic(qrcode: Qrcode, confirmerId: string) {
   }
 }

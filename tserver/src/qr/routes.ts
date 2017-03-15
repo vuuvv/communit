@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { router, get, post, success, Response, ResponseError, login } from '../routes';
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody, errorPage } from '../utils';
-import { Account, Product, Qrcode, QrcodeAction } from '../models';
+import { Account, Product, Service, Qrcode, QrcodeAction, ServiceCategories } from '../models';
 import { Wechat } from '../wechat';
 import { Config } from '../config';
 import { QrcodeConfirm } from './qrcode';
@@ -40,6 +40,48 @@ export class QrcodeController {
     return success(code.id);
   }
 
+  @post('/g/service/:id')
+  @login
+  async GenerateServiceQr(ctx) {
+    let service: Service = await Table.Service.where('id', ctx.params.id).first();
+    if (!service) {
+      throw new Error('无效的活动');
+    }
+
+    let userId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+
+    let action = QrcodeAction.OrderHelp;
+
+    switch (service.categoryId) {
+      case ServiceCategories.Help:
+        action = QrcodeAction.OrderHelp;
+        break;
+      case ServiceCategories.Custom:
+        action = QrcodeAction.OrderCustom;
+        break;
+      case ServiceCategories.Public:
+        action = QrcodeAction.OrderPublic;
+        break;
+    }
+
+    if (action !== QrcodeAction.OrderCustom) {
+      let accounts: Account[] = await Table.Account.where({communityId, userId});
+      let balance = _.sumBy(accounts, a => a.balance);
+      if (balance < service.points) {
+        throw new Error('您的积分不足');
+      }
+    }
+
+    let code = new Qrcode(communityId, action, {
+      scanedId: userId,
+      serviceId: service.id,
+    });
+    await Table.Qrcode.insert(code);
+
+    return success(code.id);
+  }
+
   /**
    * 扫描二维码后的跳转链接, 微信入口
    * @param ctx
@@ -59,7 +101,6 @@ export class QrcodeController {
    */
   @get('/confirm/:id')
   async SellByQr(ctx) {
-      console.log('here');
     let qrcode: Qrcode = await Table.Qrcode.where('id', ctx.params.id).first();
     if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
       await errorPage(ctx,  '二维码已失效');
@@ -72,7 +113,6 @@ export class QrcodeController {
       let order = await confirm[qrcode.action](qrcode, user.userId);
       return success(order);
     } catch (err) {
-      console.log(err);
       await errorPage(ctx, err.message);
     }
   }

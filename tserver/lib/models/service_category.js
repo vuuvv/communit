@@ -10,6 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
+class ServiceCategories {
+}
+ServiceCategories.Help = '33ef69e8e2cc4cf3a9f12c36b560ee73';
+ServiceCategories.Custom = '8c4075759d914b1395b8b06bc1b5d19f';
+ServiceCategories.Public = '09756aef0f3f43fbb64377baf313b43a';
+exports.ServiceCategories = ServiceCategories;
 class ServiceCategory extends base_model_1.BaseModel {
 }
 __decorate([

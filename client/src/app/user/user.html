@@ -22,13 +22,13 @@
     <div class="info-data ngv-flexbox ngv-1px-b">
       <a class="ngv-flexbox-item ngv-1px-r">
         <p class="activity">
-          <span>0.00</span>
+          <span>{{ publicPoints }}</span>
         </p>
         <p>活动积分</p>
       </a>
       <a class="ngv-flexbox-item ngv-1px-r">
         <p class="buy">
-          <span>0.00</span>
+          <span>{{ buyPoints }}</span>
         </p>
         <p>购买积分</p>
       </a>
@@ -42,15 +42,9 @@
   </section>
 
   <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="shequ" color="#4AA5F0"></v-icon>社区</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="cishan" color="#4AA5F0"></v-icon>公益活动</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="linlihuzhu" color="#4AA5F0"></v-icon>求助</v-cell>
-  </v-group>
-
-  <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>积分</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="form" color="#4AA5F0"></v-icon>订单</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>账单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>积分详情</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="form" color="#4AA5F0"></v-icon>超市订单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>公益订单</v-cell>
   </v-group>
 
   <v-group>

@@ -23,12 +23,19 @@ let UserController = class UserController {
         if (!communityId) {
             throw new routes_1.ResponseError('没有社区信息, 请退出后重新从微信进入');
         }
-        let user = await db_1.db.raw(`
+        let user = await db_1.first(`
     select wu.headimgurl as avatar, wu.realname as name, wa.accountname as community from t_wechat_user as wu
     join weixin_account as wa on wu.officialAccountId=wa.id
     where wu.officialAccountId=? and wu.userId=?
     `, [communityId, userId]);
-        return routes_1.success(user[0][0]);
+        let account = await db_1.raw(`
+    select a.*, at.name from t_account as a join t_account_type as at on a.typeId = at.id
+    where a.communityId = ? and a.userId = ?
+    `, [communityId, userId]);
+        return routes_1.success({
+            user,
+            account,
+        });
     }
     async hello() {
         return 'hello';

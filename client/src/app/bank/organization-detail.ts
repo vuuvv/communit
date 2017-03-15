@@ -13,6 +13,7 @@ import { OverlayService } from '../../components';
 export class OrganizationDetailComponent implements OnInit {
   organization: any;
   users: any[] = [];
+  joined: boolean = false;
 
   constructor(
     private http: Http,
@@ -27,11 +28,14 @@ export class OrganizationDetailComponent implements OnInit {
       return Observable.forkJoin(
         this.http.get(`/organization/item/${id}`),
         this.http.get(`/organization/${id}/users`),
+        this.http.get(`/organization/joined/${id}`)
       );
     }).subscribe((values: any[]) => {
       this.overlayService.hideToast();
       this.organization = values[0];
       this.users = values[1];
+      this.joined = !!values[2];
+      console.log(values[2]);
     });
   }
 

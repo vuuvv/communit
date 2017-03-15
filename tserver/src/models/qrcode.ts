@@ -3,11 +3,17 @@ import { property, uuid } from '../utils';
 
 export class QrcodeAction {
   static OrderProduct = 'orderProduct';
+  static OrderHelp = 'orderHelp';
+  static OrderCustom = 'orderCustom';
+  static OrderPublic = 'orderPublic';
 }
 
 const tips = {};
 
 tips[QrcodeAction.OrderProduct] = '向商家支付积分';
+tips[QrcodeAction.OrderHelp] = '向求助者收取积分';
+tips[QrcodeAction.OrderCustom] = '向服务者支付积分';
+tips[QrcodeAction.OrderPublic] = '向求助者收取积分';
 
 export class Qrcode extends BaseModel {
   @property()

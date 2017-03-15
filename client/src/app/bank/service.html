@@ -7,7 +7,7 @@
     {{ service?.categoryName }}
   </v-header>
   <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="">我要加入</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="buy()">{{ buttonText }}</v-tabbar-btn>
   </v-tabbar>
   <ng-container *ngFor="let d of details; let i = index">
     <ng-container [ngSwitch]="true">

@@ -5,6 +5,8 @@ export declare class AccountType {
 export declare class TransactionType {
     static PayProduct: string;
     static GetProduct: string;
+    static PayService: string;
+    static GetService: string;
 }
 export declare function reverseTransaction(trx: any, transactionId: string): Promise<void>;
 /**

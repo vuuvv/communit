@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params } from'@angular/router';
+import { Router } from '@angular/router';
 
 import { Http } from '../shared';
 import { OverlayService } from '../../components';
@@ -14,6 +15,7 @@ export class ServiceComponent implements OnInit {
   details: any[] = [];
 
   constructor(
+    private router: Router,
     private http: Http,
     private route: ActivatedRoute,
     private overlayService: OverlayService,
@@ -45,6 +47,22 @@ export class ServiceComponent implements OnInit {
         content: v,
         type: f.type,
       };
+    });
+  }
+
+  get buttonText() {
+    let ret = '我要付款';
+    if (this.service && this.service.categoryId === '8c4075759d914b1395b8b06bc1b5d19f') {
+      ret = '我要收款';
+    }
+    return ret;
+  }
+
+  buy() {
+    this.overlayService.loading();
+    this.http.post(`/qr/g/service/${this.service.id}`).subscribe((value) => {
+      this.overlayService.hideToast();
+      this.router.navigate([`/user/qr/${value}`]);
     });
   }
 }

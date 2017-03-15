@@ -12,6 +12,8 @@ export class AccountType {
 export class TransactionType {
   static PayProduct = '04b80557548d4d6588bff877afe03c6d';
   static GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
+  static PayService = '88c09b4eefe345d59cba1cb55fcafe74';
+  static GetService = '469e867fb97a4f998726880ada7608c8';
 }
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {

@@ -55,6 +55,7 @@ export class ProductComponent implements OnInit {
     }
     this.overlayService.loading();
     this.http.post(`/qr/g/product/${this.product.id}`).subscribe((value) => {
+      this.overlayService.hideToast();
       this.router.navigate([`/user/qr/${value}`]);
     });
   }
