@@ -4,7 +4,7 @@ import { addPoints, deductPoints, AccountType, TransactionType } from '../accoun
 
 export interface OrderProductConfirm {
   buyerId: string;
-  productId: string;
+  product: Product;
 }
 
 export interface OrderServiceConfirm {
@@ -19,7 +19,7 @@ async function getWechatUser(officialAccountId, userId) {
 export class QrcodeConfirm {
   async orderProduct(qrcode: Qrcode, confirmerId: string) {
     let data: OrderProductConfirm = JSON.parse(qrcode.data);
-    if (!data.buyerId || !data.productId || !confirmerId) {
+    if (!data.buyerId || !data.product || !confirmerId) {
       throw new Error('错误的二维码');
     }
 
@@ -33,6 +33,19 @@ export class QrcodeConfirm {
       throw new Error('无效的卖家');
     }
 
+    let store = await Table.Store.where({
+      communityId: qrcode.communityId,
+      userId: confirmerId,
+    }).first();
+
+    if (!store) {
+      throw new Error('您还没有店铺， 不可售卖该产品');
+    }
+
+    if (data.product.storeId !== store.id) {
+      throw new Error('该产品不属于您的店铺，请确认二维码上的产品信息');
+    }
+
     let order = new Order();
     order.type = OrderType.Product;
     order.communityId = qrcode.communityId;
@@ -43,7 +56,7 @@ export class QrcodeConfirm {
     let detail = new OrderDetail();
     detail.orderId = order.id;
     detail.type = OrderType.Product;
-    detail.productId = data.productId;
+    detail.productId = data.product.id;
 
     let ret = '';
     await db.transaction(async (trx) => {
@@ -52,20 +65,21 @@ export class QrcodeConfirm {
         throw new Error('二维码已失效');
       }
 
-      let product: Product = await Table.Product.transacting(trx).where('id', data.productId).first();
+      let product: Product = await Table.Product.transacting(trx).where('id', data.product.id).first();
       if (!product) {
         throw new Error('无效的产品');
       }
       // TODO: 检查商品状态
 
 
-      let amount = order.amount = product.points;
+      // 我们把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
+      let amount = order.amount = data.product.points;
 
       order.buyerTradeTransactionId = await deductPoints(
         trx, qrcode.communityId, buyer.userId, TransactionType.PayProduct, amount
       );
       order.sellerTradeTransactionId = await addPoints(
-        trx, qrcode.communityId, seller.userId, AccountType.Normal, TransactionType.GetProduct, amount
+        trx, qrcode.communityId, store.id, AccountType.Normal, TransactionType.GetProduct, amount
       );
 
       order.status = OrderStatus.Done;

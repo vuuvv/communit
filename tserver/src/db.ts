@@ -53,6 +53,8 @@ import {
   Order, OrderTableName,
   OrderDetail, OrderDetailTableName,
   Carousel, CarouselTableName,
+  SociallyActivity, SociallyActivityTableName,
+  SociallyActivityUser, SociallyActivityUserTableName,
 } from './models';
 
 export interface Model<T> {
@@ -166,6 +168,14 @@ export class Table<T> {
 
   static get Carousel() {
     return new Table<Carousel>(Carousel, CarouselTableName).database;
+  }
+
+  static get SociallyActivity() {
+    return new Table<SociallyActivity>(SociallyActivity, SociallyActivityTableName).database;
+  }
+
+  static get SociallyActivityUser() {
+    return new Table<SociallyActivityUser>(SociallyActivityUser, SociallyActivityUserTableName).database;
   }
 
 }

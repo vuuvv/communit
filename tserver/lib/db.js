@@ -106,5 +106,11 @@ class Table {
     static get Carousel() {
         return new Table(models_1.Carousel, models_1.CarouselTableName).database;
     }
+    static get SociallyActivity() {
+        return new Table(models_1.SociallyActivity, models_1.SociallyActivityTableName).database;
+    }
+    static get SociallyActivityUser() {
+        return new Table(models_1.SociallyActivityUser, models_1.SociallyActivityUserTableName).database;
+    }
 }
 exports.Table = Table;

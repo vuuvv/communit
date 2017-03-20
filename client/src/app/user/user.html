@@ -10,7 +10,7 @@
 
   <section>
     <div class="info-box ngv-flexbox ngv-flexbox-vcenter">
-      <img [src]="user?.avatar">
+      <img [src]="user?.avatar" *ngIf="user?.avatar">
       <div class="user-info ngv-flexbox-item">
         <p>{{ user?.name }}</p>
         <p><span>{{ user?.community }}</span></p>
@@ -42,7 +42,8 @@
   </section>
 
   <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/user/orders']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>账单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/user/orders']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>我的账单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/store/orders']" *ngIf="store"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>店铺账单</v-cell>
     <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>公益订单</v-cell>
   </v-group>
 

@@ -11,6 +11,7 @@ import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
 import { ServiceListComponent } from './service-list';
 import { ActivityComponent } from './activity';
+import { ActivityListComponent } from './activity-list';
 import { WorkerComponent } from './worker';
 import { WorkerAddComponent } from './worker-add';
 import { OrganizationComponent } from './organization';
@@ -58,6 +59,10 @@ const routes: Routes = [
       {
         path: 'activity/:id',
         component: ActivityComponent,
+      },
+      {
+        path: 'activities',
+        component: ActivityListComponent,
       }
     ],
   },
@@ -77,6 +82,7 @@ const routes: Routes = [
     ServiceComponent,
     ServiceListComponent,
     ActivityComponent,
+    ActivityListComponent,
     WorkerComponent,
     WorkerAddComponent,
     OrganizationComponent,

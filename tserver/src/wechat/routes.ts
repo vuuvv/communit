@@ -27,21 +27,27 @@ export class WechatController {
       return;
     }
     const config = await Config.instance();
-    ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
+    ctx.session.communityId = id;
+    ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
   }
 
-  @get('/:id/login')
+  @get('/login')
   async login(ctx) {
-    const id = ctx.params.id;
-    const wechat = await Wechat.create(id);
+    console.log(ctx.session.communityId);
+    const wechat = await Wechat.create(ctx.session.communityId);
     const wechatUser = await wechat.login(ctx);
     const config = await Config.instance();
-    if (!wechatUser.userId) {
-      ctx.redirect(`${config.site.client}/#/user/verify`);
-    } else {
+    if (wechatUser.userId) {
       ctx.session.userId = wechatUser.userId;
-      ctx.redirect(config.site.client);
     }
+    ctx.redirect(config.site.client);
+
+    // if (!wechatUser.userId) {
+    //   ctx.redirect(`${config.site.client}/#/user/verify`);
+    // } else {
+    //   ctx.session.userId = wechatUser.userId;
+    //   ctx.redirect(config.site.client);
+    // }
   }
 
   @all('/:id/notify')

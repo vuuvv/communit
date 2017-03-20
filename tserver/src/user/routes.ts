@@ -40,10 +40,32 @@ export class UserController {
     where a.communityId = ? and a.userId = ?
     `, [communityId, userId]);
 
+    let store = await Table.Store.where({communityId, userId}).first();
+
     return success({
       user,
       account,
+      store,
     });
+  }
+
+  @get('/organizations')
+  @login
+  async organizations(ctx) {
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+    let ret = await raw(`
+    select o.* from t_organuser as ou
+    join t_wechat_user as wu on ou.subuserid = wu.id
+    join t_organization as o on ou.organizationid = o.id
+    where wu.officialAccountId = ? and wu.userId = ?
+    `, [communityId, userId]);
+
+    if (!ret || !ret.length) {
+      throw new Error('您并非社工人员');
+    }
+
+    return success(ret);
   }
 
   @get('/test')

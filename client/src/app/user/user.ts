@@ -9,6 +9,7 @@ import { OverlayService } from '../../components';
 export class UserComponent implements OnInit {
   private user: any = {};
   private account: any;
+  private store: any;
 
   constructor(
     private http: Http,
@@ -22,6 +23,7 @@ export class UserComponent implements OnInit {
       this.overlayService.hideToast();
       this.user = value.user;
       this.account = value.account;
+      this.store = value.store;
     });
   }
 

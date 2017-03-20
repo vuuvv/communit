@@ -41,10 +41,16 @@ let OrganizationController = class OrganizationController {
         return routes_1.success(ouser);
     }
     async join(ctx) {
+        let user = await db_1.Table.WechatUser.where({
+            officialAccountId: ctx.session.communityId,
+            userId: ctx.session.userId,
+        }).first();
         let data = await utils_1.getJsonBody(ctx);
         data.id = utils_1.uuid();
         data.username = data.realname = data.name;
         data.organizationid = ctx.params.id;
+        data.subuserid = user.id;
+        data.status = 1;
         delete data.name;
         await db_1.Table.OrganizationUser.insert(data);
         return routes_1.success();

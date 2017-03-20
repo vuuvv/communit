@@ -1,0 +1,39 @@
+<v-page>
+  <v-header slot="header">发起公益活动</v-header>
+
+  <form (ngSubmit)="submit()" #form="ngForm">
+    <v-group gutter="0">
+      <v-cell class="weui-cell_select weui-cell_select-after" label="社工机构">
+        <select class="weui-select" name="organizationId" [(ngModel)]="activity.organizationId" required>
+          <option *ngFor="let o of organizations" [value]="o.id">{{ o.organizationname }}</option>
+        </select>
+      </v-cell>
+      <v-cell label="时间">
+        <input class="weui-input" type="datetime-local" name="holdtime" required [(ngModel)]="activity.holdtime">
+      </v-cell>
+      <v-cell label="地点">
+        <input class="weui-input" type="text" name="holdaddress" placeholder="地点" required [(ngModel)]="activity.holdaddress">
+      </v-cell>
+      <v-cell label="服务对象">
+        <input class="weui-input" type="text" name="serviceobject" placeholder="服务对象" required [(ngModel)]="activity.serviceobject">
+      </v-cell>
+      <v-cell label="每人积分">
+        <input class="weui-input" type="text" name="integral" placeholder="参加活动的每个人可获取的积分" required [(ngModel)]="activity.integral">
+      </v-cell>
+      <div class="weui-cell weui-cell_switch">
+        <div class="weui-cell__bd">是否现场活动</div>
+        <div class="weui-cell__ft">
+          <input class="weui-switch" type="checkbox" name="ifspot" [(ngModel)]="activity.ifspot">
+        </div>
+      </div>
+    </v-group>
+    <v-group title="活动内容">
+      <v-cell>
+        <textarea class="weui-textarea" placeholder="个人简介" rows="3" name="content" [(ngModel)]="activity.content"></textarea>
+      </v-cell>
+    </v-group>
+    <div class="weui-btn-area">
+      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+    </div>
+  </form>
+</v-page>

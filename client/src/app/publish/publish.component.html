@@ -11,4 +11,8 @@
   <v-group gutter="0">
     <v-cell [isLink]="true" [routerLink]="['/publish/action/' + c.id]" *ngFor="let c of categories;">{{ c.label }}({{ c.name }})</v-cell>
   </v-group>
+
+  <v-group>
+    <v-cell [isLink]="true" [routerLink]="['/publish/activity']">发起公益活动</v-cell>
+  </v-group>
 </v-page>

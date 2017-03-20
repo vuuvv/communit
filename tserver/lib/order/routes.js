@@ -12,31 +12,24 @@ const _ = require("lodash");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
 let OrderController = class OrderController {
-    async orderListByBuyer(ctx) {
-        let orders = await db_1.raw(`
-    select * from t_order where communityId = ? and buyerId = ?
-    `, [ctx.session.communityId, ctx.session.userId]);
-        let details = await db_1.raw(`
-    select * from t_order_detail where orderId in (?)
-    `, [orders.map((v) => v.id)]);
-        for (let o of orders) {
-            o.details = details.filter((d) => o.id === d.orderId);
-        }
-        return routes_1.success(orders);
-    }
-    async orderListBySeller(ctx) {
-        let ret = await db_1.raw(`
-    select * from t_order where communityId = ? and sellerId = ?
-    `, [ctx.session.communityId, ctx.session.userId]);
-        return routes_1.success(ret);
-    }
     async List(ctx) {
+        let userId = ctx.session.userId;
+        if (ctx.params.type === 'store') {
+            let store = await db_1.Table.Store.where({
+                communityId: ctx.session.communityId,
+                userId: ctx.session.userId,
+            }).first();
+            if (!store) {
+                throw new Error('您还未开店，没有店铺订单');
+            }
+            userId = store.id;
+        }
         let transactions = await db_1.raw(`
     select t.*, tt.name as typeName from t_transaction as t
     join t_transaction_type as tt on t.typeId = tt.id
     where communityId = ? and userId = ?
     order by t.createdAt desc
-    `, [ctx.session.communityId, ctx.session.userId]);
+    `, [ctx.session.communityId, userId]);
         if (!transactions || !transactions.length) {
             return routes_1.success(transactions);
         }
@@ -71,21 +64,7 @@ let OrderController = class OrderController {
     }
 };
 __decorate([
-    routes_1.get('/buyer/list'),
-    routes_1.login,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], OrderController.prototype, "orderListByBuyer", null);
-__decorate([
-    routes_1.get('/seller/list'),
-    routes_1.login,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], OrderController.prototype, "orderListBySeller", null);
-__decorate([
-    routes_1.get('/list'),
+    routes_1.get('/:type/list'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

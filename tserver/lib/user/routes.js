@@ -36,10 +36,26 @@ let UserController = class UserController {
     select a.*, at.name from t_account as a join t_account_type as at on a.typeId = at.id
     where a.communityId = ? and a.userId = ?
     `, [communityId, userId]);
+        let store = await db_1.Table.Store.where({ communityId, userId }).first();
         return routes_1.success({
             user,
             account,
+            store,
         });
+    }
+    async organizations(ctx) {
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
+        let ret = await db_1.raw(`
+    select o.* from t_organuser as ou
+    join t_wechat_user as wu on ou.subuserid = wu.id
+    join t_organization as o on ou.organizationid = o.id
+    where wu.officialAccountId = ? and wu.userId = ?
+    `, [communityId, userId]);
+        if (!ret || !ret.length) {
+            throw new Error('您并非社工人员');
+        }
+        return routes_1.success(ret);
     }
     async hello() {
         return 'hello';
@@ -86,6 +102,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "me", null);
+__decorate([
+    routes_1.get('/organizations'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "organizations", null);
 __decorate([
     routes_1.get('/test'),
     __metadata("design:type", Function),

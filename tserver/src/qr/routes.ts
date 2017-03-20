@@ -33,10 +33,34 @@ export class QrcodeController {
 
     let code = new Qrcode(communityId, QrcodeAction.OrderProduct, {
       buyerId: userId,
-      productId: product.id,
+      product,
     });
     await Table.Qrcode.insert(code);
 
+    return success(code.id);
+  }
+
+  /**
+   * 生成活动签到二维码
+   */
+  @post('/g/activity/:id')
+  @login
+  async ActivityQr(ctx) {
+    let userId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+
+    let activity = await Table.SociallyActivity.where('id', ctx.params.id).first();
+    if (!activity) {
+      throw new Error('无此活动');
+    }
+    if (activity.status !== 2) {
+      throw new Error('该活动不可进行该操作');
+    }
+
+    let code = new Qrcode(communityId, QrcodeAction.ActivityCheck, {
+      activity,
+    });
+    await Table.Qrcode.insert(code);
     return success(code.id);
   }
 

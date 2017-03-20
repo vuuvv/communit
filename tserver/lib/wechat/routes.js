@@ -32,20 +32,24 @@ let WechatController = class WechatController {
             return;
         }
         const config = await config_1.Config.instance();
-        ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/${id}/login`));
+        ctx.session.communityId = id;
+        ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
     }
     async login(ctx) {
-        const id = ctx.params.id;
-        const wechat = await wechat_1.Wechat.create(id);
+        console.log(ctx.session.communityId);
+        const wechat = await wechat_1.Wechat.create(ctx.session.communityId);
         const wechatUser = await wechat.login(ctx);
         const config = await config_1.Config.instance();
-        if (!wechatUser.userId) {
-            ctx.redirect(`${config.site.client}/#/user/verify`);
-        }
-        else {
+        if (wechatUser.userId) {
             ctx.session.userId = wechatUser.userId;
-            ctx.redirect(config.site.client);
         }
+        ctx.redirect(config.site.client);
+        // if (!wechatUser.userId) {
+        //   ctx.redirect(`${config.site.client}/#/user/verify`);
+        // } else {
+        //   ctx.session.userId = wechatUser.userId;
+        //   ctx.redirect(config.site.client);
+        // }
     }
     async notify(ctx) {
         const id = ctx.params.id;
@@ -125,7 +129,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WechatController.prototype, "test", null);
 __decorate([
-    routes_1.get('/:id/login'),
+    routes_1.get('/login'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

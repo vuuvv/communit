@@ -1,9 +1,50 @@
-<v-page>
-  <v-header [showBack]="false">
+<v-page *ngIf="activity">
+  <v-header [showBack]="false" slot="header">
     <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
       <span>返回</span>
       <div class="left-arrow"></div>
     </a>
     公益活动
   </v-header>
+  <v-tabbar slot="footer" *ngIf="canjoin || canCheck || canStart">
+    <v-tabbar-btn class="primary" (click)="join()" *ngIf="canJoin">我要参加</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="start()" *ngIf="canStart">开始活动</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="check()" *ngIf="canCheck">开始签到</v-tabbar-btn>
+  </v-tabbar>
+
+  <div class="weui-panel" [class.first]="i === 0">
+    <div class="weui-panel__hd">
+      <span>活动内容</span>
+    </div>
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_text">{{ activity.content }}</div>
+    </div>
+  </div>
+
+  <div class="weui-panel" [class.first]="i === 0">
+    <div class="weui-panel__hd">
+      <span>服务对象</span>
+    </div>
+    <div class="weui-panel__bd">
+      <div class="weui-media-box weui-media-box_text">{{ activity.serviceobject }}</div>
+    </div>
+  </div>
+
+  <v-group>
+    <v-cell [value]="activity.holdtime | date: 'y-MM-dd HH:MM'">活动时间</v-cell>
+  </v-group>
+  <v-group>
+    <v-cell [value]="activity.holdaddress">活动地点</v-cell>
+  </v-group>
+  <v-group>
+    <v-cell [value]="activity.organizationname">活动组织</v-cell>
+  </v-group>
+  <v-group>
+    <v-cell [value]="activity.integral">每人所得积分</v-cell>
+  </v-group>
+
+  <v-group title="报名人员" *ngIf="users && users.length">
+    <v-cell *ngFor="let u of users">{{ u.realname }}</v-cell>
+  </v-group>
+  <empty-page *ngIf="!users || !users.length">暂无人员报名</empty-page>
 </v-page>

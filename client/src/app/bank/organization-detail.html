@@ -24,7 +24,7 @@
       </div>
     </section>
 
-    <v-group *ngIf="hasUsers">
+    <v-group *ngIf="hasUsers" title="机构成员">
       <v-cell *ngFor="let u of users">{{ u.realname }}</v-cell>
     </v-group>
     <empty-page *ngIf="!hasUsers">机构还没有成员</empty-page>

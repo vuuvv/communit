@@ -24,7 +24,9 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit() {
     this.overlayService.loading();
-    this.http.get('/order/list').subscribe((value: any) => {
+    this.route.params.concatMap((params: Params) => {
+      return this.http.get(`/order/${params['type']}/list`);
+    }).subscribe((value: any) => {
       this.overlayService.hideToast();
       this.transactions = value;
       this.transactions.forEach((v) => {

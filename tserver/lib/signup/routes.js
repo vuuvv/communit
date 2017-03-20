@@ -137,7 +137,7 @@ let SignupController = class SignupController {
         });
     }
     async login(ctx) {
-        const user = await db_1.Table.WechatUser.orderBy('createdAt').first();
+        const user = await db_1.Table.WechatUser.whereNotNull('userId').orderBy('createdAt').first();
         ctx.session.userId = user.userId;
         ctx.session.communityId = user.officialAccountId;
         return user;

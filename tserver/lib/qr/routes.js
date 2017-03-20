@@ -35,7 +35,26 @@ let QrcodeController = class QrcodeController {
         }
         let code = new models_1.Qrcode(communityId, models_1.QrcodeAction.OrderProduct, {
             buyerId: userId,
-            productId: product.id,
+            product,
+        });
+        await db_1.Table.Qrcode.insert(code);
+        return routes_1.success(code.id);
+    }
+    /**
+     * 生成活动签到二维码
+     */
+    async ActivityQr(ctx) {
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let activity = await db_1.Table.SociallyActivity.where('id', ctx.params.id).first();
+        if (!activity) {
+            throw new Error('无此活动');
+        }
+        if (activity.status !== 2) {
+            throw new Error('该活动不可进行该操作');
+        }
+        let code = new models_1.Qrcode(communityId, models_1.QrcodeAction.ActivityCheck, {
+            activity,
         });
         await db_1.Table.Qrcode.insert(code);
         return routes_1.success(code.id);
@@ -120,6 +139,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], QrcodeController.prototype, "BuyByQr", null);
+__decorate([
+    routes_1.post('/g/activity/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], QrcodeController.prototype, "ActivityQr", null);
 __decorate([
     routes_1.post('/g/service/:id'),
     routes_1.login,

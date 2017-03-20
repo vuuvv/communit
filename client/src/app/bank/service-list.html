@@ -2,7 +2,7 @@
   <v-header slot="header">{{ title }}</v-header>
   <tabbar slot="footer"></tabbar>
 
-  <div class="service-list ngv-white-bg">
+  <div class="service-list ngv-bg-white">
     <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
     </service-list-item>
   </div>

@@ -38,7 +38,7 @@ const routes: Routes = [
         component: QrcodeComponent,
       },
       {
-        path: 'orders',
+        path: ':type/orders',
         pathMatch: 'full',
         component: OrderListComponent,
       },

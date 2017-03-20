@@ -75,6 +75,7 @@ import { ServiceController } from './service';
 import { AccountController } from './account';
 import { OrderController } from './order';
 import { QrcodeController } from './qr';
+import { ActivityController } from './activity';
 
 import { route } from './routes';
 
@@ -92,6 +93,7 @@ route(router, ServiceController);
 route(router, AccountController);
 route(router, OrderController);
 route(router, QrcodeController);
+route(router, ActivityController);
 
 // console.log(router.stack);
 

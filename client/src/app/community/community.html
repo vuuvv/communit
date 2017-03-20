@@ -1,6 +1,6 @@
 <v-page>
   <v-header [showBack]="false" slot="header">
-    <img [src]="'http://www.crowdnear.com/pc/' + logo?.logo"/>
+    <img [src]="'http://www.crowdnear.com/pc/' + logo?.logo" *ngIf="logo?.logo"/>
   </v-header>
   <tabbar slot="footer"></tabbar>
 

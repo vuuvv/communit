@@ -54,10 +54,17 @@ export class OrganizationController {
   @post('/join/:id')
   @login
   async join(ctx) {
+    let user = await Table.WechatUser.where({
+      officialAccountId: ctx.session.communityId,
+      userId: ctx.session.userId,
+    }).first();
+
     let data = await getJsonBody(ctx);
     data.id = uuid();
     data.username = data.realname = data.name;
     data.organizationid = ctx.params.id;
+    data.subuserid = user.id;
+    data.status = 1;
     delete data.name;
     await Table.OrganizationUser.insert(data);
     return success();

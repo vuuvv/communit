@@ -5,6 +5,10 @@ export declare class QrcodeController {
      * @param ctx
      */
     BuyByQr(ctx: any): Promise<Response>;
+    /**
+     * 生成活动签到二维码
+     */
+    ActivityQr(ctx: any): Promise<Response>;
     GenerateServiceQr(ctx: any): Promise<Response>;
     /**
      * 扫描二维码后的跳转链接, 微信入口

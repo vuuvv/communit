@@ -34,4 +34,6 @@ export declare class Table<T> {
     static readonly Order: knex.QueryBuilder;
     static readonly OrderDetail: knex.QueryBuilder;
     static readonly Carousel: knex.QueryBuilder;
+    static readonly SociallyActivity: knex.QueryBuilder;
+    static readonly SociallyActivityUser: knex.QueryBuilder;
 }

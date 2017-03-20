@@ -16,12 +16,14 @@ QrcodeAction.OrderProduct = 'orderProduct';
 QrcodeAction.OrderHelp = 'orderHelp';
 QrcodeAction.OrderCustom = 'orderCustom';
 QrcodeAction.OrderPublic = 'orderPublic';
+QrcodeAction.ActivityCheck = 'activityCheck';
 exports.QrcodeAction = QrcodeAction;
 const tips = {};
 tips[QrcodeAction.OrderProduct] = '向商家支付积分';
 tips[QrcodeAction.OrderHelp] = '向求助者收取积分';
 tips[QrcodeAction.OrderCustom] = '向服务者支付积分';
 tips[QrcodeAction.OrderPublic] = '向求助者收取积分';
+tips[QrcodeAction.ActivityCheck] = '活动参与者扫码签到';
 class Qrcode extends base_model_1.BaseModel {
     constructor(communityId, action, data) {
         super();
