@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as ejs from 'ejs';
 
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { create } from '../utils';
 import { getStore } from '../store';
@@ -12,7 +12,7 @@ import { Product } from '../models';
 export class ProductController {
 
   @get('/category')
-  @login
+  @wechat
   async category(ctx) {
     let ret = await Table.ProductCategory.orderBy('sort');
 
@@ -20,7 +20,7 @@ export class ProductController {
   }
 
   @get('/')
-  @login
+  @wechat
   async list(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
@@ -44,7 +44,7 @@ export class ProductController {
   }
 
   @get('/item/:id')
-  @login
+  @wechat
   async item(ctx) {
     let id = ctx.params.id;
     let ret = await first(`

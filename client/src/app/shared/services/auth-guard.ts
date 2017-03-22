@@ -11,7 +11,7 @@ export class AuthorizeGuard implements CanActivate, CanActivateChild {
   }
 
   private notLoginHandler(): Observable<boolean> {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/user/verify']);
     return Observable.of(false);
   }
 

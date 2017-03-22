@@ -118,14 +118,14 @@ __decorate([
 ], ActivityController.prototype, "join", null);
 __decorate([
     routes_1.get('/item/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ActivityController.prototype, "item", null);
 __decorate([
     routes_1.get('/search'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

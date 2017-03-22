@@ -8,4 +8,5 @@ export declare class UserController {
     addAccount(ctx: any): Promise<Response>;
     deductAccount(): Promise<Response>;
     reverse(ctx: any): Promise<Response>;
+    logout(ctx: any): Promise<void>;
 }

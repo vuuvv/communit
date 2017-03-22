@@ -84,21 +84,21 @@ let ProductController = class ProductController {
 };
 __decorate([
     routes_1.get('/category'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "category", null);
 __decorate([
     routes_1.get('/'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "list", null);
 __decorate([
     routes_1.get('/item/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

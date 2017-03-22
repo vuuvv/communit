@@ -36,7 +36,6 @@ let WechatController = class WechatController {
         ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
     }
     async login(ctx) {
-        console.log(ctx.session.communityId);
         const wechat = await wechat_1.Wechat.create(ctx.session.communityId);
         const wechatUser = await wechat.login(ctx);
         const config = await config_1.Config.instance();

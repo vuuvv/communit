@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { NgvModule } from '../../components';
 
-import { SharedModule } from '../shared';
+import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { StoreComponent, StoreAddComponent, StoreEditComponent } from './store';
 import { ProductAddComponent, ProductEditComponent } from './product';
@@ -13,6 +13,7 @@ import { ProductAddComponent, ProductEditComponent } from './product';
 const routes: Routes = [
   {
     path: 'store',
+    canActivateChild: [AuthorizeGuard],
     children: [
       {
         path: '',

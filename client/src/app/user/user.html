@@ -24,13 +24,13 @@
         <p class="activity">
           <span>{{ publicPoints }}</span>
         </p>
-        <p>活动积分</p>
+        <p>积分余额</p>
       </a>
       <a class="ngv-flexbox-item ngv-1px-r">
         <p class="buy">
           <span>{{ buyPoints }}</span>
         </p>
-        <p>购买积分</p>
+        <p>积分总额</p>
       </a>
       <a class="ngv-flexbox-item">
         <p class="rank">
@@ -42,19 +42,18 @@
   </section>
 
   <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/user/user/orders']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>我的账单</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/user/store/orders']" *ngIf="store"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>店铺账单</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>公益订单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/user/orders']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>订单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/store/orders']" *ngIf="store"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>积分</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>推荐</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>奖励</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>社工</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>向导</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>缴费</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>账户</v-cell>
   </v-group>
 
   <v-group>
     <v-cell [isLink]="true" [routerLink]="['/store']"><v-icon slot="icon" type="store" color="#4AA5F0"></v-icon>我的店铺</v-cell>
-  </v-group>
-
-  <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="pingjia" color="#4AA5F0"></v-icon>服务中心</v-cell>
     <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="dianpu" color="#4AA5F0"></v-icon>加盟合作</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="dianzan1" color="#4AA5F0"></v-icon>欢迎评分</v-cell>
   </v-group>
-
 </v-page>

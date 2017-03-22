@@ -58,21 +58,21 @@ let OrganizationController = class OrganizationController {
 };
 __decorate([
     routes_1.get('/type/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "type", null);
 __decorate([
     routes_1.get('/item/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "item", null);
 __decorate([
     routes_1.get('/:id/users'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

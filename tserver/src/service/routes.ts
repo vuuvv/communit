@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as ejs from 'ejs';
 
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Service } from '../models';
@@ -9,33 +9,33 @@ import { Service } from '../models';
 @router('/service')
 export class ServiceController {
   @get('/categories')
-  @login
+  @wechat
   async categories(ctx) {
     let ret = await Table.ServiceCategory.orderBy('sort');
     return success(ret);
   }
 
   @get('/category/:id')
-  @login
+  @wechat
   async category(ctx) {
     let ret = await Table.ServiceCategory.where('id', ctx.params.id).first();
     return success(ret);
   }
 
   @get('/types/:id')
-  @login
+  @wechat
   async types(ctx) {
     let ret = await Table.ServiceType.where('categoryId', ctx.params.id).orderBy('sort');
     return success(ret);
   }
 
   @get('/list')
-  @login
+  @wechat
   async list(ctx) {
   }
 
   @get('/search')
-  @login
+  @wechat
   async search(ctx) {
     let communityId = ctx.session.communityId;
 
@@ -58,7 +58,7 @@ export class ServiceController {
   }
 
   @get('/item/:id')
-  @login
+  @wechat
   async item(ctx) {
     let sql = `
       select s.*, c.name as categoryName, c.fields, t.name as typeName from t_service as s

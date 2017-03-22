@@ -1,8 +1,8 @@
 <v-page>
   <v-header slot="header">手机验证</v-header>
 
-  <form (ngSubmit)="submit()" #form="ngForm">
-    <v-group>
+  <form #form="ngForm">
+    <v-group gutter="0">
       <v-cell class="weui-cell_vcode">
         <input class="weui-input" type="tel" name="tel" placeholder="请输入手机号" required [(ngModel)]="verify.tel">
         <button slot="value" class="weui-vcode-btn" type="button" (act)="getCode($event)" [v-cooldown]="60">获取验证码</button>
@@ -12,7 +12,7 @@
       </v-cell>
     </v-group>
     <div class="weui-btn-area">
-      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+      <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>
   </form>
 </v-page>

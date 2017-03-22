@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as ejs from 'ejs';
 
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { uuid, create, getJsonBody } from '../utils';
 import { getStore } from '../store';
@@ -10,7 +10,7 @@ import { Product } from '../models';
 @router('/organization')
 export class OrganizationController {
   @get('/type/:id')
-  @login
+  @wechat
   async type(ctx) {
     let ret = await Table.Organization.where({
       accountid: ctx.session.communityId,
@@ -20,14 +20,14 @@ export class OrganizationController {
   }
 
   @get('/item/:id')
-  @login
+  @wechat
   async item(ctx) {
     let ret = await Table.Organization.where('id', ctx.params.id).first();
     return success(ret);
   }
 
   @get('/:id/users')
-  @login
+  @wechat
   async users(ctx) {
     let ret = await Table.OrganizationUser.where({
       organizationid: ctx.params.id,

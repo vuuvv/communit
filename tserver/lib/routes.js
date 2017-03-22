@@ -36,6 +36,11 @@ async function guardMiddleware(ctx, type) {
             throw new ResponseError('请先登录', '100004');
         }
     }
+    if (type === 'wechat') {
+        if (!ctx.session.communityId) {
+            throw new ResponseError('社区信息已无效，请重新从公众号进入', '100005');
+        }
+    }
 }
 function createKoaMiddleware(target, key, guard) {
     const obj = new target();
@@ -63,6 +68,10 @@ function login(target, targetKey, targetDescriptor) {
     Reflect.defineMetadata(GUARD_METADATA, 'login', target, targetKey);
 }
 exports.login = login;
+function wechat(target, targetKey, targetDescriptor) {
+    Reflect.defineMetadata(GUARD_METADATA, 'wechat', target, targetKey);
+}
+exports.wechat = wechat;
 function register(pattern, methods = ['all']) {
     return function (target, targetKey, targetDescriptor) {
         let routes = Reflect.getOwnMetadata(ROUTE_METADATA, target, targetKey) || [];

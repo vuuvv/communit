@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const routes_1 = require("../routes");
 const db_1 = require("../db");
+const config_1 = require("../config");
 const account_1 = require("../account");
 let UserController = class UserController {
     async carousel(ctx) {
@@ -61,7 +62,10 @@ let UserController = class UserController {
         return 'hello';
     }
     async addAccount(ctx) {
-        let user = await db_1.Table.WechatUser.orderBy('createdAt').first();
+        let user = await db_1.Table.WechatUser.where({
+            userId: ctx.session.userId,
+            officialAccountId: ctx.session.communityId,
+        }).first();
         await db_1.db.transaction(async (trx) => {
             await account_1.addPoints(trx, user.officialAccountId, user.userId, 'c7892688f90948e28008f82dbbd7f648', '68c5a973a00c4f33a10b9ae9d60879fa', 100);
         });
@@ -80,31 +84,36 @@ let UserController = class UserController {
         });
         return routes_1.success();
     }
+    async logout(ctx) {
+        delete ctx.session.userId;
+        const config = await config_1.Config.instance();
+        ctx.redirect(config.site.client);
+    }
 };
 __decorate([
     routes_1.get('/carousel'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "carousel", null);
 __decorate([
     routes_1.get('/logo'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "logo", null);
 __decorate([
     routes_1.get('/me'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "me", null);
 __decorate([
     routes_1.get('/organizations'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -133,6 +142,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "reverse", null);
+__decorate([
+    routes_1.get('/logout'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "logout", null);
 UserController = __decorate([
     routes_1.router('/user')
 ], UserController);

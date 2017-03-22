@@ -33,7 +33,6 @@ export class WechatController {
 
   @get('/login')
   async login(ctx) {
-    console.log(ctx.session.communityId);
     const wechat = await Wechat.create(ctx.session.communityId);
     const wechatUser = await wechat.login(ctx);
     const config = await Config.instance();

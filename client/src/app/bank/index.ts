@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { NgvModule } from '../../components';
 
-import { SharedModule } from '../shared';
+import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
@@ -43,6 +43,7 @@ const routes: Routes = [
       },
       {
         path: 'worker/add/:id',
+        canActivate: [AuthorizeGuard],
         pathMatch: 'full',
         component: WorkerAddComponent,
       },

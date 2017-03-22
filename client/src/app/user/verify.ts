@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
-import { Http } from '../shared';
+import { Http, FormService } from '../shared';
 import { DialogService, OverlayService } from '../../components';
 
 @Component({
@@ -13,21 +14,30 @@ export class VerifyComponent implements OnInit {
   cooldown: boolean;
   communityId: string;
 
+  validMessages = {
+    tel: {
+      required: '请输入手机号',
+    },
+    code: {
+      required: '请输入验证码',
+    }
+  };
+
   constructor(
     private http: Http,
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private overlayService: OverlayService,
+    private formService: FormService,
   ) {
   }
 
   ngOnInit() {
   }
 
-  submit() {
-    this.overlayService.loading();
-    this.http.json('/signup/verify', this.verify).subscribe((value) => {
+  submit(form: NgForm) {
+    this.formService.submit(form, this.validMessages, '/signup/verify', this.verify).subscribe(() => {
       this.router.navigate([`/user/signup`]);
     });
   }

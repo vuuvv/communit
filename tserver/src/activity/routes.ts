@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as ejs from 'ejs';
 
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { uuid, create, getJsonBody } from '../utils';
 import { getStore } from '../store';
@@ -80,7 +80,7 @@ export class ActivityController {
   }
 
   @get('/item/:id')
-  @login
+  @wechat
   async item(ctx) {
     let activity = await first(`
     select sa.*, o.organizationname from t_socially_activity as sa
@@ -104,7 +104,7 @@ export class ActivityController {
   }
 
   @get('/search')
-  @login
+  @wechat
   async search(ctx) {
     let ret = await raw(`
     select sa.*, o.organizationname from t_socially_activity as sa

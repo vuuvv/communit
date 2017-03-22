@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { NgvModule } from '../../components';
 
-import { SharedModule } from '../shared';
+import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { PublishComponent } from './publish.component';
 import { ActionComponent } from './action.component';
@@ -14,6 +14,7 @@ import { ActivityComponent } from './activity';
 const routes: Routes = [
   {
     path: 'publish',
+    canActivateChild: [AuthorizeGuard],
     children: [
       {
         path: 'action/:type',

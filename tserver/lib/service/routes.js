@@ -78,42 +78,42 @@ let ServiceController = class ServiceController {
 };
 __decorate([
     routes_1.get('/categories'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "categories", null);
 __decorate([
     routes_1.get('/category/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "category", null);
 __decorate([
     routes_1.get('/types/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "types", null);
 __decorate([
     routes_1.get('/list'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "list", null);
 __decorate([
     routes_1.get('/search'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "search", null);
 __decorate([
     routes_1.get('/item/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

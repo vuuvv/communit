@@ -1,8 +1,8 @@
 <v-page>
   <v-header slot="header">加入社区</v-header>
 
-  <form (ngSubmit)="submit()" #form="ngForm">
-    <v-group>
+  <form #form="ngForm">
+    <v-group gutter="0">
       <v-cell>
         <input class="weui-input" type="text" [value]="phone" readonly="readonly">
       </v-cell>
@@ -17,7 +17,7 @@
       </v-cell>
     </v-group>
     <div class="weui-btn-area">
-      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+      <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>
   </form>
 </v-page>

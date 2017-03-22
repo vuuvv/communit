@@ -137,7 +137,7 @@ let SignupController = class SignupController {
         });
     }
     async login(ctx) {
-        const user = await db_1.Table.WechatUser.whereNotNull('userId').orderBy('createdAt').first();
+        const user = await db_1.Table.WechatUser.where('id', ctx.params.id).first();
         ctx.session.userId = user.userId;
         ctx.session.communityId = user.officialAccountId;
         return user;
@@ -174,7 +174,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "crash", null);
 __decorate([
-    routes_1.get('/login'),
+    routes_1.get('/login/:id'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

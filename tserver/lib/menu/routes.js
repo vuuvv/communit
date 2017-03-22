@@ -38,21 +38,21 @@ let MenuController = class MenuController {
 };
 __decorate([
     routes_1.get('/bank'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MenuController.prototype, "bank", null);
 __decorate([
     routes_1.get('/community'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MenuController.prototype, "community", null);
 __decorate([
     routes_1.get('/community/:id'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

@@ -1,4 +1,4 @@
-import { router, get, post, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Account } from '../models';
@@ -6,10 +6,13 @@ import { Account } from '../models';
 @router('/account')
 export class AccountController {
   @get('/balance')
-  @login
+  @wechat
   async balance(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
+    if (!userId) {
+      return success(0);
+    }
     let balance = await Table.Account.where({communityId, userId}).sum('balance as balance').first();
     if (!balance || !balance.balance) {
       return success(0);

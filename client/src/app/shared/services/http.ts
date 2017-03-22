@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http as RawHttp, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
 import { Router } from '@angular/router';
 
-import { DialogService } from '../../../components';
+import { DialogService, OverlayService } from '../../../components';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/empty';
@@ -81,6 +81,7 @@ export class Http {
   constructor(
     private http: RawHttp,
     private dialog: DialogService,
+    private overlayService: OverlayService,
     private router: Router) {
   }
 
@@ -88,8 +89,9 @@ export class Http {
     console.error(err);
     let msg = '';
     if (err instanceof HttpError) {
-      if (err.code === '10004') {
-        this.router.navigate(['/login']);
+      if (err.code === '100004') {
+        this.overlayService.hideToast();
+        this.router.navigate(['/user/verify']);
         return Observable.empty();
       }
       msg = err.message;

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as ejs from 'ejs';
 
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { create } from '../utils';
 import { getStore } from '../store';
@@ -10,14 +10,14 @@ import { Product } from '../models';
 @router('/menu')
 export class MenuController {
   @get('/bank')
-  @login
+  @wechat
   async bank(ctx) {
     let ret = await Table.BankMenu.orderBy('sort');
     return success(ret);
   }
 
   @get('/community')
-  @login
+  @wechat
   async community(ctx) {
     let ret = await raw(
       `
@@ -30,7 +30,7 @@ export class MenuController {
   }
 
   @get('/community/:id')
-  @login
+  @wechat
   async communityChildren(ctx) {
     let parent = await first(`
       select id, name from weixin_cms_menu where id = ?

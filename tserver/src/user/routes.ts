@@ -1,13 +1,14 @@
-import { router, get, post, all, success, Response, ResponseError, login } from '../routes';
+import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, first, raw } from '../db';
 import { create, successPage } from '../utils';
+import { Config } from '../config';
 
 import { addPoints, deductPoints, reverseTransaction } from '../account';
 
 @router('/user')
 export class UserController {
   @get('/carousel')
-  @login
+  @wechat
   async carousel(ctx) {
     let communityId = ctx.session.communityId;
     let ret = await Table.Carousel.where('ACCOUNTID', communityId).select('IMAGE_HREF as image');
@@ -15,14 +16,14 @@ export class UserController {
   }
 
   @get('/logo')
-  @login
+  @wechat
   async logo(ctx) {
     let account = await Table.WechatOfficialAccount.where('id', ctx.session.communityId).first().select('logo');
     return success(account);
   }
 
   @get('/me')
-  @login
+  @wechat
   async me(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
@@ -50,7 +51,7 @@ export class UserController {
   }
 
   @get('/organizations')
-  @login
+  @wechat
   async organizations(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
@@ -75,7 +76,10 @@ export class UserController {
 
   @get('/add/account')
   async addAccount(ctx) {
-    let user = await Table.WechatUser.orderBy('createdAt').first();
+    let user = await Table.WechatUser.where({
+      userId: ctx.session.userId,
+      officialAccountId: ctx.session.communityId,
+    }).first();
     await db.transaction(async (trx) => {
       await addPoints(
         trx, user.officialAccountId, user.userId,
@@ -99,5 +103,12 @@ export class UserController {
       await reverseTransaction(trx, ctx.params.id);
     });
     return success();
+  }
+
+  @get('/logout')
+  async logout(ctx) {
+    delete ctx.session.userId;
+    const config = await Config.instance();
+    ctx.redirect(config.site.client);
   }
 }

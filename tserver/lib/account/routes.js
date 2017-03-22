@@ -14,6 +14,9 @@ let AccountController = class AccountController {
     async balance(ctx) {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
+        if (!userId) {
+            return routes_1.success(0);
+        }
         let balance = await db_1.Table.Account.where({ communityId, userId }).sum('balance as balance').first();
         if (!balance || !balance.balance) {
             return routes_1.success(0);
@@ -27,7 +30,7 @@ let AccountController = class AccountController {
 };
 __decorate([
     routes_1.get('/balance'),
-    routes_1.login,
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

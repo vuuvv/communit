@@ -8,8 +8,6 @@ import 'rxjs/add/operator/map';
 import { Http } from './http';
 import { DialogService } from '../../../components';
 
-import { User } from '../models';
-
 export class Login {
   username: string;
   password: string;
@@ -20,35 +18,35 @@ export class Login {
 export class AuthorizeService {
   isLoggedIn: boolean = false;
   redirectUrl: string;
-  user: User;
+  user: any;
 
   constructor(private http: Http, private router: Router, private dialogService: DialogService) {
     console.log('authorize ctors');
   }
 
-  private doLogin(user: User): User {
-    let redirect = this.redirectUrl ? this.redirectUrl : '/community';
+  private doLogin(user: any): any {
+    let redirect = this.redirectUrl ? this.redirectUrl : '/';
     this.router.navigateByUrl(redirect);
     return user;
   }
 
-  login(data: Login): Observable<User> {
-    return this.http.post<User>('mo/login', data, true).concatMap((user: User) => {
-      this.doLogin(user)
-      return this.update();
-    });
-  }
+  // login(data: Login): Observable<User> {
+  //   return this.http.post<User>('mo/login', data, true).concatMap((user: User) => {
+  //     this.doLogin(user)
+  //     return this.update();
+  //   });
+  // }
 
-  logout(): Observable<any> {
-    return this.http.get('mo/logout').map(() => {
-      this.isLoggedIn = false;
-      this.user = null;
-    });
-  }
+  // logout(): Observable<any> {
+  //   return this.http.get('mo/logout').map(() => {
+  //     this.isLoggedIn = false;
+  //     this.user = null;
+  //   });
+  // }
 
-  update(): Observable<User> {
-    return this.http.get<User>('/me', undefined, undefined, undefined, 'none').map((user: User) => {
-      this.isLoggedIn = true
+  update(): Observable<any> {
+    return this.http.get<any>('/user/me', undefined, undefined, undefined, 'none').map((user: any) => {
+      this.isLoggedIn = true;
       this.user = user;
       return user;
     });
@@ -58,7 +56,7 @@ export class AuthorizeService {
     if (this.isLoggedIn) {
       return Observable.of(true);
     }
-    return this.update().map((user: User) => {
+    return this.update().map((user: any) => {
       this.doLogin(user);
       return true;
     });

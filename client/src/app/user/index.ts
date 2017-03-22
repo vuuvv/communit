@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { NgvModule } from '../../components';
 
-import { SharedModule } from '../shared';
+import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { UserComponent } from './user';
 import { VerifyComponent } from './verify';
@@ -20,6 +20,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
         component: UserComponent,
       },
       {
@@ -35,11 +36,13 @@ const routes: Routes = [
       {
         path: 'qr/:id',
         pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
         component: QrcodeComponent,
       },
       {
         path: ':type/orders',
         pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
         component: OrderListComponent,
       },
     ],
