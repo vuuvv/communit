@@ -136,6 +136,16 @@ let SignupController = class SignupController {
             throw new Error('application crash test');
         });
     }
+    async test(ctx) {
+        let u = await db_1.Table.WechatUser.where('id', ctx.params.id).first();
+        if (!u) {
+            return routes_1.error('无效的用户');
+        }
+        ctx.session.communityId = u.officialAccountId;
+        ctx.session.wechatUserId = u.id;
+        ctx.session.verifiedPhone = '13599997777';
+        return routes_1.success();
+    }
     async login(ctx) {
         const user = await db_1.Table.WechatUser.where('id', ctx.params.id).first();
         ctx.session.userId = user.userId;
@@ -173,6 +183,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "crash", null);
+__decorate([
+    routes_1.get('/test/:id'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "test", null);
 __decorate([
     routes_1.get('/login/:id'),
     __metadata("design:type", Function),

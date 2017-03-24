@@ -26,7 +26,7 @@ export class OrganizationComponent implements OnInit {
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      this.type = params['id']
+      this.type = params['id'];
       return this.http.get(`/organization/type/${this.type}`);
     }).subscribe((resp: any) => {
       this.overlayService.hideToast();

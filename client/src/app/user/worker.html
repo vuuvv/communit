@@ -1,0 +1,26 @@
+<v-page>
+  <v-header slot="header">社工</v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker']" *ngIf="!isWorker">我要加入</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/publish/action/33ef69e8e2cc4cf3a9f12c36b560ee73']" *ngIf="isWorker">我要服务</v-tabbar-btn>
+  </v-tabbar>
+
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+  </v-tab>
+
+  <ng-container [ngSwitch]="currentIndex">
+    <ng-container *ngSwitchCase="0">
+      <v-group gutter="0">
+        <v-cell [isLink]="true" [routerLink]="['/bank/organization/detail/' + w.organizationid]" *ngFor="let w of workers">{{w.organizationname}}</v-cell>
+      </v-group>
+      <empty-page *ngIf="!isWorker">您还未成为本社区的社工</empty-page>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <empty-page>暂无内容</empty-page>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <empty-page>暂无内容</empty-page>
+    </ng-container>
+  </ng-container>
+</v-page>

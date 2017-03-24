@@ -50,7 +50,8 @@ let OrganizationController = class OrganizationController {
         data.username = data.realname = data.name;
         data.organizationid = ctx.params.id;
         data.subuserid = user.id;
-        data.status = 1;
+        data.status = 'submit';
+        data.roleId = 1;
         delete data.name;
         await db_1.Table.OrganizationUser.insert(data);
         return routes_1.success();

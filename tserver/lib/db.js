@@ -112,5 +112,8 @@ class Table {
     static get SociallyActivityUser() {
         return new Table(models_1.SociallyActivityUser, models_1.SociallyActivityUserTableName).database;
     }
+    static get Apicall() {
+        return new Table(models_1.Apicall, models_1.ApicallTableName).database;
+    }
 }
 exports.Table = Table;

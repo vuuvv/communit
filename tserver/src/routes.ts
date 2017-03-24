@@ -3,8 +3,15 @@ import 'reflect-metadata';
 import * as _ from 'lodash';
 import * as methods from 'methods';
 
+import { checkSignature } from './utils';
+import { Table } from './db';
+
 const ROUTE_METADATA = Symbol('route');
 const GUARD_METADATA = Symbol('guard');
+
+const app = {
+  'pc': 'c92d1879cde14f18b4a8a17fb225c21c',
+};
 
 export interface Controller {
   new (): any;
@@ -45,6 +52,37 @@ async function guardMiddleware(ctx, type) {
       throw new ResponseError('社区信息已无效，请重新从公众号进入', '100005');
     }
   }
+  if (type === 'api') {
+    let appkey = ctx.query.appkey;
+    let callid = ctx.query.callid;
+    let signature = ctx.query.signature;
+    if (!callid) {
+      throw new ResponseError('请传入callid');
+    }
+    if (!signature) {
+      throw new ResponseError('请传入signature');
+    }
+    if (!appkey) {
+      throw new ResponseError('请传入appkey');
+    }
+
+    let secret = app[appkey];
+    if (!secret) {
+      throw new ResponseError('无效的appkey');
+    }
+
+    if (!checkSignature(secret, callid, signature)) {
+      throw new ResponseError('无效的签名');
+    }
+
+    try {
+      await Table.Apicall.insert({id: callid});
+    } catch (ex) {
+      if (/ER_DUP_ENTRY/.test(ex.message)) {
+        throw new ResponseError('callid已经使用过, 请使用新的callid');
+      }
+    }
+  }
 }
 
 function createKoaMiddleware(target: Controller, key: string, guard) {
@@ -75,6 +113,10 @@ export function login(target: any, targetKey: string | symbol, targetDescriptor:
 
 export function wechat(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) {
   Reflect.defineMetadata(GUARD_METADATA, 'wechat', target, targetKey);
+}
+
+export function api(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) {
+  Reflect.defineMetadata(GUARD_METADATA, 'api', target, targetKey);
 }
 
 export function register(pattern: string | RegExp, methods: string[] = ['all']) {

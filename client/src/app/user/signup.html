@@ -3,17 +3,22 @@
 
   <form #form="ngForm">
     <v-group gutter="0">
-      <v-cell>
+      <v-cell label="手机号">
         <input class="weui-input" type="text" [value]="phone" readonly="readonly">
       </v-cell>
-      <v-cell>
+      <v-cell label="真实姓名">
         <input class="weui-input" type="text" name="name" placeholder="真实姓名" required [(ngModel)]="user.name">
       </v-cell>
-      <v-cell>
-        <input class="weui-input" type="text" name="area" placeholder="小区名称" required [(ngModel)]="user.area">
+      <v-cell class="weui-cell_select weui-cell_select-after" label="小区名称">
+        <select class="weui-select" name="biotope" [(ngModel)]="user.biotope">
+          <option *ngFor="let b of biotopes" [value]="b.id">{{ b.name }}</option>
+        </select>
       </v-cell>
-      <v-cell>
-        <input class="weui-input" type="text" name="address" placeholder="家庭住址" required [(ngModel)]="user.address">
+      <v-cell label="其他小区" *ngIf="!user.biotope">
+        <input class="weui-input" type="text" name="area" placeholder="其他小区名称" [(ngModel)]="user.area">
+      </v-cell>
+      <v-cell label="门牌号">
+        <input class="weui-input" type="text" name="address" placeholder="门牌号" required [(ngModel)]="user.address">
       </v-cell>
     </v-group>
     <div class="weui-btn-area">

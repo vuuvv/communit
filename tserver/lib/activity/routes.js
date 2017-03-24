@@ -29,7 +29,6 @@ let ActivityController = class ActivityController {
         user.activityId = ids[0];
         user.communityId = ctx.session.communityId;
         user.userId = ctx.session.userId;
-        user.post = 'leader';
         await db_1.Table.SociallyActivityUser.insert(user);
         return routes_1.success();
     }
@@ -55,7 +54,7 @@ let ActivityController = class ActivityController {
             throw new Error('该活动不可进行该操作');
         }
         let user = await db_1.Table.SociallyActivityUser.where({
-            communityId: ctx.session.communityId,
+            activityId: activity.id,
             userId: ctx.session.userId,
         }).first();
         if (user) {
@@ -75,7 +74,7 @@ let ActivityController = class ActivityController {
     where sa.id = ?
     `, [ctx.params.id]);
         let users = await db_1.raw(`
-    select wu.*, au.post, au.status from t_socially_activity_user as au
+    select wu.*, au.status from t_socially_activity_user as au
     join t_wechat_user as wu on au.communityId=wu.officialAccountId and au.userId=wu.userId
     where au.activityId = ?
     `, [ctx.params.id]);

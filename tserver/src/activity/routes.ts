@@ -27,7 +27,6 @@ export class ActivityController {
     user.activityId = ids[0];
     user.communityId = ctx.session.communityId;
     user.userId = ctx.session.userId;
-    user.post = 'leader';
 
     await Table.SociallyActivityUser.insert(user);
     return success();
@@ -61,7 +60,7 @@ export class ActivityController {
     }
 
     let user = await Table.SociallyActivityUser.where({
-      communityId: ctx.session.communityId,
+      activityId: activity.id,
       userId: ctx.session.userId,
     }).first();
 
@@ -89,7 +88,7 @@ export class ActivityController {
     `, [ctx.params.id]);
 
     let users = await raw(`
-    select wu.*, au.post, au.status from t_socially_activity_user as au
+    select wu.*, au.status from t_socially_activity_user as au
     join t_wechat_user as wu on au.communityId=wu.officialAccountId and au.userId=wu.userId
     where au.activityId = ?
     `, [ctx.params.id]);

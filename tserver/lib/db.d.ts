@@ -36,4 +36,5 @@ export declare class Table<T> {
     static readonly Carousel: knex.QueryBuilder;
     static readonly SociallyActivity: knex.QueryBuilder;
     static readonly SociallyActivityUser: knex.QueryBuilder;
+    static readonly Apicall: knex.QueryBuilder;
 }

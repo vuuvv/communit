@@ -28,3 +28,4 @@ __export(require("./order_detail"));
 __export(require("./carousel"));
 __export(require("./socially_activity"));
 __export(require("./socially_activity_user"));
+__export(require("./api"));

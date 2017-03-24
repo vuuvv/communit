@@ -4,10 +4,12 @@ import { property } from '../utils';
 export class OrderType {
   static Product = 'product';
   static Service = 'service';
+  static Activity = 'activity';
 }
 
 export class OrderStatus {
   static Done = 'done';
+  static Reject = 'reject';
 }
 
 export class Order extends BaseModel {
@@ -31,7 +33,7 @@ export class Order extends BaseModel {
   @property()
   amount: number;
   /**
-   * 订单状态
+   * 订单状态, 'done': 已完成, 'reject': 已退款
    */
   @property()
   status: string;

@@ -44,21 +44,21 @@ export class ActivityComponent implements OnInit {
   }
 
   join() {
-    this.overlayService.loading()
+    this.overlayService.loading();
     this.http.post(`/activity/join/${this.activity.id}`).subscribe((value) => {
       this.router.navigate([`/bank/activity/${this.activity.id}`, {t: new Date().getTime()}]);
     });
   }
 
   start() {
-    this.overlayService.loading()
+    this.overlayService.loading();
     this.http.post(`/activity/start/${this.activity.id}`).subscribe((value) => {
       this.router.navigate([`/bank/activity/${this.activity.id}`, {t: new Date().getTime()}]);
     });
   }
 
   check() {
-    this.overlayService.loading()
+    this.overlayService.loading();
     this.http.post(`/qr/g/activity/${this.activity.id}`).subscribe((value) => {
       this.overlayService.hideToast();
       this.router.navigate([`/user/qr/${value}`]);

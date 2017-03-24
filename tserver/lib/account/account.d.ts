@@ -7,6 +7,9 @@ export declare class TransactionType {
     static GetProduct: string;
     static PayService: string;
     static GetService: string;
+    static PayCommunity: string;
+    static PayActivity: string;
+    static GetActivity: string;
 }
 export declare function reverseTransaction(trx: any, transactionId: string): Promise<void>;
 /**
@@ -21,3 +24,5 @@ export declare function reverseTransaction(trx: any, transactionId: string): Pro
  */
 export declare function addPoints(trx: any, communityId: any, userId: any, accountTypeId: any, transactionTypeId: any, points: any, expiresIn?: number): Promise<string>;
 export declare function deductPoints(trx: any, communityId: any, userId: any, transactionTypeId: any, points: any): Promise<any>;
+export declare function PayCommunity(trx: any, communityId: any, points: any): Promise<string>;
+export declare function PayActivity(trx: any, activityUserId: any, points: any): Promise<string>;

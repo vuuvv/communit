@@ -36,16 +36,23 @@ export class UserController {
     where wu.officialAccountId=? and wu.userId=?
     `, [communityId, userId]);
 
-    let account = await raw(`
-    select a.*, at.name from t_account as a join t_account_type as at on a.typeId = at.id
+    let balance = await first(`
+    select sum(a.balance) as balance from t_account as a
     where a.communityId = ? and a.userId = ?
+    `, [communityId, userId]);
+
+    let points = await first(`
+    select sum(total) as points from t_account_detail
+    where communityId = ? and userId = ?
     `, [communityId, userId]);
 
     let store = await Table.Store.where({communityId, userId}).first();
 
+    user.balance = balance.balance || 0;
+    user.points = points.points || 0;
+
     return success({
       user,
-      account,
       store,
     });
   }
@@ -67,6 +74,30 @@ export class UserController {
     }
 
     return success(ret);
+  }
+
+  @get('/biotope')
+  @wechat
+  async biotype(ctx) {
+    let communityId = ctx.session.communityId;
+    let ret = await raw(`
+      select * from t_biotope where communityId = ? order by sort
+    `, [communityId]);
+
+    return success(ret);
+  }
+
+  @get('/workers')
+  @login
+  async workers(ctx) {
+    let workers = await raw(`
+    select ou.*, o.organizationname from t_organuser as ou
+    join t_wechat_user as wu on ou.subuserid = wu.id
+    join t_organization as o on o.id = ou.organizationid
+    where wu.officialAccountId = ? and wu.userId = ?
+    `, [ctx.session.communityId, ctx.session.userId]);
+
+    return success(workers);
   }
 
   @get('/test')

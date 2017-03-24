@@ -26,16 +26,9 @@ export class SociallyActivityUser extends BaseModel {
   @property()
   status: string;
 
-  /**
-   * 活动中的职位, leader：组织者, manager: 管理者, normal: 一般参与人员
-   */
-  @property()
-  post: string;
-
   constructor() {
     super();
     this.status = 'submit';
-    this.post = 'normal';
   }
 
 }

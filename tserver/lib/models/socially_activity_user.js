@@ -14,7 +14,6 @@ class SociallyActivityUser extends base_model_1.BaseModel {
     constructor() {
         super();
         this.status = 'submit';
-        this.post = 'normal';
     }
 }
 __decorate([
@@ -33,9 +32,5 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], SociallyActivityUser.prototype, "status", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], SociallyActivityUser.prototype, "post", void 0);
 exports.SociallyActivityUser = SociallyActivityUser;
 exports.SociallyActivityUserTableName = 't_socially_activity_user';

@@ -6,6 +6,7 @@ export interface Controller {
 export declare function router(prefix?: string): (target: Controller) => void;
 export declare function login(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor): void;
 export declare function wechat(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor): void;
+export declare function api(target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor): void;
 export declare function register(pattern: string | RegExp, methods?: string[]): (target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) => void;
 export declare function all(pattern: string | RegExp): (target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) => void;
 export declare function get(pattern: string | RegExp): (target: any, targetKey: string | symbol, targetDescriptor: PropertyDescriptor) => void;

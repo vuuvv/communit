@@ -6,7 +6,7 @@
     </a>
     公益活动
   </v-header>
-  <v-tabbar slot="footer" *ngIf="canjoin || canCheck || canStart">
+  <v-tabbar slot="footer" *ngIf="canJoin || canCheck || canStart">
     <v-tabbar-btn class="primary" (click)="join()" *ngIf="canJoin">我要参加</v-tabbar-btn>
     <v-tabbar-btn class="primary" (click)="start()" *ngIf="canStart">开始活动</v-tabbar-btn>
     <v-tabbar-btn class="primary" (click)="check()" *ngIf="canCheck">开始签到</v-tabbar-btn>

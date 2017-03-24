@@ -2,9 +2,11 @@ import { BaseModel } from './base_model';
 export declare class OrderType {
     static Product: string;
     static Service: string;
+    static Activity: string;
 }
 export declare class OrderStatus {
     static Done: string;
+    static Reject: string;
 }
 export declare class Order extends BaseModel {
     type: string;
@@ -22,7 +24,7 @@ export declare class Order extends BaseModel {
      */
     amount: number;
     /**
-     * 订单状态
+     * 订单状态, 'done': 已完成, 'reject': 已退款
      */
     status: string;
     /**

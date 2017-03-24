@@ -55,6 +55,7 @@ import {
   Carousel, CarouselTableName,
   SociallyActivity, SociallyActivityTableName,
   SociallyActivityUser, SociallyActivityUserTableName,
+  Apicall, ApicallTableName,
 } from './models';
 
 export interface Model<T> {
@@ -176,6 +177,10 @@ export class Table<T> {
 
   static get SociallyActivityUser() {
     return new Table<SociallyActivityUser>(SociallyActivityUser, SociallyActivityUserTableName).database;
+  }
+
+  static get Apicall() {
+    return new Table<Apicall>(Apicall, ApicallTableName).database;
   }
 
 }

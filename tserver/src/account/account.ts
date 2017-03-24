@@ -2,7 +2,12 @@ import * as _ from 'lodash';
 import { Table, db, raw, first } from '../db';
 import { uuid } from '../utils';
 
-import { Account, AccountDetail, Transaction, TransactionDetail } from '../models';
+import { Account, AccountDetail, Transaction, TransactionDetail, Order, OrderDetail, OrderType, OrderStatus } from '../models';
+
+async function getWechatUser(officialAccountId, userId) {
+  return await Table.WechatUser.where({officialAccountId, userId}).first();
+}
+
 
 export class AccountType {
   static Normal = 'c7892688f90948e28008f82dbbd7f648';
@@ -14,6 +19,9 @@ export class TransactionType {
   static GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
   static PayService = '88c09b4eefe345d59cba1cb55fcafe74';
   static GetService = '469e867fb97a4f998726880ada7608c8';
+  static PayCommunity = '6f822ac9c88a4e13bf4eaacf1050dcac';
+  static PayActivity = '20869530294748e2971f46b19d5da328';
+  static GetActivity = '68c5a973a00c4f33a10b9ae9d60879fa';
 }
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
@@ -223,4 +231,93 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
 
   await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid);
   return tid;
+}
+
+export async function PayCommunity(trx, communityId, points) {
+  if (!communityId) {
+    throw new Error('communityId不能为空');
+  }
+  points = parseInt(points, 10);
+  if (isNaN(points) || points < 0) {
+    throw new Error('points需为整数，且不能为负数');
+  }
+
+  let tid = await addPoints(trx, communityId, communityId, AccountType.Normal, TransactionType.PayCommunity, points);
+  return tid;
+}
+
+export async function PayActivity(trx, activityUserId, points) {
+    points = parseInt(points, 10);
+    if (!activityUserId) {
+      throw new Error('activityUserId不能为空');
+    }
+    points = parseInt(points, 10);
+    if (isNaN(points) || points < 0) {
+      throw new Error('points需为整数，且不能为负数');
+    }
+
+    let activityUser = await Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).forUpdate().first();
+    if (!activityUser) {
+      throw new Error('无效的activityUserId');
+    }
+
+    let activity = await Table.SociallyActivity.where('id', activityUser.activityId).first();
+
+    if (!activity) {
+      throw new Error(`activityUserId关联的activity已失效, activityUserId: ${activityUserId}, acitivtyId: ${activityUser.activityId}`);
+    }
+    let communityId = activityUser.communityId;
+
+    let seller = await getWechatUser(communityId, activityUser.userId);
+
+    let payed = await first(`
+    select o.id from t_order as o
+    join t_order_detail as od on o.id = od.orderId
+    where o.sellerId = ? and o.type = ? and o.status != ? and od.productId = ?
+    `, [seller.userId, OrderType.Activity, OrderStatus.Reject, activity.id], trx);
+
+    if (payed) {
+      throw new Error(`用户[${seller.realname}]已从活动中获取到积分， 不可重复获取, orderid: ${payed.id}`);
+    }
+
+    let order = new Order();
+    order.type = OrderType.Activity;
+    order.communityId = activityUser.communityId;
+    order.sellerId = seller.userId;
+    order.buyerId = communityId;
+    order.orderTime = order.payTime = order.tradeTime = new Date();
+
+    let detail = new OrderDetail();
+    detail.orderId = order.id;
+    detail.type = OrderType.Activity;
+    detail.productId = activity.id;
+
+    let amount = order.amount = points;
+
+    order.buyerTradeTransactionId = await deductPoints(
+      trx, communityId, order.buyerId, TransactionType.PayActivity, amount
+    );
+
+    order.sellerTradeTransactionId = await addPoints(
+      trx, communityId, order.sellerId , AccountType.Normal, TransactionType.GetActivity, amount
+    );
+
+    order.status = OrderStatus.Done;
+
+    await Table.Order.transacting(trx).insert(order);
+
+    detail.points = amount;
+    detail.data = JSON.stringify({
+      activity: activity,
+      activityUser: activityUser,
+    });
+
+    await Table.OrderDetail.transacting(trx).insert(detail);
+
+    await Table.SociallyActivityUser.transacting(trx).where('id', activityUser.id).update({
+      orderId: order.id,
+      points: points,
+    });
+
+    return order.id;
 }

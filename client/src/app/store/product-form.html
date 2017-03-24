@@ -1,7 +1,7 @@
 <v-page>
   <v-header slot="header">{{title}}</v-header>
 
-  <form (ngSubmit)="submit()" #form="ngForm">
+  <form #form="ngForm">
     <v-group gutter="0">
       <v-cell class="weui-cell_select weui-cell_select-after" label="商品种类">
         <select class="weui-select" name="power" [(ngModel)]="product.categoryId" required>
@@ -27,7 +27,7 @@
       </v-cell>
     </v-group>
     <div class="weui-btn-area">
-      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+      <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>
   </form>
 </v-page>

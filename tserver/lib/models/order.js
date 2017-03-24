@@ -14,10 +14,12 @@ class OrderType {
 }
 OrderType.Product = 'product';
 OrderType.Service = 'service';
+OrderType.Activity = 'activity';
 exports.OrderType = OrderType;
 class OrderStatus {
 }
 OrderStatus.Done = 'done';
+OrderStatus.Reject = 'reject';
 exports.OrderStatus = OrderStatus;
 class Order extends base_model_1.BaseModel {
 }

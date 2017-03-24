@@ -12,6 +12,7 @@ import { VerifyComponent } from './verify';
 import { SignupComponent } from './signup';
 import { QrcodeComponent } from './qrcode';
 import { OrderListComponent } from './order-list';
+import { WorkerComponent } from './worker';
 
 const routes: Routes = [
   {
@@ -45,6 +46,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: OrderListComponent,
       },
+      {
+        path: 'worker',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: WorkerComponent,
+      },
     ],
   },
 ];
@@ -64,6 +71,7 @@ const routes: Routes = [
     SignupComponent,
     QrcodeComponent,
     OrderListComponent,
+    WorkerComponent,
   ]
 })
 export class UserModule {

@@ -148,6 +148,18 @@ export class SignupController　{
     });
   }
 
+  @get('/test/:id')
+  async test(ctx) {
+    let u = await Table.WechatUser.where('id', ctx.params.id).first();
+    if (!u) {
+      return error('无效的用户');
+    }
+    ctx.session.communityId = u.officialAccountId;
+    ctx.session.wechatUserId = u.id;
+    ctx.session.verifiedPhone = '13599997777';
+    return success();
+  }
+
   @get('/login/:id')
   async login(ctx) {
     const user = await Table.WechatUser.where('id', ctx.params.id).first();

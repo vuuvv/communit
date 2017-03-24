@@ -3,8 +3,13 @@ const Router = require("koa-router");
 require("reflect-metadata");
 const _ = require("lodash");
 const methods = require("methods");
+const utils_1 = require("./utils");
+const db_1 = require("./db");
 const ROUTE_METADATA = Symbol('route');
 const GUARD_METADATA = Symbol('guard');
+const app = {
+    'pc': 'c92d1879cde14f18b4a8a17fb225c21c',
+};
 function router(prefix = null) {
     return function (target) {
         const prop = target.prototype;
@@ -41,6 +46,35 @@ async function guardMiddleware(ctx, type) {
             throw new ResponseError('社区信息已无效，请重新从公众号进入', '100005');
         }
     }
+    if (type === 'api') {
+        let appkey = ctx.query.appkey;
+        let callid = ctx.query.callid;
+        let signature = ctx.query.signature;
+        if (!callid) {
+            throw new ResponseError('请传入callid');
+        }
+        if (!signature) {
+            throw new ResponseError('请传入signature');
+        }
+        if (!appkey) {
+            throw new ResponseError('请传入appkey');
+        }
+        let secret = app[appkey];
+        if (!secret) {
+            throw new ResponseError('无效的appkey');
+        }
+        if (!utils_1.checkSignature(secret, callid, signature)) {
+            throw new ResponseError('无效的签名');
+        }
+        try {
+            await db_1.Table.Apicall.insert({ id: callid });
+        }
+        catch (ex) {
+            if (/ER_DUP_ENTRY/.test(ex.message)) {
+                throw new ResponseError('callid已经使用过, 请使用新的callid');
+            }
+        }
+    }
 }
 function createKoaMiddleware(target, key, guard) {
     const obj = new target();
@@ -72,6 +106,10 @@ function wechat(target, targetKey, targetDescriptor) {
     Reflect.defineMetadata(GUARD_METADATA, 'wechat', target, targetKey);
 }
 exports.wechat = wechat;
+function api(target, targetKey, targetDescriptor) {
+    Reflect.defineMetadata(GUARD_METADATA, 'api', target, targetKey);
+}
+exports.api = api;
 function register(pattern, methods = ['all']) {
     return function (target, targetKey, targetDescriptor) {
         let routes = Reflect.getOwnMetadata(ROUTE_METADATA, target, targetKey) || [];
