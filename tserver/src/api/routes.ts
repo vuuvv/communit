@@ -3,7 +3,11 @@ import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Account, Order, OrderType, OrderDetail, OrderStatus } from '../models';
 
-import { addPoints, deductPoints, AccountType, TransactionType, PayActivity, PayCommunity } from '../account';
+import {
+  addPoints, deductPoints, AccountType,
+  TransactionType, PayActivity, PayCommunity,
+  RefundActivityUser, ChangeActivityUser,
+} from '../account';
 
 async function getWechatUser(officialAccountId, userId) {
   return await Table.WechatUser.where({officialAccountId, userId}).first();
@@ -14,9 +18,13 @@ interface PayToCommunity {
   points: number;
 }
 
-interface PayToActivityUser{
+interface PayToActivityUser {
   activityUserId: string;
   points: number;
+}
+
+interface RefundActivityUser {
+  activityUserId: string;
 }
 
 @router('/api')
@@ -32,10 +40,7 @@ export class ApiController {
         ret.push(tid);
       }
     });
-    return {
-      success: true,
-      value: ret
-    };
+    return success(ret);
   }
 
   @post('/points/give/user')
@@ -45,7 +50,37 @@ export class ApiController {
     let ret = [];
     await db.transaction(async (trx) => {
       for (let item of data) {
-        let oid = await PayActivity(trx, item.activityUserId, item.points);
+        let oid = await ChangeActivityUser(trx, item.activityUserId, item.points);
+        ret.push(oid);
+      }
+    });
+
+    return success(ret);
+  }
+
+  @post('/points/refund/activity')
+  @api
+  async pointsRefundActivity(ctx) {
+    let data: RefundActivityUser[] = await getJsonBody(ctx);
+    let ret = [];
+    await db.transaction(async (trx) => {
+      for (let item of data) {
+        let oid = await RefundActivityUser(trx, item.activityUserId);
+        ret.push(oid);
+      }
+    });
+
+    return success(ret);
+  }
+
+  @post('/points/change/activity')
+  @api
+  async pointsChangeActivity(ctx) {
+    let data: PayToActivityUser[] = await getJsonBody(ctx);
+    let ret = [];
+    await db.transaction(async (trx) => {
+      for (let item of data) {
+        let oid = await ChangeActivityUser(trx, item.activityUserId, item.points);
         ret.push(oid);
       }
     });

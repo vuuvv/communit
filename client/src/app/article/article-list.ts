@@ -9,8 +9,8 @@ import { OverlayService } from '../../components';
   styleUrls: ['./article-list.less'],
 })
 export class ArticleListComponent implements OnInit {
-  private articles: any = [];
-  private category: string;
+  articles: any = [];
+  category: string;
 
   constructor(
     private http: Http,

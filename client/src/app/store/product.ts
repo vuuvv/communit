@@ -32,7 +32,7 @@ export class ProductAddComponent implements OnInit {
     });
   }
 
-  submit() {
+  submit(form) {
     if (this.product.points + this.product.price > this.product.normalPrice) {
       this.dialogService.alert('积分+积分售价的总额不得超过商品的原价');
       return;
@@ -75,7 +75,7 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
-  submit() {
+  submit(form) {
     if (this.product.points + this.product.price > this.product.normalPrice) {
       this.dialogService.alert('积分+积分售价的总额不得超过商品的原价');
       return;

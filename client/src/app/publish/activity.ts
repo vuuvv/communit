@@ -29,7 +29,7 @@ export class ActivityComponent implements OnInit {
     });
   }
 
-  submit(data) {
+  submit() {
     this.overlayService.loading();
     this.activity.ifspot = !!this.activity.ifspot;
     this.http.json(`/activity/add`, this.activity).subscribe(() => {

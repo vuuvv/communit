@@ -6,7 +6,7 @@ export declare class OrderType {
 }
 export declare class OrderStatus {
     static Done: string;
-    static Reject: string;
+    static Refund: string;
 }
 export declare class Order extends BaseModel {
     type: string;

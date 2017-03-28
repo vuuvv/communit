@@ -10,8 +10,10 @@ export declare class TransactionType {
     static PayCommunity: string;
     static PayActivity: string;
     static GetActivity: string;
+    static RefundPayActivity: string;
+    static RefundGetActivity: string;
 }
-export declare function reverseTransaction(trx: any, transactionId: string): Promise<void>;
+export declare function reverseTransaction(trx: any, transactionId: string): Promise<any>;
 /**
  * 增加积分
  * @param trx 事务对象
@@ -24,5 +26,8 @@ export declare function reverseTransaction(trx: any, transactionId: string): Pro
  */
 export declare function addPoints(trx: any, communityId: any, userId: any, accountTypeId: any, transactionTypeId: any, points: any, expiresIn?: number): Promise<string>;
 export declare function deductPoints(trx: any, communityId: any, userId: any, transactionTypeId: any, points: any): Promise<any>;
+export declare function refundOrder(trx: any, orderId: any): Promise<void>;
 export declare function PayCommunity(trx: any, communityId: any, points: any): Promise<string>;
 export declare function PayActivity(trx: any, activityUserId: any, points: any): Promise<string>;
+export declare function RefundActivityUser(trx: any, activityUserId: string): Promise<string>;
+export declare function ChangeActivityUser(trx: any, activityUserId: string, points: any): Promise<string>;

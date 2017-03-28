@@ -10,7 +10,7 @@ import { OverlayService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class ArticleComponent implements OnInit {
-  private article: any;
+  article: any;
 
   constructor(
     private http: Http,

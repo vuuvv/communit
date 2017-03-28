@@ -20,7 +20,12 @@ TransactionType.GetService = '469e867fb97a4f998726880ada7608c8';
 TransactionType.PayCommunity = '6f822ac9c88a4e13bf4eaacf1050dcac';
 TransactionType.PayActivity = '20869530294748e2971f46b19d5da328';
 TransactionType.GetActivity = '68c5a973a00c4f33a10b9ae9d60879fa';
+TransactionType.RefundPayActivity = '4d6c9ff43fe1420dbca306a8287b175c';
+TransactionType.RefundGetActivity = 'cda6e63b1bc0462cb22d859d47869c40';
 exports.TransactionType = TransactionType;
+const reverseTransactionTypes = {};
+reverseTransactionTypes[TransactionType.PayActivity] = TransactionType.RefundPayActivity;
+reverseTransactionTypes[TransactionType.GetActivity] = TransactionType.RefundGetActivity;
 async function insertTransactionDetail(trx, accountDetail, points, transactionId) {
     let td = new models_1.TransactionDetail();
     td.communityId = accountDetail.communityId;
@@ -89,10 +94,12 @@ async function reverseTransaction(trx, transactionId) {
             balance: account.balance
         });
     }
-    await insertTransaction(trx, accounts[0], t.typeId, -t.amount, tid);
+    let type = reverseTransactionTypes[t.typeId] || t.typeId;
+    await insertTransaction(trx, accounts[0], type, -t.amount, tid);
     await db_1.Table.Transaction.transacting(trx).where('id', t.id).update({
         reverseTransactionId: tid
     });
+    return tid;
 }
 exports.reverseTransaction = reverseTransaction;
 /**
@@ -199,6 +206,26 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points)
     return tid;
 }
 exports.deductPoints = deductPoints;
+async function refundOrder(trx, orderId) {
+    if (!orderId) {
+        throw new Error('orderId为空');
+    }
+    let order = await db_1.Table.Order.transacting(trx).where('id', orderId).forUpdate().first();
+    if (!order) {
+        throw new Error(`无效的订单:${orderId}`);
+    }
+    if (order.status === models_1.OrderStatus.Refund) {
+        throw new Error('订单已退款，不可重复退款');
+    }
+    order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
+    order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+    await db_1.Table.Order.transacting(trx).where('id', orderId).update({
+        status: models_1.OrderStatus.Refund,
+        buyerRefundTransactionId: order.buyerRefundTransactionId,
+        sellerRefundTransactionId: order.sellerRefundTransactionId,
+    });
+}
+exports.refundOrder = refundOrder;
 async function PayCommunity(trx, communityId, points) {
     if (!communityId) {
         throw new Error('communityId不能为空');
@@ -224,19 +251,14 @@ async function PayActivity(trx, activityUserId, points) {
     if (!activityUser) {
         throw new Error('无效的activityUserId');
     }
+    let communityId = activityUser.communityId;
+    let seller = await getWechatUser(communityId, activityUser.userId);
+    if (activityUser.status === models_1.SociallyActivityUserStatus.Payed) {
+        throw new Error(`用户[${seller.realname}]已从活动中获取到积分， 不可重复获取, orderid: ${activityUser.orderId}`);
+    }
     let activity = await db_1.Table.SociallyActivity.where('id', activityUser.activityId).first();
     if (!activity) {
         throw new Error(`activityUserId关联的activity已失效, activityUserId: ${activityUserId}, acitivtyId: ${activityUser.activityId}`);
-    }
-    let communityId = activityUser.communityId;
-    let seller = await getWechatUser(communityId, activityUser.userId);
-    let payed = await db_1.first(`
-    select o.id from t_order as o
-    join t_order_detail as od on o.id = od.orderId
-    where o.sellerId = ? and o.type = ? and o.status != ? and od.productId = ?
-    `, [seller.userId, models_1.OrderType.Activity, models_1.OrderStatus.Reject, activity.id], trx);
-    if (payed) {
-        throw new Error(`用户[${seller.realname}]已从活动中获取到积分， 不可重复获取, orderid: ${payed.id}`);
     }
     let order = new models_1.Order();
     order.type = models_1.OrderType.Activity;
@@ -247,7 +269,7 @@ async function PayActivity(trx, activityUserId, points) {
     let detail = new models_1.OrderDetail();
     detail.orderId = order.id;
     detail.type = models_1.OrderType.Activity;
-    detail.productId = activity.id;
+    detail.productId = activityUserId;
     let amount = order.amount = points;
     order.buyerTradeTransactionId = await deductPoints(trx, communityId, order.buyerId, TransactionType.PayActivity, amount);
     order.sellerTradeTransactionId = await addPoints(trx, communityId, order.sellerId, AccountType.Normal, TransactionType.GetActivity, amount);
@@ -262,7 +284,56 @@ async function PayActivity(trx, activityUserId, points) {
     await db_1.Table.SociallyActivityUser.transacting(trx).where('id', activityUser.id).update({
         orderId: order.id,
         points: points,
+        status: models_1.SociallyActivityUserStatus.Payed,
     });
     return order.id;
 }
 exports.PayActivity = PayActivity;
+async function RefundActivityUser(trx, activityUserId) {
+    if (!activityUserId) {
+        throw new Error('activityUserId不能为空');
+    }
+    let activityUser = await db_1.Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).forUpdate().first();
+    if (!activityUser) {
+        throw new Error('无效的activityUserId');
+    }
+    if (activityUser.status !== models_1.SociallyActivityUserStatus.Payed) {
+        throw new Error('活动积分还未发放，无法退款');
+    }
+    await refundOrder(trx, activityUser.orderId);
+    await db_1.Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).update({
+        orderId: null,
+        points: 0,
+        status: models_1.SociallyActivityUserStatus.Refund,
+    });
+    return activityUser.orderId;
+}
+exports.RefundActivityUser = RefundActivityUser;
+async function ChangeActivityUser(trx, activityUserId, points) {
+    points = parseInt(points, 10);
+    if (isNaN(points) || points < 0) {
+        throw new Error('points需为整数，且不能为负数');
+    }
+    if (!activityUserId) {
+        throw new Error('activityUserId不能为空');
+    }
+    let activityUser = await db_1.Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).forUpdate().first();
+    if (!activityUser) {
+        throw new Error('无效的activityUserId');
+    }
+    if (activityUser.status === models_1.SociallyActivityUserStatus.Payed) {
+        if (activityUser.points === points) {
+            // 已发放而且数值相同，不需要操作
+            return activityUser.orderId;
+        }
+        // 已发放但数值不同，要先退款，再发放
+        await refundOrder(trx, activityUser.orderId);
+        await db_1.Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).update({
+            orderId: null,
+            points: 0,
+            status: models_1.SociallyActivityUserStatus.Refund,
+        });
+    }
+    return await PayActivity(trx, activityUserId, points);
+}
+exports.ChangeActivityUser = ChangeActivityUser;

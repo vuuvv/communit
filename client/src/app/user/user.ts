@@ -7,8 +7,8 @@ import { OverlayService } from '../../components';
   styleUrls: ['./user.less'],
 })
 export class UserComponent implements OnInit {
-  private user: any = {};
-  private store: any;
+  user: any = {};
+  store: any;
 
   constructor(
     private http: Http,

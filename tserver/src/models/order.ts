@@ -9,7 +9,7 @@ export class OrderType {
 
 export class OrderStatus {
   static Done = 'done';
-  static Reject = 'reject';
+  static Refund = 'refund';
 }
 
 export class Order extends BaseModel {

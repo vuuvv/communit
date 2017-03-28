@@ -10,6 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
+class SociallyActivityUserStatus {
+}
+SociallyActivityUserStatus.Submit = 'submit';
+SociallyActivityUserStatus.Joined = 'joined';
+SociallyActivityUserStatus.Reject = 'reject';
+SociallyActivityUserStatus.Payed = 'payed';
+SociallyActivityUserStatus.Refund = 'refund';
+exports.SociallyActivityUserStatus = SociallyActivityUserStatus;
 class SociallyActivityUser extends base_model_1.BaseModel {
     constructor() {
         super();
@@ -32,5 +40,13 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], SociallyActivityUser.prototype, "status", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], SociallyActivityUser.prototype, "orderId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], SociallyActivityUser.prototype, "points", void 0);
 exports.SociallyActivityUser = SociallyActivityUser;
 exports.SociallyActivityUserTableName = 't_socially_activity_user';

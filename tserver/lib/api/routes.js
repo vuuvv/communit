@@ -25,17 +25,36 @@ let ApiController = class ApiController {
                 ret.push(tid);
             }
         });
-        return {
-            success: true,
-            value: ret
-        };
+        return routes_1.success(ret);
     }
     async pointsGiveToUser(ctx) {
         let data = await utils_1.getJsonBody(ctx);
         let ret = [];
         await db_1.db.transaction(async (trx) => {
             for (let item of data) {
-                let oid = await account_1.PayActivity(trx, item.activityUserId, item.points);
+                let oid = await account_1.ChangeActivityUser(trx, item.activityUserId, item.points);
+                ret.push(oid);
+            }
+        });
+        return routes_1.success(ret);
+    }
+    async pointsRefundActivity(ctx) {
+        let data = await utils_1.getJsonBody(ctx);
+        let ret = [];
+        await db_1.db.transaction(async (trx) => {
+            for (let item of data) {
+                let oid = await account_1.RefundActivityUser(trx, item.activityUserId);
+                ret.push(oid);
+            }
+        });
+        return routes_1.success(ret);
+    }
+    async pointsChangeActivity(ctx) {
+        let data = await utils_1.getJsonBody(ctx);
+        let ret = [];
+        await db_1.db.transaction(async (trx) => {
+            for (let item of data) {
+                let oid = await account_1.ChangeActivityUser(trx, item.activityUserId, item.points);
                 ret.push(oid);
             }
         });
@@ -56,6 +75,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ApiController.prototype, "pointsGiveToUser", null);
+__decorate([
+    routes_1.post('/points/refund/activity'),
+    routes_1.api,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ApiController.prototype, "pointsRefundActivity", null);
+__decorate([
+    routes_1.post('/points/change/activity'),
+    routes_1.api,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ApiController.prototype, "pointsChangeActivity", null);
 ApiController = __decorate([
     routes_1.router('/api')
 ], ApiController);

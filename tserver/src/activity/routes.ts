@@ -82,8 +82,7 @@ export class ActivityController {
   @wechat
   async item(ctx) {
     let activity = await first(`
-    select sa.*, o.organizationname from t_socially_activity as sa
-    join t_organization as o on sa.organizationId = o.id
+    select sa.* from t_socially_activity as sa
     where sa.id = ?
     `, [ctx.params.id]);
 
@@ -106,10 +105,10 @@ export class ActivityController {
   @wechat
   async search(ctx) {
     let ret = await raw(`
-    select sa.*, o.organizationname from t_socially_activity as sa
-    join t_organization as o on sa.organizationId = o.id
+    select sa.* from t_socially_activity as sa
+    where sa.accountid = ?
     order by updatedat
-    `, []);
+    `, [ctx.session.communityId]);
     return success(ret);
   }
 }

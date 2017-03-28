@@ -34,8 +34,9 @@ export function buildQueryString(data: any) {
 
 export function buildUrl(url: string, data: any = null, noCache = true) {
   url = fixUrl(url);
+
   if (!data) {
-    return url;
+    data = {};
   }
 
   if (noCache) {

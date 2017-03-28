@@ -33,6 +33,7 @@ let WechatController = class WechatController {
         }
         const config = await config_1.Config.instance();
         ctx.session.communityId = id;
+        delete ctx.session.userId;
         ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
     }
     async login(ctx) {

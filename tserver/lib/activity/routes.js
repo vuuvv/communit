@@ -69,8 +69,7 @@ let ActivityController = class ActivityController {
     }
     async item(ctx) {
         let activity = await db_1.first(`
-    select sa.*, o.organizationname from t_socially_activity as sa
-    join t_organization as o on sa.organizationId = o.id
+    select sa.* from t_socially_activity as sa
     where sa.id = ?
     `, [ctx.params.id]);
         let users = await db_1.raw(`
@@ -87,10 +86,10 @@ let ActivityController = class ActivityController {
     }
     async search(ctx) {
         let ret = await db_1.raw(`
-    select sa.*, o.organizationname from t_socially_activity as sa
-    join t_organization as o on sa.organizationId = o.id
+    select sa.* from t_socially_activity as sa
+    where sa.accountid = ?
     order by updatedat
-    `, []);
+    `, [ctx.session.communityId]);
         return routes_1.success(ret);
     }
 };

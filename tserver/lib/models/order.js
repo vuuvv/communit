@@ -19,7 +19,7 @@ exports.OrderType = OrderType;
 class OrderStatus {
 }
 OrderStatus.Done = 'done';
-OrderStatus.Reject = 'reject';
+OrderStatus.Refund = 'refund';
 exports.OrderStatus = OrderStatus;
 class Order extends base_model_1.BaseModel {
 }

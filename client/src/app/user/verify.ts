@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Http, FormService } from '../shared';
+import { Http, FormService, buildUrl } from '../shared';
 import { DialogService, OverlayService } from '../../components';
 
 @Component({
@@ -13,13 +13,17 @@ export class VerifyComponent implements OnInit {
   verify: any = {};
   cooldown: boolean;
   communityId: string;
+  capchaUrl = null;
 
   validMessages = {
     tel: {
-      required: '请输入手机号',
+      required: '请填写手机号',
     },
     code: {
-      required: '请输入验证码',
+      required: '请填写手机验证码',
+    },
+    capcha: {
+      required: '请填写图形验证码',
     }
   };
 
@@ -34,6 +38,7 @@ export class VerifyComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.capchaUrl = this.getCapchaUrl();
   }
 
   submit(form: NgForm) {
@@ -45,10 +50,25 @@ export class VerifyComponent implements OnInit {
   getCode(valid) {
     if (!this.verify.tel) {
       valid.success = false;
-      this.dialogService.alert('请填写您的手机号码', '错误');
+      this.dialogService.alert('请填写手机号码', '错误');
       return;
     }
-    this.http.get('/signup/verify/send', {phone: this.verify.tel}).subscribe((value) => {
+    if (!this.verify.capcha) {
+      valid.success = false;
+      this.dialogService.alert('请填写图形验证码', '错误');
+      return;
+    }
+    this.http.get('/signup/verify/send', {phone: this.verify.tel, capcha: this.verify.capcha}).subscribe((value) => {
+    }, undefined, () => {
+      this.capchaUrl = this.getCapchaUrl();
     });
+  }
+
+  getCapchaUrl() {
+    return buildUrl('/capcha', null);
+  }
+
+  changeCapcha() {
+    this.capchaUrl = this.getCapchaUrl();
   }
 }

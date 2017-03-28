@@ -7,7 +7,4 @@
   <div class="ngv-xscroll-content" #content>
     <ng-content></ng-content>
   </div>
-  <div class="ngv-xscroll-indicator" *ngIf="indicator && pages && pages > 1">
-    <span *ngFor="let p of (pages - 2) | repeat; let i = index" [class.on]="i === page - 1"></span>
-  </div>
 </div>

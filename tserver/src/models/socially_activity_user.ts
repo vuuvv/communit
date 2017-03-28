@@ -1,6 +1,14 @@
 import { BaseModel } from './base_model';
 import { property } from '../utils';
 
+export class SociallyActivityUserStatus {
+  static Submit = 'submit';
+  static Joined = 'joined';
+  static Reject = 'reject';
+  static Payed = 'payed';
+  static Refund = 'refund';
+}
+
 export class SociallyActivityUser extends BaseModel {
   /**
    * 活动Id
@@ -25,6 +33,12 @@ export class SociallyActivityUser extends BaseModel {
    */
   @property()
   status: string;
+
+  @property()
+  orderId: string;
+
+  @property()
+  points: number;
 
   constructor() {
     super();

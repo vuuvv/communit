@@ -12,10 +12,10 @@ import { DialogService, OverlayService } from '../../components';
   styleUrls: ['./signup.less'],
 })
 export class SignupComponent implements OnInit {
-  private user: any = {};
-  private phone: string = '';
-  private communityId: string;
-  private biotopes: any[] = [];
+  user: any = {};
+  phone: string = '';
+  communityId: string;
+  biotopes: any[] = [];
 
   private validMessages = {
     name: {

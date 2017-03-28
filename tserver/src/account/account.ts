@@ -2,7 +2,11 @@ import * as _ from 'lodash';
 import { Table, db, raw, first } from '../db';
 import { uuid } from '../utils';
 
-import { Account, AccountDetail, Transaction, TransactionDetail, Order, OrderDetail, OrderType, OrderStatus } from '../models';
+import {
+   Account, AccountDetail, Transaction, TransactionDetail, Order,
+   OrderDetail, OrderType, OrderStatus, SociallyActivityUserStatus,
+   SociallyActivityUser,
+} from '../models';
 
 async function getWechatUser(officialAccountId, userId) {
   return await Table.WechatUser.where({officialAccountId, userId}).first();
@@ -22,7 +26,13 @@ export class TransactionType {
   static PayCommunity = '6f822ac9c88a4e13bf4eaacf1050dcac';
   static PayActivity = '20869530294748e2971f46b19d5da328';
   static GetActivity = '68c5a973a00c4f33a10b9ae9d60879fa';
+  static RefundPayActivity = '4d6c9ff43fe1420dbca306a8287b175c';
+  static RefundGetActivity = 'cda6e63b1bc0462cb22d859d47869c40';
 }
+
+const reverseTransactionTypes = {};
+reverseTransactionTypes[TransactionType.PayActivity] = TransactionType.RefundPayActivity;
+reverseTransactionTypes[TransactionType.GetActivity] = TransactionType.RefundGetActivity;
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
   let td = new TransactionDetail();
@@ -107,10 +117,14 @@ export async function reverseTransaction(trx: any, transactionId: string) {
     });
   }
 
-  await insertTransaction(trx, accounts[0], t.typeId, -t.amount, tid);
+  let type = reverseTransactionTypes[t.typeId] || t.typeId;
+
+  await insertTransaction(trx, accounts[0], type, -t.amount, tid);
   await Table.Transaction.transacting(trx).where('id', t.id).update({
     reverseTransactionId: tid
   });
+
+  return tid;
 }
 
 /**
@@ -233,6 +247,30 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
   return tid;
 }
 
+export async function refundOrder(trx, orderId) {
+  if (!orderId) {
+    throw new Error('orderId为空');
+  }
+
+  let order: Order = await Table.Order.transacting(trx).where('id', orderId).forUpdate().first();
+  if (!order) {
+    throw new Error(`无效的订单:${orderId}`);
+  }
+
+  if (order.status === OrderStatus.Refund) {
+    throw new Error('订单已退款，不可重复退款');
+  }
+
+  order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
+  order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+
+  await Table.Order.transacting(trx).where('id', orderId).update({
+    status: OrderStatus.Refund,
+    buyerRefundTransactionId: order.buyerRefundTransactionId,
+    sellerRefundTransactionId: order.sellerRefundTransactionId,
+  });
+}
+
 export async function PayCommunity(trx, communityId, points) {
   if (!communityId) {
     throw new Error('communityId不能为空');
@@ -261,24 +299,20 @@ export async function PayActivity(trx, activityUserId, points) {
       throw new Error('无效的activityUserId');
     }
 
+    let communityId = activityUser.communityId;
+
+    let seller = await getWechatUser(communityId, activityUser.userId);
+
+    if (activityUser.status === SociallyActivityUserStatus.Payed) {
+      throw new Error(`用户[${seller.realname}]已从活动中获取到积分， 不可重复获取, orderid: ${activityUser.orderId}`);
+    }
+
     let activity = await Table.SociallyActivity.where('id', activityUser.activityId).first();
 
     if (!activity) {
       throw new Error(`activityUserId关联的activity已失效, activityUserId: ${activityUserId}, acitivtyId: ${activityUser.activityId}`);
     }
-    let communityId = activityUser.communityId;
 
-    let seller = await getWechatUser(communityId, activityUser.userId);
-
-    let payed = await first(`
-    select o.id from t_order as o
-    join t_order_detail as od on o.id = od.orderId
-    where o.sellerId = ? and o.type = ? and o.status != ? and od.productId = ?
-    `, [seller.userId, OrderType.Activity, OrderStatus.Reject, activity.id], trx);
-
-    if (payed) {
-      throw new Error(`用户[${seller.realname}]已从活动中获取到积分， 不可重复获取, orderid: ${payed.id}`);
-    }
 
     let order = new Order();
     order.type = OrderType.Activity;
@@ -290,7 +324,7 @@ export async function PayActivity(trx, activityUserId, points) {
     let detail = new OrderDetail();
     detail.orderId = order.id;
     detail.type = OrderType.Activity;
-    detail.productId = activity.id;
+    detail.productId = activityUserId;
 
     let amount = order.amount = points;
 
@@ -317,7 +351,69 @@ export async function PayActivity(trx, activityUserId, points) {
     await Table.SociallyActivityUser.transacting(trx).where('id', activityUser.id).update({
       orderId: order.id,
       points: points,
+      status: SociallyActivityUserStatus.Payed,
     });
 
     return order.id;
+}
+
+export async function RefundActivityUser(trx, activityUserId: string) {
+    if (!activityUserId) {
+      throw new Error('activityUserId不能为空');
+    }
+
+    let activityUser: SociallyActivityUser =
+      await Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).forUpdate().first();
+
+    if (!activityUser) {
+      throw new Error('无效的activityUserId');
+    }
+
+    if (activityUser.status !== SociallyActivityUserStatus.Payed) {
+      throw new Error('活动积分还未发放，无法退款');
+    }
+
+    await refundOrder(trx, activityUser.orderId);
+
+    await Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).update({
+      orderId: null,
+      points: 0,
+      status: SociallyActivityUserStatus.Refund,
+    });
+
+    return activityUser.orderId;
+}
+
+export async function ChangeActivityUser(trx, activityUserId: string, points) {
+    points = parseInt(points, 10);
+    if (isNaN(points) || points < 0) {
+      throw new Error('points需为整数，且不能为负数');
+    }
+
+    if (!activityUserId) {
+      throw new Error('activityUserId不能为空');
+    }
+
+    let activityUser: SociallyActivityUser =
+      await Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).forUpdate().first();
+
+    if (!activityUser) {
+      throw new Error('无效的activityUserId');
+    }
+
+    if (activityUser.status === SociallyActivityUserStatus.Payed) {
+      if (activityUser.points === points) {
+        // 已发放而且数值相同，不需要操作
+        return activityUser.orderId;
+      }
+      // 已发放但数值不同，要先退款，再发放
+      await refundOrder(trx, activityUser.orderId);
+      await Table.SociallyActivityUser.transacting(trx).where('id', activityUserId).update({
+        orderId: null,
+        points: 0,
+        status: SociallyActivityUserStatus.Refund,
+      });
+    }
+
+    return await PayActivity(trx, activityUserId, points);
 }

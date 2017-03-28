@@ -86,8 +86,12 @@ let SignupController = class SignupController {
     }
     async sendVerifyCode(ctx) {
         let phone = ctx.query.phone;
+        let capcha = ctx.query.capcha;
         if (!phone) {
             throw new routes_1.ResponseError('请填写手机号');
+        }
+        if (!ctx.session.capcha || !capcha || ctx.session.capcha !== capcha) {
+            throw new routes_1.ResponseError('请填写图形验证码');
         }
         let secret = '974F9794089F41598DBF8F441B693156';
         let h = crypto.createHmac('sha1', secret);

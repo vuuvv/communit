@@ -9,7 +9,7 @@ import { OverlayService } from '../../components';
 })
 export class WorkerComponent implements OnInit {
   workers: any[];
-  private tabs = ['基本资料', '活动管理', '活动记录'];
+  tabs = ['基本资料', '活动管理', '活动记录'];
   currentIndex;
 
   constructor(

@@ -52,8 +52,8 @@ export class OverlayComponent implements OnInit {
   templateUrl: './overlay.html',
 })
 export class Overlay implements OnInit {
-  private overlayConfigs: OverlayConfig[] = [];
-  private actionsheet: boolean = false;
+  overlayConfigs: OverlayConfig[] = [];
+  actionsheet: boolean = false;
 
   showToast: boolean = false;
   toastText: string = "";
