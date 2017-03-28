@@ -91,7 +91,7 @@ export class SignupController　{
       throw new ResponseError('请填写手机号');
     }
     if (!ctx.session.capcha || !capcha || ctx.session.capcha !== capcha) {
-      throw new ResponseError('请填写图形验证码');
+      throw new ResponseError('图形验证码错误');
     }
     let secret = '974F9794089F41598DBF8F441B693156';
     let h = crypto.createHmac('sha1', secret);

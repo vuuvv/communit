@@ -1,6 +1,6 @@
 # vueclient
 
-> community vue client
+> community project vuejs client
 
 ## Build Setup
 

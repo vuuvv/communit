@@ -1,7 +1,7 @@
 {
   "name": "vueclient",
   "version": "1.0.0",
-  "description": "community vue client",
+  "description": "community project vuejs client",
   "author": "vuuvv <vuuvv@qq.com>",
   "private": true,
   "scripts": {
@@ -13,8 +13,10 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "mint-ui": "^2.2.2",
     "vue": "^2.2.2",
-    "vue-router": "^2.2.0"
+    "vue-router": "^2.2.0",
+    "vuex": "^2.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
