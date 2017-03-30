@@ -21,7 +21,7 @@ export class MenuController {
   async community(ctx) {
     let ret = await raw(
       `
-       select id, name, IMAGE_HREF as image, showType from weixin_cms_menu
+       select id, name, IMAGE_HREF as image, showType, url from weixin_cms_menu
        where accountid = ? and (parentmenuid is null or parentmenuid = "") order by seq
       `,
       [ctx.session.communityId]

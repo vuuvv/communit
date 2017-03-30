@@ -73,6 +73,7 @@ async function guardMiddleware(ctx, type) {
             if (/ER_DUP_ENTRY/.test(ex.message)) {
                 throw new ResponseError('callid已经使用过, 请使用新的callid');
             }
+            throw ex;
         }
     }
 }

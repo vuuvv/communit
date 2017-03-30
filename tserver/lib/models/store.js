@@ -31,6 +31,10 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Store.prototype, "name", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Store.prototype, "description", void 0);
 __decorate([
     utils_1.property(),
@@ -44,5 +48,25 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], Store.prototype, "contact", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Store.prototype, "legalRepresentative", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Store.prototype, "legalRepresentativeTel", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Store.prototype, "businessScope", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Store.prototype, "businessLicense", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Store.prototype, "legalRepresentativeIdPicture", void 0);
 exports.Store = Store;
 exports.StoreTableName = 't_store';

@@ -18,14 +18,10 @@ class Product extends base_model_1.BaseModel {
          */
         this.sales = 0;
         /**
-         * 库存
-         */
-        this.stock = 0;
-        /**
          * 评价
          */
         this.rank = 0;
-        this.status = 'submit';
+        this.status = 'online';
     }
 }
 __decorate([
@@ -60,5 +56,17 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
 ], Product.prototype, "normalPrice", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Product.prototype, "sales", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Product.prototype, "stock", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Product.prototype, "rank", void 0);
 exports.Product = Product;
 exports.ProductTableName = 't_product';

@@ -6,24 +6,21 @@
   </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <div class="news">
-    <div class="news-wrapper">
-      <div class="news-item">
-        <span class="title ngv-1px-r">社区通知</span>
-        <span class="subject">社区“道德讲堂”举办元宵民俗专题讲座</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="ngv-1px-t" *ngIf="menus && menus.length">
-    <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon" *ngFor="let m of roots" [class.selected]="m.id === activeMenuId" (click)="clickMainMenu(m)">{{ m.name }}</quickentry-item>
-    </v-xscroll>
-    <v-xscroll class="sub-nav" *ngIf="getMenus(activeMenuId)">
-      <quickentry-item class="ngv-xscroll-item" [icon]="sm.icon" width="20" height="20" *ngFor="let sm of getMenus(activeMenuId)" [routerLink]="['/bank/services', {typeName: sm.name}]">
-        {{ sm.name }}
-      </quickentry-item>
-    </v-xscroll>
+  <div class="quickentry-nav ngv-1px-b qe" *ngIf="menus">
+    <v-slider>
+      <v-slider-item *ngFor="let chunk of menus | chunk: 8">
+        <quickentry>
+          <quickentry-item [icon]="getIcon(icon.icon)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4" height="25" width="25">
+            {{ icon.name }}
+          </quickentry-item>
+        </quickentry>
+        <quickentry>
+          <quickentry-item [icon]="getIcon(icon.icon)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 4:4" height="25" width="25">
+            {{ icon.name }}
+          </quickentry-item>
+        </quickentry>
+      </v-slider-item>
+    </v-slider>
   </div>
 
   <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>

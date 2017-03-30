@@ -42,8 +42,8 @@ let UserController = class UserController {
     where communityId = ? and userId = ?
     `, [communityId, userId]);
         let store = await db_1.Table.Store.where({ communityId, userId }).first();
-        user.balance = balance.balance || 0;
-        user.points = points.points || 0;
+        user.balance = balance ? (balance.balance || 0) : 0;
+        user.points = points ? (points.points || 0) : 0;
         return routes_1.success({
             user,
             store,

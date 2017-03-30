@@ -37,8 +37,8 @@ let SignupController = class SignupController {
         if (!model.name) {
             throw new routes_1.ResponseError('请填写您的姓名');
         }
-        if (!model.area) {
-            throw new routes_1.ResponseError('请填写您所在的小区');
+        if (!model.area && !model.biotope) {
+            throw new routes_1.ResponseError('请填写或选择您所在的小区');
         }
         if (!model.address) {
             throw new routes_1.ResponseError('请填写您的地址');
@@ -46,8 +46,10 @@ let SignupController = class SignupController {
         model.phone = tel;
         await db_1.db.transaction(async (trx) => {
             let user = await db_1.Table.User.transacting(trx).where('username', tel).forUpdate().first();
+            let userId;
             if (user) {
-                // 用户已存在, 检查在该社区是否存在
+                userId = user.id || user.ID;
+                // 用户已存在, 检查在该社区的用户是否存在
                 let wechatUser = await db_1.Table.WechatUser.transacting(trx).where({
                     userId: user.id || user.ID,
                     officialAccountId: wechatAccountId,
@@ -56,26 +58,30 @@ let SignupController = class SignupController {
                     throw new routes_1.ResponseError('用户已存在');
                 }
                 await db_1.Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
-                    userId: user.id,
+                    userId: userId,
                     realname: model.name,
                     area: model.area,
+                    biotope: model.biotope,
                     address: model.address,
                 });
             }
-            let userId = utils_2.uuid();
-            let ids = await db_1.Table.User.transacting(trx).insert({
-                ID: userId,
-                username: tel,
-            }).select('ID');
-            if (wechatUserId) {
-                let wUser = await db_1.Table.WechatUser.where('id', wechatUserId).first();
-                if (wUser) {
-                    await db_1.Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
-                        userId: userId,
-                        realname: model.name,
-                        area: model.area,
-                        address: model.address,
-                    });
+            else {
+                userId = utils_2.uuid();
+                let ids = await db_1.Table.User.transacting(trx).insert({
+                    ID: userId,
+                    username: tel,
+                }).select('ID');
+                if (wechatUserId) {
+                    let wUser = await db_1.Table.WechatUser.transacting(trx).where('id', wechatUserId).first();
+                    if (wUser) {
+                        await db_1.Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
+                            userId: userId,
+                            realname: model.name,
+                            area: model.area,
+                            address: model.address,
+                            biotope: model.biotope,
+                        });
+                    }
                 }
             }
             ctx.session.userId = userId;
@@ -93,6 +99,7 @@ let SignupController = class SignupController {
         if (!ctx.session.capcha || !capcha || ctx.session.capcha !== capcha) {
             throw new routes_1.ResponseError('图形验证码错误');
         }
+        delete ctx.session.capcha;
         let secret = '974F9794089F41598DBF8F441B693156';
         let h = crypto.createHmac('sha1', secret);
         let callid = utils_2.uuid();
@@ -104,6 +111,16 @@ let SignupController = class SignupController {
             return routes_1.success();
         }
         throw new routes_1.ResponseError(ret.msg);
+    }
+    async phoneTest(ctx) {
+        let phone = ctx.query.phone;
+        let secret = '974F9794089F41598DBF8F441B693156';
+        let h = crypto.createHmac('sha1', secret);
+        let callid = utils_2.uuid();
+        h.update(callid);
+        let signature = h.digest('hex').toUpperCase();
+        let ret = await request(`http://www.crowdnear.com/pc/api.do?route&method=sendMsg&callId=${callid}&appId=zengying&signature=${signature}&phone=${phone}`, { json: true });
+        return routes_1.success(ret);
     }
     /**
      * 手机号验证
@@ -169,6 +186,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "sendVerifyCode", null);
+__decorate([
+    routes_1.get('/test/phone'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "phoneTest", null);
 __decorate([
     routes_1.post('/verify'),
     __metadata("design:type", Function),

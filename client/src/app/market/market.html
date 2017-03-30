@@ -20,6 +20,7 @@
     <product-list-item
       class="ngv-1px-b"
       [product]="p"
+      [full]="false"
       [routerLink]="['./product/' + p.id]"
       *ngFor="let p of products"
     >

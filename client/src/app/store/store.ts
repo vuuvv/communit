@@ -1,8 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Http } from '../shared';
+import { Http, FormService } from '../shared';
 import { OverlayService } from '../../components';
+
+const validMessages = {
+  name: {
+    required: '请填写店铺名称',
+  },
+  legalRepresentative: {
+    required: '请填写法人代表',
+  },
+  legalRepresentativeTel: {
+    required: '请填写法人代表手机',
+  },
+  businessScope: {
+    required: '请填写经营范围',
+  },
+  contact: {
+    required: '请填写联系人',
+  },
+  tel: {
+    required: '请填写联系方式',
+  },
+  description: {
+    required: '请填写店铺简介',
+  },
+  address: {
+    required: '请填写店铺地址',
+  },
+};
 
 @Component({
   templateUrl: './store.html',
@@ -11,19 +38,28 @@ import { OverlayService } from '../../components';
 export class StoreComponent implements OnInit {
   store: any;
   products: any[];
+  tabs = ['订单', '商品'];
+  currentIndex;
 
   constructor(
     private http: Http,
     private overlayService: OverlayService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
     this.overlayService.loading();
-    this.http.get('/store').subscribe((ret: any) => {
+    this.route.params.concatMap((params: Params) => {
+      console.log('here');
+      this.currentIndex = params['id'];
+      return this.http.get('/store');
+    }).subscribe((ret: any) => {
       this.store = ret.store;
       this.products = ret.products;
-      console.log(this.products);
       this.overlayService.hideToast();
+      setTimeout(() => {
+        this.currentIndex = 0;
+      }, 0);
     });
   }
 
@@ -45,32 +81,35 @@ export class StoreComponent implements OnInit {
   styleUrls: ['./store-form.less'],
 })
 export class StoreAddComponent {
-  title: '申请店铺';
+  title = '申请店铺';
   store: any = {};
   constructor(
     private http: Http,
     private router: Router,
+    private formService: FormService,
   ) {}
 
-  submit() {
-    this.http.json('/store/add', this.store).subscribe(() => {
+  submit(form) {
+    this.formService.submit(form, validMessages, '/store/add', this.store).subscribe(() => {
       this.router.navigate(['/store']);
     });
   }
 }
 
 @Component({
+  selector: 'store-edit',
   templateUrl: './store-form.html',
   styleUrls: ['./store-form.less'],
 })
 export class StoreEditComponent implements OnInit {
-  title: '编辑店铺';
+  title = '编辑店铺';
   store: any = {};
   products: any[] = [];
 
   constructor(
     private http: Http,
     private router: Router,
+    private formService: FormService,
   ) {}
 
   ngOnInit() {
@@ -79,8 +118,8 @@ export class StoreEditComponent implements OnInit {
     });
   }
 
-  submit() {
-    this.http.json('/store/edit', this.store).subscribe(() => {
+  submit(form) {
+    this.formService.submit(form, validMessages, '/store/edit', this.store).subscribe(() => {
       this.router.navigate(['/store']);
     });
   }

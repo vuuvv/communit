@@ -13,9 +13,8 @@ import { OverlayService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class BankComponent implements OnInit {
-  menus: any[] = [];
+  menus: any[] = null;
   activeMenuId: string;
-  roots: any[] = [];
   services: any[] = [];
 
   constructor(
@@ -31,57 +30,39 @@ export class BankComponent implements OnInit {
       this.http.get('/service/search'),
     ).subscribe((values: any) => {
       this.overlayService.hideToast();
-      this.menus = values[0];
+      this.menus = this.fillMenu(values[0]);
       this.services = values[1].map((s) => {
         s.data = JSON.parse(s.content);
         return s;
       });
-
-      let roots = this.roots = this.getRoots();
-      for (let i = 0; i < roots.length; i++) {
-        if (this.hasChilrend(roots[i])) {
-          this.activeMenuId = roots[i].id;
-          break;
-        }
-      }
     });
   }
 
-  getRoots() {
-    if (!this.menus) {
-      return [];
+  getIcon(url) {
+    if (/^((https?:\/\/)|(\/\/))/.test(url)) {
+      return url;
     }
-
-    return this.menus.filter((item) => {
-      return !item.parentId;
-    });
-  }
-
-  getMenus(pid = null) {
-    if (!this.menus) {
-      return [];
-    }
-
-    let ret = this.menus.filter((item) => {
-      return item.parentId === pid;
-    });
-
-    return ret;
-  }
-
-  hasChilrend(menu) {
-    return this.getMenus(menu.id).length > 0;
-  }
-
-  clickMainMenu(m) {
-    if (m.url) {
-      this.router.navigate([m.url]);
-      return;
-    }
-    this.activeMenuId = m.id;
+    return `http://www.crowdnear.com/pc/${url}`;
   }
 
   click() {
     console.log('click');
+  }
+
+  private fillMenu(menus) {
+    if (!menus || !menus.length) {
+      return null;
+    }
+
+    let len = menus.length;
+    let need = 8 - (menus.length % 8);
+
+    if (need !== 8) {
+      for (let i = 0; i < need; i++) {
+        menus.push({});
+      }
+    }
+
+    return menus;
   }
 }

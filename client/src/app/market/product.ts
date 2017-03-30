@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 
 import { Http } from '../shared';
-import { OverlayService } from '../../components';
+import { OverlayService, DialogService } from '../../components';
 
 @Component({
   templateUrl: './product.html',
@@ -14,13 +14,14 @@ import { OverlayService } from '../../components';
 })
 export class ProductComponent implements OnInit {
   product: any;
-  account: number;
+  account: number = 0;
 
   constructor(
     private route: ActivatedRoute,
     private http: Http,
     private router: Router,
     private overlayService: OverlayService,
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit() {
@@ -43,7 +44,7 @@ export class ProductComponent implements OnInit {
   }
 
   get buttonText() {
-    if (this.product && this.account && this.product.points > this.account) {
+    if (this.product && this.product.points > this.account) {
       return '积分不足';
     }
     return '购买';
@@ -51,6 +52,7 @@ export class ProductComponent implements OnInit {
 
   buy() {
     if (!this.canBuy) {
+      this.dialogService.alert(this.buttonText, '警告');
       return;
     }
     this.overlayService.loading();

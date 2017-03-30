@@ -5,6 +5,7 @@ export declare class SignupController {
      */
     signup(ctx: any): Promise<Response>;
     sendVerifyCode(ctx: any): Promise<Response>;
+    phoneTest(ctx: any): Promise<Response>;
     /**
      * 手机号验证
      */

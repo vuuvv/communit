@@ -1,6 +1,6 @@
-<v-page>
+<v-page class="page-community">
   <v-header [showBack]="false" slot="header">
-    <img [src]="'http://www.crowdnear.com/pc/' + logo?.logo" *ngIf="logo?.logo"/>
+    <img [src]="getIcon(logo?.logo)" *ngIf="logo?.logo"/>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -14,39 +14,26 @@
     <span class="site-body">...社区自治与互助服务平台</span>
   </div>
 
-  <div class="quickentry-nav ngv-1px-b" *ngIf="icons">
-    <quickentry>
-      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" (click)="goto(icon.id)" *ngFor="let icon of icons | slice: 0:4">
-        {{ icon.name }}
-      </quickentry-item>
-    </quickentry>
-    <quickentry>
-      <quickentry-item [icon]="'http://www.crowdnear.com/pc/' + icon.image" (click)="goto(icon.id)" *ngFor="let icon of icons | slice: 4:4">
-        {{ icon.name }}
-      </quickentry-item>
-    </quickentry>
+  <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
+    <v-slider>
+      <v-slider-item *ngFor="let chunk of icons | chunk: 8">
+        <quickentry>
+          <quickentry-item [icon]="getIcon(icon.image)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4">
+            {{ icon.name }}
+          </quickentry-item>
+        </quickentry>
+        <quickentry>
+          <quickentry-item [icon]="getIcon(icon.image)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 4:4">
+            {{ icon.name }}
+          </quickentry-item>
+        </quickentry>
+      </v-slider-item>
+    </v-slider>
   </div>
 
   <empty-page *ngIf="!articles || !articles.length">暂无内容</empty-page>
-  <div class="weui-panel weui-panel__access" *ngIf="articles && articles.length">
-    <div class="weui-panel__hd">
-      <v-cell [hasMore]="true">
-        <h1>社区动态</h1>
-        <v-image src="assets/images/ios/@2x/sqdt@2x.png" slot="icon" [block]="true"></v-image>
-      </v-cell>
-    </div>
-    <div class="weui-panel__bd">
-      <div class="weui-media-box weui-media-box_small-appmsg">
-          <div class="weui-cells weui-cells__access">
-            <a class="weui-cell" *ngFor="let item of articles" [routerLink]="['/article/'+item.id]">
-              <div class="weui-cell__bd weui-cell__primary">
-                <p>{{item.title}}</p>
-              </div>
-              <span class="weui-cell__ft">{{ item.create_date | left: 10 }}</span>
-            </a>
-          </div>
-      </div>
-    </div>
-  </div>
+  <v-panel [list]="articles" [mapper]="{metas: ['type', 'date']}" type="2">
+  </v-panel>
+
 </v-page>
 

@@ -3,10 +3,19 @@
   <div class="list-item-title">{{ product.title }}</div>
   <div class="list-item-desc">{{ product.description }}</div>
   <div class="list-item-price">
-    <span>积分售价:￥</span><span class="list-item-highlight">{{product.price}} + {{product.points}}</span><span>&nbsp;积分</span>
+    <span>积分售价: ￥</span><span class="list-item-highlight">{{product.price}} + {{product.points}}</span><span>&nbsp;积分</span>
   </div>
   <div class="list-item-real-price">
-    <span>现场售价:￥</span><span class="list-item-highlight">{{product.normalPrice}}</span>
+    <span>现场售价: ￥</span><span class="list-item-highlight">{{product.normalPrice}}</span>
+  </div>
+  <div class="list-item-price" *ngIf="full">
+    <span>商品状态: {{ getProductStatus(product.status) }}</span>
+  </div>
+  <div class="list-item-price" *ngIf="full">
+    <span>剩余库存: {{ product.stock - product.sales }}</span>
+  </div>
+  <div class="list-item-price" *ngIf="full">
+    <span>已卖出: {{ product.sales }}</span>
   </div>
 </div>
 <div class="list-item-right">

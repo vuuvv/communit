@@ -17,6 +17,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        redirectTo: '/store/page/0',
+        pathMatch: 'full',
+      },
+      {
+        path: 'page/:id',
         pathMatch: 'full',
         component: StoreComponent,
       },

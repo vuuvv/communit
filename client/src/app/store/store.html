@@ -1,5 +1,7 @@
 <v-page *ngIf="!isNormal">
-  <v-header slot="header">我的店铺</v-header>
+  <v-header slot="header">
+    我的店铺
+  </v-header>
   <v-tabbar slot="footer">
     <v-tabbar-btn class="primary" [routerLink]="['/store/add']" *ngIf="!store">申请开店</v-tabbar-btn>
     <v-tabbar-btn class="primary" [routerLink]="['/user']" *ngIf="isSubmit">返回</v-tabbar-btn>
@@ -9,18 +11,30 @@
 </v-page>
 
 <v-page *ngIf="isNormal">
-  <v-header slot="header">我的店铺</v-header>
-  <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/store/edit']">编辑店铺</v-tabbar-btn>
-    <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
-  </v-tabbar>
+  <v-header slot="header">
+    我的店铺
+    <v-icon class="ngv-header-button" type="weixiu" [headerButton]="true" slot="right" [routerLink]="['/store/edit']"></v-icon>
+  </v-header>
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+  </v-tab>
+  <ng-container [ngSwitch]="currentIndex">
+    <ng-container *ngSwitchCase="0">
+      订单
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <v-tabbar slot="footer">
+        <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
+      </v-tabbar>
 
-  <div class="product-list ngv-bg-white">
-    <product-list-item
-      class="ngv-1px-b"
-      [product]="p"
-      *ngFor="let p of products"
-    >
-   </product-list-item>
- </div>
+      <div class="product-list ngv-bg-white">
+        <product-list-item
+          class="ngv-1px-b"
+          [product]="p"
+          *ngFor="let p of products"
+        >
+        </product-list-item>
+      </div>
+    </ng-container>
+  </ng-container>
 </v-page>

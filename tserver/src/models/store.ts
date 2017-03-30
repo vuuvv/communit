@@ -20,6 +20,9 @@ export class Store extends BaseModel {
   @property()
   status: string;
 
+  @property()
+  name: string;
+
   /**
    * 店铺描述
    */
@@ -43,6 +46,36 @@ export class Store extends BaseModel {
    */
   @property()
   contact: string;
+
+  /**
+   * 法人代表
+   */
+  @property()
+  legalRepresentative: string;
+
+  /**
+   * 法人代表联系方式
+   */
+  @property()
+  legalRepresentativeTel: string;
+
+  /**
+   * 经营范围
+   */
+  @property()
+  businessScope: string;
+
+  /**
+   * 营业执照
+   */
+  @property()
+  businessLicense: string;
+
+  /**
+   * 法人代表身份证
+   */
+  @property()
+  legalRepresentativeIdPicture: string;
 
   constructor() {
     super();

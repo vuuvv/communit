@@ -15,10 +15,13 @@
         <input class="weui-input" type="number" name="points" placeholder="商品所需积分" min="1" required [(ngModel)]="product.points">
       </v-cell>
       <v-cell label="积分售价">
-        <input class="weui-input" type="number" name="price" placeholder="使用积分后的价格(元)" min="0.01" step="0.01" required [(ngModel)]="product.price">
+        <input class="weui-input" type="number" name="price" placeholder="使用积分后的价格(元)" min="0.00" step="0.01" required [(ngModel)]="product.price">
       </v-cell>
       <v-cell label="原价格">
         <input class="weui-input" type="number" name="normalPrice" placeholder="原价格，不使用积分时的价格(元)" min="0.01" step="0.01" required [(ngModel)]="product.normalPrice">
+      </v-cell>
+      <v-cell label="库存">
+        <input class="weui-input" type="number" name="stock" placeholder="库存" required [(ngModel)]="product.stock">
       </v-cell>
     </v-group>
     <v-group title="商品简介">

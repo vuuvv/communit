@@ -4,8 +4,29 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 
-import { Http } from '../shared';
+import { Http, FormService } from '../shared';
 import { DialogService, OverlayService } from '../../components';
+
+const validMessages = {
+  title: {
+    required: '请填写商品名称',
+  },
+  points: {
+    required: '请填写商品所需积分',
+  },
+  price: {
+    required: '请填写积分售价',
+  },
+  normalPrice: {
+    required: '请填写原价格',
+  },
+  stock: {
+    required: '请填写库存',
+  },
+  description: {
+    required: '请填写商品简介',
+  },
+};
 
 @Component({
   templateUrl: './product-form.html',
@@ -21,6 +42,7 @@ export class ProductAddComponent implements OnInit {
     private router: Router,
     private dialogService: DialogService,
     private overlayService: OverlayService,
+    private formService: FormService,
   ) {}
 
   ngOnInit() {
@@ -29,6 +51,7 @@ export class ProductAddComponent implements OnInit {
       if (value && value.length) {
         this.product.categoryId = value[0].id;
       }
+      this.product.stock = 1000;
     });
   }
 
@@ -38,7 +61,7 @@ export class ProductAddComponent implements OnInit {
       return;
     }
     this.overlayService.loading();
-    this.http.json('/product/add', this.product).subscribe(() => {
+    this.formService.submit(form, validMessages, '/product/add', this.product).subscribe(() => {
       this.overlayService.hideToast();
       this.router.navigate(['/store']);
     });
@@ -60,6 +83,7 @@ export class ProductEditComponent implements OnInit {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private overlayService: OverlayService,
+    private formService: FormService,
   ) {}
 
   ngOnInit() {
@@ -81,7 +105,7 @@ export class ProductEditComponent implements OnInit {
       return;
     }
     this.overlayService.loading();
-    this.http.json(`/product/edit/${this.product.id}`, this.product).subscribe(() => {
+    this.formService.submit(form, validMessages, `/product/edit/${this.product.id}`, this.product).subscribe(() => {
       this.overlayService.hideToast();
       this.router.navigate(['/store']);
     });

@@ -48,8 +48,8 @@ export class UserController {
 
     let store = await Table.Store.where({communityId, userId}).first();
 
-    user.balance = balance.balance || 0;
-    user.points = points.points || 0;
+    user.balance = balance ? (balance.balance || 0) : 0;
+    user.points = points ? (points.points || 0) : 0;
 
     return success({
       user,

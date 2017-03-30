@@ -10,6 +10,7 @@ import { SplitePipe } from './split.pipe';
 import { FirstPipe } from './first.pipe';
 import { LimitPipe } from './limit.pipe';
 import { LeftPipe } from './left.pipe';
+import { ChunkPipe } from './chunk.pipe';
 
 export const CORE_PIPES: Type<any>[] = [
   BackgroundUrlPipe,
@@ -24,4 +25,5 @@ export const CORE_PIPES: Type<any>[] = [
   FirstPipe,
   LimitPipe,
   LeftPipe,
+  ChunkPipe,
 ];

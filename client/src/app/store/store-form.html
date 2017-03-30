@@ -1,16 +1,25 @@
 <v-page>
   <v-header slot="header">{{title}}</v-header>
 
-  <form (ngSubmit)="submit()" #form="ngForm">
+  <form #form="ngForm">
     <v-group gutter="0">
       <v-cell label="店铺名称">
         <input class="weui-input" type="text" name="name" placeholder="店铺名称" required [(ngModel)]="store.name">
       </v-cell>
-      <v-cell label="联系电话">
-        <input class="weui-input" type="text" name="tel" placeholder="联系电话" required [(ngModel)]="store.tel">
+      <v-cell label="法人姓名">
+        <input class="weui-input" type="text" name="legalRepresentative" placeholder="法人代表姓名" required [(ngModel)]="store.legalRepresentative">
+      </v-cell>
+      <v-cell label="法人手机">
+        <input class="weui-input" type="text" name="legalRepresentativeTel" placeholder="法人代表手机号" required [(ngModel)]="store.legalRepresentativeTel">
+      </v-cell>
+      <v-cell label="经营范围">
+        <input class="weui-input" type="text" name="businessScope" placeholder="经营范围" required [(ngModel)]="store.businessScope">
       </v-cell>
       <v-cell label="联系人">
-        <input class="weui-input" type="text" name="birth" placeholder="联系人" required [(ngModel)]="store.contact">
+        <input class="weui-input" type="text" name="contact" placeholder="联系人" required [(ngModel)]="store.contact">
+      </v-cell>
+      <v-cell label="联系方式">
+        <input class="weui-input" type="text" name="tel" placeholder="联系方式" required [(ngModel)]="store.tel">
       </v-cell>
     </v-group>
     <v-group title="店铺简介">
@@ -24,7 +33,7 @@
       </v-cell>
     </v-group>
     <div class="weui-btn-area">
-      <button class="weui-btn weui-btn_primary" [disabled]="form.invalid" [class.weui-btn_disabled]="form.invalid">确定</button>
+      <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>
   </form>
 </v-page>

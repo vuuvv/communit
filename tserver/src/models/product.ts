@@ -50,21 +50,24 @@ export class Product extends BaseModel {
   /**
    * 销量
    */
+  @property()
   sales: number = 0;
 
   /**
    * 库存
    */
-  stock: number = 0;
+  @property()
+  stock: number;
 
   /**
    * 评价
    */
+  @property()
   rank: number = 0;
 
   constructor() {
     super();
-    this.status = 'submit';
+    this.status = 'online';
   }
 }
 

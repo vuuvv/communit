@@ -1,5 +1,6 @@
-import { Component, Type, OnInit, ViewChild } from '@angular/core';
+import { Component, Type, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
@@ -10,6 +11,8 @@ import { Http } from '../shared';
 @Component({
   templateUrl: './community.html',
   styleUrls: ['./community.less'],
+  encapsulation: ViewEncapsulation.None,
+  providers: [DatePipe],
 })
 export class CommunityComponent implements OnInit {
 
@@ -24,6 +27,7 @@ export class CommunityComponent implements OnInit {
     private dialogService: DialogService,
     private http: Http,
     private router: Router,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit() {
@@ -39,10 +43,21 @@ export class CommunityComponent implements OnInit {
       this.icons = values[1];
       this.articles = values[2];
       this.logo = values[3];
+
+      this.articles.forEach((v) => {
+        v.date = this.datePipe.transform(v.date, 'yyyy-MM-dd');
+        v.url = `/article/${v.id}`;
+      });
     });
   }
 
-  goto(id) {
+  goto(icon) {
+    if (icon.url) {
+      this.router.navigate([icon.url]);
+      return;
+    }
+
+    let id = icon.id;
     this.http.get(`/menu/community/${id}`).subscribe((value: any) => {
       let children = value.children;
       if (children && children.length) {
@@ -51,5 +66,12 @@ export class CommunityComponent implements OnInit {
         this.router.navigate([`/articles/${id}`]);
       }
     });
+  }
+
+  getIcon(url) {
+    if (/^((https?:\/\/)|(\/\/))/.test(url)) {
+      return url;
+    }
+    return `http://www.crowdnear.com/pc/${url}`;
   }
 }

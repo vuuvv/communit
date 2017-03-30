@@ -30,6 +30,8 @@ let ProductController = class ProductController {
       join t_store as s on p.storeId = s.id
       where
         s.communityId = :communityId and
+        s.status = 'normal' and
+        p.status = 'online' and
         <% if (query.categoryId) { %> p.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
         <% if (query.keyword) { %> p.title like :keyword  <% } else { %> 1 = 1 <% } %>
       order by p.updatedAt desc
@@ -49,8 +51,8 @@ let ProductController = class ProductController {
     }
     async add(ctx) {
         let store = await store_1.getStore(ctx);
-        if (_.isNil(store)) {
-            throw new routes_1.ResponseError('您现在还没有店铺');
+        if (_.isNil(store) || store.status !== 'normal') {
+            throw new routes_1.ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
         }
         let model = await product_1.getProductModel(ctx);
         let product = utils_1.create(models_1.Product, model);
@@ -60,8 +62,8 @@ let ProductController = class ProductController {
     }
     async edit(ctx) {
         let store = await store_1.getStore(ctx);
-        if (_.isNil(store)) {
-            throw new routes_1.ResponseError('您现在还没有店铺');
+        if (_.isNil(store) || store.status !== 'normal') {
+            throw new routes_1.ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
         }
         let model = await product_1.getProductModel(ctx);
         let product = await db_1.Table.Product.where('id', model.id).first();

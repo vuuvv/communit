@@ -32,8 +32,8 @@ export class SignupController　{
     if (!model.name) {
       throw new ResponseError('请填写您的姓名');
     }
-    if (!model.area) {
-      throw new ResponseError('请填写您所在的小区');
+    if (!model.area && !model.biotope) {
+      throw new ResponseError('请填写或选择您所在的小区');
     }
     if (!model.address) {
       throw new ResponseError('请填写您的地址');
@@ -42,8 +42,10 @@ export class SignupController　{
 
     await db.transaction(async (trx) => {
       let user = await Table.User.transacting(trx).where('username', tel).forUpdate().first();
+      let userId;
       if (user) {
-        // 用户已存在, 检查在该社区是否存在
+        userId = user.id || user.ID;
+        // 用户已存在, 检查在该社区的用户是否存在
         let wechatUser = await Table.WechatUser.transacting(trx).where({
           userId: user.id || user.ID,
           officialAccountId: wechatAccountId,
@@ -52,30 +54,33 @@ export class SignupController　{
           throw new ResponseError('用户已存在');
         }
         await Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
-          userId: user.id,
+          userId: userId,
           realname: model.name,
           area: model.area,
+          biotope: model.biotope,
           address: model.address,
         });
-      }
+      } else {
+        userId = uuid();
 
-      let userId = uuid();
-
-      let ids = await Table.User.transacting(trx).insert({
-        ID: userId,
-        username: tel,
-      }).select('ID');
-      if (wechatUserId) {
-        let wUser = await Table.WechatUser.where('id', wechatUserId).first();
-        if (wUser) {
-          await Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
-            userId: userId,
-            realname: model.name,
-            area: model.area,
-            address: model.address,
-          });
+        let ids = await Table.User.transacting(trx).insert({
+          ID: userId,
+          username: tel,
+        }).select('ID');
+        if (wechatUserId) {
+          let wUser = await Table.WechatUser.transacting(trx).where('id', wechatUserId).first();
+          if (wUser) {
+            await Table.WechatUser.transacting(trx).where('id', wechatUserId).update({
+              userId: userId,
+              realname: model.name,
+              area: model.area,
+              address: model.address,
+              biotope: model.biotope,
+            });
+          }
         }
       }
+
       ctx.session.userId = userId;
     });
     delete ctx.session.verifiedPhone;
@@ -93,6 +98,7 @@ export class SignupController　{
     if (!ctx.session.capcha || !capcha || ctx.session.capcha !== capcha) {
       throw new ResponseError('图形验证码错误');
     }
+    delete ctx.session.capcha;
     let secret = '974F9794089F41598DBF8F441B693156';
     let h = crypto.createHmac('sha1', secret);
     let callid = uuid();
@@ -109,6 +115,23 @@ export class SignupController　{
       return success();
     }
     throw new ResponseError(ret.msg);
+  }
+
+  @get('/test/phone')
+  async phoneTest(ctx) {
+    let phone = ctx.query.phone;
+    let secret = '974F9794089F41598DBF8F441B693156';
+    let h = crypto.createHmac('sha1', secret);
+    let callid = uuid();
+    h.update(callid);
+    let signature = h.digest('hex').toUpperCase();
+
+    let ret = await request(
+      `http://www.crowdnear.com/pc/api.do?route&method=sendMsg&callId=${callid}&appId=zengying&signature=${signature}&phone=${phone}`,
+      {json: true}
+    );
+
+    return success(ret);
   }
 
   /**

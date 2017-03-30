@@ -20,7 +20,7 @@
     <ng-container *ngSwitchCase="2">
       <div class="weui-media-box weui-media-box_text" *ngFor="let item of panelList" [routerLink]="[item.url]">
           <h4 class="weui-media-box__title">{{item.title}}</h4>
-          <p class="weui-media-box__desc">{{item.desc}}</p>
+          <p class="weui-media-box__desc" *ngIf="item.desc">{{item.desc}}</p>
           <ul class="weui-media-box__info" *ngIf="item.metas && item.metas.length">
             <li class="weui-media-box__info__meta" *ngFor="let meta of item.metas;let i = $index" [class.weui-media-box__info__meta_extra]="item.metas.length && item.metas.length > 1 && i === (item.metas.length - 1)">{{meta}}</li>
           </ul>

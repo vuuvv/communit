@@ -31,6 +31,8 @@ export class ProductController {
       join t_store as s on p.storeId = s.id
       where
         s.communityId = :communityId and
+        s.status = 'normal' and
+        p.status = 'online' and
         <% if (query.categoryId) { %> p.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
         <% if (query.keyword) { %> p.title like :keyword  <% } else { %> 1 = 1 <% } %>
       order by p.updatedAt desc
@@ -60,8 +62,8 @@ export class ProductController {
   @login
   async add(ctx) {
     let store = await getStore(ctx);
-    if (_.isNil(store)) {
-      throw new ResponseError('您现在还没有店铺');
+    if (_.isNil(store) || store.status !== 'normal') {
+      throw new ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
     }
 
     let model = await getProductModel(ctx);
@@ -77,8 +79,8 @@ export class ProductController {
   @login
   async edit(ctx) {
     let store = await getStore(ctx);
-    if (_.isNil(store)) {
-      throw new ResponseError('您现在还没有店铺');
+    if (_.isNil(store) || store.status !== 'normal') {
+      throw new ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
     }
 
     let model = await getProductModel(ctx);
