@@ -1,7 +1,7 @@
-import { Qrcode, Product } from '../models';
+import { Qrcode, Order } from '../models';
 export interface OrderProductConfirm {
     buyerId: string;
-    product: Product;
+    order: Order;
 }
 export interface OrderServiceConfirm {
     scanedId: string;

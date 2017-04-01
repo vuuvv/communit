@@ -32,5 +32,9 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], OrderDetail.prototype, "data", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], OrderDetail.prototype, "count", void 0);
 exports.OrderDetail = OrderDetail;
 exports.OrderDetailTableName = 't_order_detail';

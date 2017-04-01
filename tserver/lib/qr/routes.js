@@ -41,6 +41,34 @@ let QrcodeController = class QrcodeController {
         return routes_1.success(code.id);
     }
     /**
+     * 生成订单二维码
+     */
+    async OrderQr(ctx) {
+        let order = await db_1.Table.Order.where('id', ctx.params.id).first();
+        if (!order) {
+            throw new Error('无效的订单');
+        }
+        if (order.status === 'done') {
+            throw new Error('该订单已完成线下结算，不可重复进行此操作');
+        }
+        if (order.status !== 'payed') {
+            throw new Error('该订单的状态，不可进行线下结算操作');
+        }
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let accounts = await db_1.Table.Account.where({ communityId, userId });
+        let balance = _.sumBy(accounts, a => a.balance);
+        if (balance < order.amount) {
+            throw new Error('您的积分不足');
+        }
+        let code = new models_1.Qrcode(communityId, models_1.QrcodeAction.OrderProduct, {
+            buyerId: userId,
+            order,
+        });
+        await db_1.Table.Qrcode.insert(code);
+        return routes_1.success(code.id);
+    }
+    /**
      * 生成活动签到二维码
      */
     async ActivityQr(ctx) {
@@ -139,6 +167,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], QrcodeController.prototype, "BuyByQr", null);
+__decorate([
+    routes_1.post('/g/order/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], QrcodeController.prototype, "OrderQr", null);
 __decorate([
     routes_1.post('/g/activity/:id'),
     routes_1.login,

@@ -5,6 +5,7 @@ export declare class OrderType {
     static Activity: string;
 }
 export declare class OrderStatus {
+    static Payed: string;
     static Done: string;
     static Refund: string;
 }

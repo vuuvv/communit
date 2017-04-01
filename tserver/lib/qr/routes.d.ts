@@ -6,6 +6,10 @@ export declare class QrcodeController {
      */
     BuyByQr(ctx: any): Promise<Response>;
     /**
+     * 生成订单二维码
+     */
+    OrderQr(ctx: any): Promise<Response>;
+    /**
      * 生成活动签到二维码
      */
     ActivityQr(ctx: any): Promise<Response>;

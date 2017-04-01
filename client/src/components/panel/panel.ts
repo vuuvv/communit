@@ -68,4 +68,11 @@ export class PanelComponent implements AfterViewInit, OnChanges {
 
     console.log(this.panelList);
   }
+
+  link(url) {
+    if (url instanceof Array) {
+      return url;
+    }
+    return [url];
+  }
 }

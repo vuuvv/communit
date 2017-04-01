@@ -56,9 +56,18 @@ export class ProductComponent implements OnInit {
       return;
     }
     this.overlayService.loading();
+    this.dialogService.confirm(`您购买的这件商品需支付${this.product.points}积分，确定购买吗?`, '确认').ok((comp) => {
+      comp.close();
+      this.http.json('/order/buy/product', {productId: this.product.id, count: 1}).subscribe((order) => {
+        this.dialogService.alert('您已下单成功， 请在15天内完成线下支付!');
+        this.router.navigate([`/user/product/orders`]);
+      });
+    });
+    /*
     this.http.post(`/qr/g/product/${this.product.id}`).subscribe((value) => {
       this.overlayService.hideToast();
       this.router.navigate([`/user/qr/${value}`]);
     });
+    */
   }
 }

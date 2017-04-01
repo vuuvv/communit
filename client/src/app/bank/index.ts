@@ -36,11 +36,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ServiceListComponent,
       },
-      {
-        path: 'worker',
-        pathMatch: 'full',
-        component: WorkerComponent,
-      },
+      // {
+      //   path: 'worker',
+      //   pathMatch: 'full',
+      //   component: WorkerComponent,
+      // },
       {
         path: 'worker/add/:id',
         canActivate: [AuthorizeGuard],
@@ -53,7 +53,7 @@ const routes: Routes = [
         component: OrganizationDetailComponent,
       },
       {
-        path: 'organization/:id',
+        path: 'worker',
         pathMatch: 'full',
         component: OrganizationComponent,
       },

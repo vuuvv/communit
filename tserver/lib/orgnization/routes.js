@@ -13,10 +13,32 @@ const db_1 = require("../db");
 const utils_1 = require("../utils");
 let OrganizationController = class OrganizationController {
     async type(ctx) {
-        let ret = await db_1.Table.Organization.where({
-            accountid: ctx.session.communityId,
-            organtype: ctx.params.id,
-        }).orderBy('organizationname');
+        let organization = await db_1.Table.Organization.where('id', ctx.params.id).first();
+        let children = await db_1.Table.Organization.where({
+            parentId: ctx.params.id,
+        }).orderBy('seq');
+        return routes_1.success({
+            organization,
+            children
+        });
+    }
+    async home(ctx) {
+        let ret = await db_1.raw(`
+    select
+      id, organizationname, (
+        select
+          concat(
+            '[',
+            group_concat(json_object('id', id, 'organizationname', organizationname)),
+            ']'
+          )
+        from t_organization as o2 where o2.parentId=o1.id
+        order by o2.seq
+      ) as children
+    from t_organization as o1
+    where o1.accountid = ? and o1.parentId = ''
+    order by o1.seq
+    `, [ctx.session.communityId]);
         return routes_1.success(ret);
     }
     async item(ctx) {
@@ -58,12 +80,19 @@ let OrganizationController = class OrganizationController {
     }
 };
 __decorate([
-    routes_1.get('/type/:id'),
+    routes_1.get('/children/:id'),
     routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "type", null);
+__decorate([
+    routes_1.get('/home'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "home", null);
 __decorate([
     routes_1.get('/item/:id'),
     routes_1.wechat,

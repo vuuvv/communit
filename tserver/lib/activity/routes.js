@@ -73,7 +73,7 @@ let ActivityController = class ActivityController {
     where sa.id = ?
     `, [ctx.params.id]);
         let users = await db_1.raw(`
-    select wu.*, au.status from t_socially_activity_user as au
+    select wu.*, au.status, au.points from t_socially_activity_user as au
     join t_wechat_user as wu on au.communityId=wu.officialAccountId and au.userId=wu.userId
     where au.activityId = ?
     `, [ctx.params.id]);

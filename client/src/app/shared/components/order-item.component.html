@@ -1,0 +1,15 @@
+<div class="item" *ngIf="orderItem">
+  <div class="item-cont">
+    <div class="item-info">
+      <div class="title">{{ product.title }}</div>
+      <div _ngcontent-sjp-53="" class="sku">{{ product.description }}</div>
+    </div>
+    <div class="item-pay">
+      <div class="item-pay-data">
+        <p class="price">{{ product.points }}积分</p>
+        <p class="price">{{ product.price | yuan }}</p>
+        <p class="num">x{{ orderItem.count }}</p>
+      </div>
+    </div>
+  </div>
+</div>

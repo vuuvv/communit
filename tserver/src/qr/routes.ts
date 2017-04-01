@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { router, get, post, success, Response, ResponseError, login } from '../routes';
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody, errorPage, successPage } from '../utils';
-import { Account, Product, Service, Qrcode, QrcodeAction, ServiceCategories } from '../models';
+import { Account, Product, Service, Qrcode, QrcodeAction, ServiceCategories, Order } from '../models';
 import { Wechat } from '../wechat';
 import { Config } from '../config';
 import { QrcodeConfirm } from './qrcode';
@@ -34,6 +34,43 @@ export class QrcodeController {
     let code = new Qrcode(communityId, QrcodeAction.OrderProduct, {
       buyerId: userId,
       product,
+    });
+    await Table.Qrcode.insert(code);
+
+    return success(code.id);
+  }
+
+  /**
+   * 生成订单二维码
+   */
+  @post('/g/order/:id')
+  @login
+  async OrderQr(ctx) {
+    let order: Order = await Table.Order.where('id', ctx.params.id).first();
+    if (!order) {
+      throw new Error('无效的订单');
+    }
+
+    if (order.status === 'done') {
+      throw new Error('该订单已完成线下结算，不可重复进行此操作');
+    }
+
+    if (order.status !== 'payed') {
+      throw new Error('该订单的状态，不可进行线下结算操作');
+    }
+
+    let userId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+
+    let accounts: Account[] = await Table.Account.where({communityId, userId});
+    let balance = _.sumBy(accounts, a => a.balance);
+    if (balance < order.amount) {
+      throw new Error('您的积分不足');
+    }
+
+    let code = new Qrcode(communityId, QrcodeAction.OrderProduct, {
+      buyerId: userId,
+      order,
     });
     await Table.Qrcode.insert(code);
 

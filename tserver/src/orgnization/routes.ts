@@ -9,13 +9,38 @@ import { Product } from '../models';
 
 @router('/organization')
 export class OrganizationController {
-  @get('/type/:id')
+  @get('/children/:id')
   @wechat
   async type(ctx) {
-    let ret = await Table.Organization.where({
-      accountid: ctx.session.communityId,
-      organtype: ctx.params.id,
-    }).orderBy('organizationname');
+    let organization = await Table.Organization.where('id', ctx.params.id).first();
+    let children = await Table.Organization.where({
+      parentId: ctx.params.id,
+    }).orderBy('seq');
+    return success({
+      organization,
+      children
+    });
+  }
+
+  @get('/home')
+  @wechat
+  async home(ctx) {
+    let ret = await raw(`
+    select
+      id, organizationname, (
+        select
+          concat(
+            '[',
+            group_concat(json_object('id', id, 'organizationname', organizationname)),
+            ']'
+          )
+        from t_organization as o2 where o2.parentId=o1.id
+        order by o2.seq
+      ) as children
+    from t_organization as o1
+    where o1.accountid = ? and o1.parentId = ''
+    order by o1.seq
+    `, [ctx.session.communityId]);
     return success(ret);
   }
 

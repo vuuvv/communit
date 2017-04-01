@@ -10,6 +10,7 @@ class AccountType {
 }
 AccountType.Normal = 'c7892688f90948e28008f82dbbd7f648';
 AccountType.Buy = 'ae9215d040204b05b6ac345462c13b33';
+AccountType.Store = '8771f55f8b854dfaa951e75329894d49';
 exports.AccountType = AccountType;
 class TransactionType {
 }

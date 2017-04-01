@@ -1,6 +1,7 @@
 export declare class AccountType {
     static Normal: string;
     static Buy: string;
+    static Store: string;
 }
 export declare class TransactionType {
     static PayProduct: string;

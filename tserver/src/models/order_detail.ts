@@ -27,6 +27,12 @@ export class OrderDetail extends BaseModel {
    */
   @property()
   data: string;
+
+  /**
+   * 数量
+   */
+  @property()
+  count: number;
 }
 
 export const OrderDetailTableName = 't_order_detail';

@@ -16,6 +16,7 @@ async function getWechatUser(officialAccountId, userId) {
 export class AccountType {
   static Normal = 'c7892688f90948e28008f82dbbd7f648';
   static Buy = 'ae9215d040204b05b6ac345462c13b33';
+  static Store = '8771f55f8b854dfaa951e75329894d49';
 }
 
 export class TransactionType {

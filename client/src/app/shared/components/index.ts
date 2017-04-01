@@ -4,6 +4,8 @@ import { EmptyPageComponent } from './empty-page';
 import { ServiceListItemComponent } from './service-list-item';
 import { ProductListItemComponent } from './product-list-item';
 import { ProductDetailComponent } from './product-detail';
+import { OrderComponent } from './order.component';
+import { OrderItemComponent } from './order-item.component';
 
 export const SHARED_COMPONENTS = [
   TabbarComponent,
@@ -13,6 +15,8 @@ export const SHARED_COMPONENTS = [
   ServiceListItemComponent,
   ProductListItemComponent,
   ProductDetailComponent,
+  OrderComponent,
+  OrderItemComponent,
 ];
 
 export * from './tabbar';

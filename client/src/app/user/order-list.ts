@@ -11,7 +11,15 @@ import { OverlayService, DialogService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class OrderListComponent implements OnInit {
-  transactions: any[];
+  orders: any[];
+  tabs = ['公益服务订单', '个人服务订单', '超市购买订单'];
+  types = {
+    activity: 0,
+    service: 1,
+    product: 2,
+  };
+  type = '';
+  currentIndex = 0;
 
   constructor(
     private http: Http,
@@ -25,15 +33,22 @@ export class OrderListComponent implements OnInit {
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      return this.http.get(`/order/${params['type']}/list`);
+      this.type = params['type'];
+      return this.http.get(`/order/list/${this.type}`);
     }).subscribe((value: any) => {
       this.overlayService.hideToast();
-      this.transactions = value;
-      this.transactions.forEach((v) => {
-        if (v.order) {
-          v.products = v.order.details.map((d) => JSON.parse(d.data));
-        }
+      if (!value) {
+        this.orders = [];
+        return;
+      }
+      this.orders = value;
+      this.orders.forEach((o) => {
+        o.products = o.details.map((d) => JSON.parse(d.data));
       });
+
+      setTimeout(() => {
+        this.currentIndex = this.types[this.type] || 0;
+      }, 0);
     });
   }
 }

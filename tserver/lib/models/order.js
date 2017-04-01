@@ -18,6 +18,7 @@ OrderType.Activity = 'activity';
 exports.OrderType = OrderType;
 class OrderStatus {
 }
+OrderStatus.Payed = 'payed';
 OrderStatus.Done = 'done';
 OrderStatus.Refund = 'refund';
 exports.OrderStatus = OrderStatus;

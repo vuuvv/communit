@@ -1,10 +1,10 @@
 
 @font-face {font-family: "ngv-icon";
-  src: url('iconfont.eot?t=1489103792995'); /* IE9*/
-  src: url('iconfont.eot?t=1489103792995#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1489103792995') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1489103792995') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1489103792995#ngv-icon') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1490970365505'); /* IE9*/
+  src: url('iconfont.eot?t=1490970365505#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1490970365505') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1490970365505') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1490970365505#ngv-icon') format('svg'); /* iOS 4.1- */
 }
 
 .ngv-icon {
@@ -14,6 +14,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-zhanghu:before { content: "\e641"; }
 
 .icon-shouye:before { content: "\e638"; }
 
@@ -31,7 +33,11 @@
 
 .icon-plus:before { content: "\e640"; }
 
+.icon-shegong:before { content: "\e646"; }
+
 .icon-weixiu:before { content: "\e630"; }
+
+.icon-tuijian:before { content: "\e687"; }
 
 .icon-shuiguoshengxian:before { content: "\e613"; }
 
@@ -58,6 +64,8 @@
 .icon-cishan:before { content: "\e667"; }
 
 .icon-settings:before { content: "\e611"; }
+
+.icon-jinlingyingcaiwangtubiao07:before { content: "\e70a"; }
 
 .icon-dianpu:before { content: "\e62f"; }
 
@@ -125,6 +133,8 @@
 
 .icon-gou:before { content: "\e63d"; }
 
+.icon-jiangli:before { content: "\e642"; }
+
 .icon-huoyuan:before { content: "\e62b"; }
 
 .icon-form:before { content: "\e60b"; }
@@ -173,6 +183,8 @@
 
 .icon-huazhuangpin:before { content: "\e61c"; }
 
+.icon-dingdan-copy:before { content: "\e645"; }
+
 .icon-gotop:before { content: "\e6c9"; }
 
 .icon-pay:before { content: "\e610"; }
@@ -188,6 +200,10 @@
 .icon-fabu:before { content: "\e637"; }
 
 .icon-meitipuguangdu:before { content: "\e62d"; }
+
+.icon-renwu-on:before { content: "\e724"; }
+
+.icon-xiangdao:before { content: "\e652"; }
 
 .icon-shangjiagongyibang:before { content: "\e6c7"; }
 

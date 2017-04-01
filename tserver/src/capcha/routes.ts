@@ -1,4 +1,5 @@
 import * as BMP24 from 'gd-bmp';
+import * as jimp from 'jimp';
 
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
@@ -69,15 +70,23 @@ function makeCapcha() {
     };
 }
 
-
-
 @router('/capcha')
 export class CapchaController {
   @get('/')
   async home(ctx) {
     let img = makeCapcha();
     ctx.session.capcha = img.code;
-    ctx.type = 'image/bmp';
-    ctx.body = img.file.getFileData();
+    ctx.type = 'image/jpg';
+    let image = await jimp.read(img.file.getFileData());
+    let buffer = new Promise((resolve, reject) => {
+      image.getBuffer(jimp.MIME_JPEG, (err, buf) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(buf);
+        }
+      });
+    });
+    ctx.body = await buffer;
   }
 }

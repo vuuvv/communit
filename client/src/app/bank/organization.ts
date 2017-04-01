@@ -1,40 +1,71 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { isEmptyArray, Http } from '../shared';
 import { OverlayService } from '../../components';
 
-const types = {
-  1: '社工机构',
-  2: '社团组织',
-  3: '专业社工',
-};
-
 @Component({
   templateUrl: './organization.html',
+  styleUrls: ['./organization.less'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class OrganizationComponent implements OnInit {
-  organizations: any[] = [];
-  type: string = '1';
+  organizations: any[];
+  organization: any;
+  id: any;
 
   constructor(
     private http: Http,
     private route: ActivatedRoute,
+    private router: Router,
     private overlayService: OverlayService,
   ) {}
 
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      this.type = params['id'];
-      return this.http.get(`/organization/type/${this.type}`);
+      this.id = params['id'];
+      if (this.id) {
+        return this.http.get(`/organization/children/${this.id}`);
+      } else {
+        return this.http.get(`/organization/home`);
+      }
     }).subscribe((resp: any) => {
       this.overlayService.hideToast();
-      this.organizations = resp;
+      if (this.id) {
+        this.organization = resp.organization;
+        this.organizations = resp.children;
+      } else {
+        this.organizations = resp;
+        this.organizations.forEach((v) => {
+          v.children = JSON.parse(v.children);
+          if (v.children) {
+            v.children.forEach((c) => {
+              c.url = `/organization/children/${c.id}`;
+            });
+          };
+        });
+      }
     });
   }
 
-  get typeName() {
-    return types[this.type];
+  get title() {
+    return this.organization ? this.organization.organizationname : '社工参与';
+  }
+
+  goto(org) {
+    this.overlayService.loading();
+    let id = org.id;
+    if (org.organizationname.startsWith('其它')) {
+      this.router.navigate(['/bank/worker', {id: id}]);
+      return;
+    }
+    this.http.get(`/organization/children/${id}`).subscribe((v: any) => {
+      if (v.children && v.children.length) {
+        this.router.navigate(['/bank/worker', {id: id}]);
+      } else {
+        this.router.navigate([`/bank/organization/detail/${id}`]);
+      }
+    });
   }
 }

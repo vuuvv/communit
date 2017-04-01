@@ -1,0 +1,33 @@
+<div class="seller">
+  <div class="seller-wrap">
+    <div class="seller-bd">
+      <div class="contact">
+        <div class="contact-cont">
+          <p class="title">{{ order.name }}</p>
+        </div>
+      </div>
+      <div class="state">
+        <div class="state-cont">
+          <p>{{ getOrderStatus(order) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<order-item *ngFor="let item of order.details" [orderItem]="item"></order-item>
+<div class="pay">
+  <div class="pay-wrap">
+    <div class="pay-cont">
+      <span>共<b>{{ getProductCount(order) }}</b>件商品</span>
+      <span>合计:<b>{{ getProductPoints(order) }}积分</b></span>
+      <span><b>{{ getProductPrice(order) | yuan }}</b></span>
+    </div>
+  </div>
+</div>
+<div class="orderop" *ngIf="order.status === 'payed'">
+  <div class="operators">
+    <ul class="clearfix">
+      <li (click)="pay()">线下结算</li>
+    </ul>
+  </div>
+</div>

@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const BMP24 = require("gd-bmp");
+const jimp = require("jimp");
 const routes_1 = require("../routes");
 /*
  用PCtoLCD2002取字模
@@ -72,8 +73,19 @@ let CapchaController = class CapchaController {
     async home(ctx) {
         let img = makeCapcha();
         ctx.session.capcha = img.code;
-        ctx.type = 'image/bmp';
-        ctx.body = img.file.getFileData();
+        ctx.type = 'image/jpg';
+        let image = await jimp.read(img.file.getFileData());
+        let buffer = new Promise((resolve, reject) => {
+            image.getBuffer(jimp.MIME_JPEG, (err, buf) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(buf);
+                }
+            });
+        });
+        ctx.body = await buffer;
     }
 };
 __decorate([

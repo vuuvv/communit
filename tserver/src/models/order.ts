@@ -8,6 +8,7 @@ export class OrderType {
 }
 
 export class OrderStatus {
+  static Payed = 'payed';
   static Done = 'done';
   static Refund = 'refund';
 }

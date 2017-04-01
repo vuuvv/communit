@@ -1,26 +1,20 @@
 <v-page class="page-order-list">
-  <v-header slot="header">我的账单</v-header>
-  <div class="weui-form-preview" *ngFor="let t of transactions">
-    <div class="weui-form-preview__hd">
-      <div class="weui-form-preview__item">
-        <label class="weui-form-preview__label">{{ t.typeName }}</label>
-        <em class="weui-form-preview__value">{{ t.amount }} 积分</em>
-      </div>
-    </div>
-    <div class="weui-form-preview__bd">
-      <div class="weui-form-preview__item" *ngFor="let product of t.products">
-        <label class="weui-form-preview__label">{{ product.title }}</label>
-        <span class="weui-form-preview__value">{{ product.points }} 积分</span>
-      </div>
-      <div class="weui-form-preview__item">
-        <label class="weui-form-preview__label">交易时间</label>
-        <span class="weui-form-preview__value">{{ t.createdAt | date: 'y-MM-dd HH:mm' }}</span>
-      </div>
-      <div class="weui-form-preview__item">
-        <label class="weui-form-preview__label">剩余积分</label>
-        <span class="weui-form-preview__value">{{ t.remain }}</span>
-      </div>
-    </div>
-  </div>
-  <empty-page *ngIf="!transactions || !transactions.length">暂无内容</empty-page>
+  <v-header slot="header">订单</v-header>
+
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+  </v-tab>
+
+  <ng-container [ngSwitch]="currentIndex">
+    <ng-container *ngSwitchCase="0">
+      <empty-page>暂无内容</empty-page>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <empty-page>暂无内容</empty-page>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <order *ngFor="let o of orders" [order]="o"></order>
+      <empty-page *ngIf="!orders || !orders.length">暂无内容</empty-page>
+    </ng-container>
+  </ng-container>
 </v-page>

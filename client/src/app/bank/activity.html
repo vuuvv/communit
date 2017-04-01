@@ -44,7 +44,7 @@
   </v-group>
 
   <v-group title="报名人员" *ngIf="users && users.length">
-    <v-cell *ngFor="let u of users">{{ u.realname }}</v-cell>
+    <v-cell *ngFor="let u of users" [value]="getUserStatus(u)">{{ u.realname }}</v-cell>
   </v-group>
   <empty-page *ngIf="!users || !users.length">暂无人员报名</empty-page>
 </v-page>

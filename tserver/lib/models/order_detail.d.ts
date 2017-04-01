@@ -17,5 +17,9 @@ export declare class OrderDetail extends BaseModel {
      * 产品信息快照
      */
     data: string;
+    /**
+     * 数量
+     */
+    count: number;
 }
 export declare const OrderDetailTableName = "t_order_detail";

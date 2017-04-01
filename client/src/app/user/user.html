@@ -3,8 +3,7 @@
 </svg>
 <v-page>
   <v-header [showBack]=false slot="header">
-    <div class="ngv-header-button" slot="left">个人中心</div>
-    <div class="ngv-header-button" slot="right">设置</div>
+    <div class="ngv-header-button" slot="left">我的</div>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -34,7 +33,7 @@
       </a>
       <a class="ngv-flexbox-item">
         <p class="rank">
-          <span>关注公益</span>
+          <span>D</span>
         </p>
         <p>公益等级</p>
       </a>
@@ -42,14 +41,20 @@
   </section>
 
   <v-group>
-    <v-cell [isLink]="true" [routerLink]="['/user/user/orders']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>订单</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="jifen" color="#4AA5F0"></v-icon>积分</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>推荐</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>奖励</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/user/worker']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>社工</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>向导</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>缴费</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="gongshi" color="#4AA5F0"></v-icon>账户</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/product/orders']"><v-icon slot="icon" type="dingdan-copy" color="#4AA5F0" style="font-size:16px"></v-icon>订单</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="jinlingyingcaiwangtubiao07" color="#4AA5F0"></v-icon>积分</v-cell>
+  </v-group>
+
+  <v-group>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="tuijian" color="#4AA5F0"></v-icon>推荐</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="jiangli" color="#4AA5F0"></v-icon>奖励</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="renwu-on" color="#4AA5F0"></v-icon>任务</v-cell>
+  </v-group>
+
+  <v-group>
+    <v-cell [isLink]="true" [routerLink]="['/user/worker']"><v-icon slot="icon" type="shegong" color="#4AA5F0"></v-icon>社工</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="xiangdao" color="#4AA5F0"></v-icon>向导</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="zhanghu" color="#4AA5F0" style="font-size:16px"></v-icon>账户</v-cell>
   </v-group>
 
   <v-group>

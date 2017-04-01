@@ -8,7 +8,7 @@ async function getWechatUser(officialAccountId, userId) {
 class QrcodeConfirm {
     async orderProduct(qrcode, confirmerId) {
         let data = JSON.parse(qrcode.data);
-        if (!data.buyerId || !data.product || !confirmerId) {
+        if (!data.buyerId || !data.order || !confirmerId) {
             throw new Error('错误的二维码');
         }
         let buyer = await getWechatUser(qrcode.communityId, data.buyerId);
@@ -26,43 +26,41 @@ class QrcodeConfirm {
         if (!store) {
             throw new Error('您还没有店铺， 不可售卖该产品');
         }
-        if (data.product.storeId !== store.id) {
-            throw new Error('该产品不属于您的店铺，请确认二维码上的产品信息');
+        if (store.status !== 'normal') {
+            throw new Error('您的店铺已关闭，不可售卖产品');
         }
-        let order = new models_1.Order();
-        order.type = models_1.OrderType.Product;
-        order.communityId = qrcode.communityId;
-        order.sellerId = seller.userId;
-        order.buyerId = buyer.userId;
-        order.orderTime = order.payTime = order.tradeTime = new Date();
-        let detail = new models_1.OrderDetail();
-        detail.orderId = order.id;
-        detail.type = models_1.OrderType.Product;
-        detail.productId = data.product.id;
+        let details = await db_1.Table.OrderDetail.where('orderId', data.order.id);
+        for (let detail of details) {
+            let product = JSON.parse(detail.data);
+            if (product.storeId !== store.id) {
+                throw new Error('该产品不属于您的店铺，请确认二维码上的产品信息');
+            }
+        }
         let ret = '';
         await db_1.db.transaction(async (trx) => {
-            qrcode = await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
+            let order = await db_1.Table.Order.transacting(trx).where('id', data.order.id).forUpdate().first();
+            if (order.status !== 'payed') {
+                throw new Error(`[${order.status}]订单状态已失效，不可进行线下结算`);
+            }
+            qrcode = await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).first();
             if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
                 throw new Error('二维码已失效');
             }
-            let product = await db_1.Table.Product.transacting(trx).where('id', data.product.id).first();
-            if (!product) {
-                throw new Error('无效的产品');
+            let products = await db_1.Table.Product.transacting(trx).whereIn('id', details.map((v) => v.productId));
+            for (let product of products) {
+                if (product.status !== 'online') {
+                    throw new Error('产品已下线，不可售卖');
+                }
             }
-            // TODO: 检查商品状态
             // 我们把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
-            let amount = order.amount = data.product.points;
-            order.buyerTradeTransactionId = await account_1.deductPoints(trx, qrcode.communityId, buyer.userId, account_1.TransactionType.PayProduct, amount);
-            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, store.id, account_1.AccountType.Normal, account_1.TransactionType.GetProduct, amount);
+            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, store.id, account_1.AccountType.Store, account_1.TransactionType.GetProduct, order.amount);
             order.status = models_1.OrderStatus.Done;
             await db_1.Table.Order.transacting(trx).insert(order);
-            detail.points = amount;
-            detail.data = JSON.stringify(product);
-            await db_1.Table.OrderDetail.transacting(trx).insert(detail);
             await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
                 status: 'done',
             });
-            ret = `${product.title} 交易金额: ${order.amount}积分`;
+            let titles = products.map((p) => p.title).join(',');
+            ret = `${titles} 交易金额: ${order.amount}积分`;
         });
         return ret;
     }
