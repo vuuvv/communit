@@ -11,3 +11,4 @@ export * from './first.pipe';
 export * from './limit.pipe';
 export * from './left.pipe';
 export * from './chunk.pipe';
+export * from './time.pipe';

@@ -36,7 +36,7 @@ let OrganizationController = class OrganizationController {
         order by o2.seq
       ) as children
     from t_organization as o1
-    where o1.accountid = ? and o1.parentId = ''
+    where o1.accountid = ? and (o1.parentId = '' or o1.parentId is null)
     order by o1.seq
     `, [ctx.session.communityId]);
         return routes_1.success(ret);

@@ -42,9 +42,12 @@ export class OrderListComponent implements OnInit {
         return;
       }
       this.orders = value;
-      this.orders.forEach((o) => {
-        o.products = o.details.map((d) => JSON.parse(d.data));
-      });
+
+      if (this.type === 'product') {
+        this.orders.forEach((o) => {
+          o.products = o.details.map((d) => JSON.parse(d.data));
+        });
+      }
 
       setTimeout(() => {
         this.currentIndex = this.types[this.type] || 0;

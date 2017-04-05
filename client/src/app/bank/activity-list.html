@@ -4,21 +4,13 @@
     <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
   </v-header>
   <tabbar slot="footer"></tabbar>
-
   <div class="ngv-bg-white">
-
     <div class="ngv-1px-b" style="padding: 12px; display: flex" *ngFor="let activity of activities" [routerLink]="['/bank/activity/' + activity.id]">
       <div class="list-item-content">
         <div class="list-item-title">{{ activity.content }}</div>
         <div class="list-item-desc">{{ activity.organizationname }}</div>
-        <div class="list-item-meta">{{ activity.integral }} 积分 | {{ activity.holdtime | date: 'y-MM-dd HH:MM' }}</div>
+        <div class="list-item-meta">{{ activity.integral }} 积分 | {{ activity.holdtime | time: 'minite' }}</div>
       </div>
-      <!--
-      <div class="list-item-right">
-        <div class="list-item-type">{{ service.categoryName }}</div>
-        <div class="list-item-status">{{ status }}</div>
-      </div>
-      -->
     </div>
   </div>
   <empty-page *ngIf="!activities || !activities.length">暂无该类信息</empty-page>

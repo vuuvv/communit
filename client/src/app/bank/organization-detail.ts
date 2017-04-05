@@ -33,6 +33,7 @@ export class OrganizationDetailComponent implements OnInit {
     }).subscribe((values: any[]) => {
       this.overlayService.hideToast();
       this.organization = values[0];
+      this.organization.id = this.organization.id || this.organization.ID;
       this.users = values[1];
       this.joined = !!values[2];
       console.log(values[2]);

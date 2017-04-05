@@ -7,7 +7,10 @@
 
   <ng-container [ngSwitch]="currentIndex">
     <ng-container *ngSwitchCase="0">
-      <empty-page>暂无内容</empty-page>
+      <v-group>
+        <v-cell *ngFor="let o of orders" [value]="o.status">{{ o.content }}</v-cell>
+      </v-group>
+      <empty-page *ngIf="!orders || !orders.length">>暂无内容</empty-page>
     </ng-container>
     <ng-container *ngSwitchCase="1">
       <empty-page>暂无内容</empty-page>

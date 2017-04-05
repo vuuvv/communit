@@ -1,9 +1,5 @@
 <v-page class="page-organization">
-  <v-header [showBack]="false">
-    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
-      <span>返回</span>
-      <div class="left-arrow"></div>
-    </a>
+  <v-header>
     {{ title }}
   </v-header>
   <tabbar slot="footer"></tabbar>
@@ -36,5 +32,6 @@
     <v-cell [isLink]="true" [routerLink]="['/bank/organization/detail/' + o.id]" *ngFor="let o of organizations">{{ o.organizationname }}</v-cell>
   </v-group>
 </ng-container>
+<empty-page *ngIf="!organizations || !organizations.length">暂时没有内容</empty-page>
 
 </v-page>

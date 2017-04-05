@@ -31,7 +31,7 @@
   </div>
 
   <v-group>
-    <v-cell [value]="activity.holdtime | date: 'y-MM-dd HH:MM'">活动时间</v-cell>
+    <v-cell [value]="activity.holdtime | time: 'minite'">活动时间</v-cell>
   </v-group>
   <v-group>
     <v-cell [value]="activity.holdaddress">活动地点</v-cell>

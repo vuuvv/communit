@@ -43,11 +43,6 @@ export class CommunityComponent implements OnInit {
       this.icons = values[1];
       this.articles = values[2];
       this.logo = values[3];
-
-      this.articles.forEach((v) => {
-        v.date = this.datePipe.transform(v.date, 'yyyy-MM-dd');
-        v.url = `/article/${v.id}`;
-      });
     });
   }
 

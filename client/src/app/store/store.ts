@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Http, FormService } from '../shared';
@@ -34,11 +34,14 @@ const validMessages = {
 @Component({
   templateUrl: './store.html',
   styleUrls: ['./store.less'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class StoreComponent implements OnInit {
   store: any;
   products: any[];
-  tabs = ['订单', '商品'];
+  orders: any[];
+  accounts: any[];
+  tabs = ['订单', '商品', '积分'];
   currentIndex;
 
   constructor(
@@ -50,12 +53,13 @@ export class StoreComponent implements OnInit {
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      console.log('here');
       this.currentIndex = params['id'];
       return this.http.get('/store');
     }).subscribe((ret: any) => {
       this.store = ret.store;
       this.products = ret.products;
+      this.orders = ret.orders;
+      this.accounts = ret.accounts;
       this.overlayService.hideToast();
       setTimeout(() => {
         this.currentIndex = 0;

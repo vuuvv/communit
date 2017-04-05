@@ -21,6 +21,29 @@ export class StoreController {
       where p.storeId = ?
       order by p.updatedAt desc
       `, [ret.store.id]);
+
+      ret.orders = await raw(`
+      select o.*, s.name from t_order as o
+      join t_store as s on o.sellerId = s.id
+      where s.userId = ? and s.communityId = ?
+      order by o.updatedAt desc
+      `, [ctx.session.userId, ctx.session.communityId]);
+
+      if (ret.orders.length) {
+        let details: any[] = await raw(`
+        select * from t_order_detail where orderId in (?)
+        `, [ret.orders.map((v) => v.id)]);
+
+        for (let o of ret.orders) {
+          o.details = details.filter((d) => o.id === d.orderId);
+        }
+      }
+
+      ret.accounts = await raw(`
+      select a.*, at.name as typeName from t_account as a
+      join t_account_type as at on a.typeId=at.id
+      where a.userId = ?
+      `, [ret.store.id]);
     }
 
     return success(ret);

@@ -11,6 +11,7 @@ import { FirstPipe } from './first.pipe';
 import { LimitPipe } from './limit.pipe';
 import { LeftPipe } from './left.pipe';
 import { ChunkPipe } from './chunk.pipe';
+import { TimePipe } from './time.pipe';
 
 export const CORE_PIPES: Type<any>[] = [
   BackgroundUrlPipe,
@@ -26,4 +27,5 @@ export const CORE_PIPES: Type<any>[] = [
   LimitPipe,
   LeftPipe,
   ChunkPipe,
+  TimePipe,
 ];

@@ -55,7 +55,12 @@ class QrcodeConfirm {
             // 我们把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
             order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, store.id, account_1.AccountType.Store, account_1.TransactionType.GetProduct, order.amount);
             order.status = models_1.OrderStatus.Done;
-            await db_1.Table.Order.transacting(trx).insert(order);
+            order.tradeTime = new Date();
+            await db_1.Table.Order.transacting(trx).where('id', order.id).update({
+                sellerTradeTransactionId: order.sellerTradeTransactionId,
+                status: order.status,
+                tradeTime: order.tradeTime,
+            });
             await db_1.Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
                 status: 'done',
             });

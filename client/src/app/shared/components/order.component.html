@@ -24,7 +24,7 @@
     </div>
   </div>
 </div>
-<div class="orderop" *ngIf="order.status === 'payed'">
+<div class="orderop" *ngIf="order.status === 'payed' && !isStore">
   <div class="operators">
     <ul class="clearfix">
       <li (click)="pay()">线下结算</li>

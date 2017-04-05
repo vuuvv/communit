@@ -56,7 +56,7 @@ export class QrcodeConfirm {
 
     let ret = '';
     await db.transaction(async (trx) => {
-      let order = await Table.Order.transacting(trx).where('id', data.order.id).forUpdate().first();
+      let order: Order = await Table.Order.transacting(trx).where('id', data.order.id).forUpdate().first();
       if (order.status !== 'payed') {
         throw new Error(`[${order.status}]订单状态已失效，不可进行线下结算`);
       }
@@ -80,8 +80,13 @@ export class QrcodeConfirm {
       );
 
       order.status = OrderStatus.Done;
+      order.tradeTime = new Date();
 
-      await Table.Order.transacting(trx).insert(order);
+      await Table.Order.transacting(trx).where('id', order.id).update({
+        sellerTradeTransactionId: order.sellerTradeTransactionId,
+        status: order.status,
+        tradeTime: order.tradeTime,
+      });
 
       await Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
         status: 'done',

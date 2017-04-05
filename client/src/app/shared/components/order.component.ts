@@ -17,6 +17,7 @@ const OrderStatus = {
 })
 export class OrderComponent {
   @Input('order') order: any;
+  @Input() isStore = false;
 
   constructor(
     private http: Http,

@@ -73,6 +73,34 @@ export class OrderController {
     return success(order);
   }
 
+  @get('/store')
+  @login
+  async storeOrderList(ctx) {
+    let userId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+    let ret;
+    let orders = await raw(`
+    select o.*, s.name from t_order as o
+    join t_store as s on o.sellerId = s.id
+    where s.userId = ? and s.communityId = ?
+    order by o.updatedAt desc
+    `, [userId, communityId]);
+
+    if (!orders.length) {
+      return success([]);
+    }
+
+    let details: any[] = await raw(`
+    select * from t_order_detail where orderId in (?)
+    `, [orders.map((v) => v.id)]);
+
+    for (let o of orders) {
+      o.details = details.filter((d) => o.id === d.orderId);
+    }
+
+    return success(orders);
+  }
+
   @get('/list/:type')
   @login
   async orderList(ctx) {
@@ -83,8 +111,12 @@ export class OrderController {
       select o.*, s.name from t_order as o
       join t_store as s on o.sellerId = s.id
       where o.buyerId = ? and o.type = ?
-      order by o.updatedAt
+      order by o.updatedAt desc
       `, [userId, OrderType.Product]);
+
+      if (!orders.length) {
+        return success([]);
+      }
 
       let details: any[] = await raw(`
       select * from t_order_detail where orderId in (?)
@@ -97,15 +129,12 @@ export class OrderController {
       ret = orders;
     } else if (ctx.params.type === OrderType.Activity) {
       let orders = await raw(`
-      select * from t_act
-      select o.*, s.name from t_order as o
-      join weixin_account as wa on o.communityId = wa.id
-      join t_order_detail as od on o.id = od.orderId
-      join t_socially_activity as
-      where o.sellerId = ? and o.type = ?
-      order by o.updatedAt
-      `, [userId, OrderType.Activity]);
+      select sau.status, sau.points, sa.content from t_socially_activity_user as sau
+      join t_socially_activity as sa on sau.activityId = sa.id
+      where sau.communityId = ? and sau.userId = ?
+      `, [ctx.session.communityId, userId]);
 
+      ret = orders;
     }
     return success(ret);
   }

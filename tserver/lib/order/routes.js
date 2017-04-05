@@ -60,6 +60,27 @@ let OrderController = class OrderController {
         });
         return routes_1.success(order);
     }
+    async storeOrderList(ctx) {
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let ret;
+        let orders = await db_1.raw(`
+    select o.*, s.name from t_order as o
+    join t_store as s on o.sellerId = s.id
+    where s.userId = ? and s.communityId = ?
+    order by o.updatedAt desc
+    `, [userId, communityId]);
+        if (!orders.length) {
+            return routes_1.success([]);
+        }
+        let details = await db_1.raw(`
+    select * from t_order_detail where orderId in (?)
+    `, [orders.map((v) => v.id)]);
+        for (let o of orders) {
+            o.details = details.filter((d) => o.id === d.orderId);
+        }
+        return routes_1.success(orders);
+    }
     async orderList(ctx) {
         let userId = ctx.session.userId;
         let ret;
@@ -68,8 +89,11 @@ let OrderController = class OrderController {
       select o.*, s.name from t_order as o
       join t_store as s on o.sellerId = s.id
       where o.buyerId = ? and o.type = ?
-      order by o.updatedAt
+      order by o.updatedAt desc
       `, [userId, models_1.OrderType.Product]);
+            if (!orders.length) {
+                return routes_1.success([]);
+            }
             let details = await db_1.raw(`
       select * from t_order_detail where orderId in (?)
       `, [orders.map((v) => v.id)]);
@@ -80,14 +104,11 @@ let OrderController = class OrderController {
         }
         else if (ctx.params.type === models_1.OrderType.Activity) {
             let orders = await db_1.raw(`
-      select * from t_act
-      select o.*, s.name from t_order as o
-      join weixin_account as wa on o.communityId = wa.id
-      join t_order_detail as od on o.id = od.orderId
-      join t_socially_activity as
-      where o.sellerId = ? and o.type = ?
-      order by o.updatedAt
-      `, [userId, models_1.OrderType.Activity]);
+      select sau.status, sau.points, sa.content from t_socially_activity_user as sau
+      join t_socially_activity as sa on sau.activityId = sa.id
+      where sau.communityId = ? and sau.userId = ?
+      `, [ctx.session.communityId, userId]);
+            ret = orders;
         }
         return routes_1.success(ret);
     }
@@ -149,6 +170,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "buy", null);
+__decorate([
+    routes_1.get('/store'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "storeOrderList", null);
 __decorate([
     routes_1.get('/list/:type'),
     routes_1.login,
