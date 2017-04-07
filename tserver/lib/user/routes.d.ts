@@ -11,4 +11,5 @@ export declare class UserController {
     deductAccount(): Promise<Response>;
     reverse(ctx: any): Promise<Response>;
     logout(ctx: any): Promise<void>;
+    points(ctx: any): Promise<void>;
 }

@@ -110,6 +110,13 @@ let UserController = class UserController {
         const config = await config_1.Config.instance();
         ctx.redirect(config.site.client);
     }
+    async points(ctx) {
+        let type = ctx.params.type;
+        if (type === 'activity') {
+        }
+        else {
+        }
+    }
 };
 __decorate([
     routes_1.get('/carousel'),
@@ -183,6 +190,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "logout", null);
+__decorate([
+    routes_1.get('/points/:type'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "points", null);
 UserController = __decorate([
     routes_1.router('/user')
 ], UserController);

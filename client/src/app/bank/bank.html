@@ -7,20 +7,9 @@
   <tabbar slot="footer"></tabbar>
 
   <div class="quickentry-nav ngv-1px-b qe" *ngIf="menus">
-    <v-slider>
-      <v-slider-item *ngFor="let chunk of menus | chunk: 8">
-        <quickentry>
-          <quickentry-item [icon]="getIcon(icon.icon)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4" height="25" width="25">
-            {{ icon.name }}
-          </quickentry-item>
-        </quickentry>
-        <quickentry>
-          <quickentry-item [icon]="getIcon(icon.icon)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 4:4" height="25" width="25">
-            {{ icon.name }}
-          </quickentry-item>
-        </quickentry>
-      </v-slider-item>
-    </v-slider>
+    <v-xscroll class="main-nav">
+      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon | fixurl" *ngFor="let m of menus" (click)="goto(m)">{{ m.name }}</quickentry-item>
+    </v-xscroll>
   </div>
 
   <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>

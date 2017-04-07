@@ -6,6 +6,7 @@ import { NgvModule } from '../../components';
 
 import { SHARED_COMPONENTS } from './components';
 import { SHARED_SERVICES } from './services';
+import { SHARE_PIPES } from './pipes';
 
 @NgModule({
   imports: [
@@ -13,15 +14,15 @@ import { SHARED_SERVICES } from './services';
     RouterModule,
     NgvModule
   ],
-  declarations: [ SHARED_COMPONENTS ],
-  exports: [ SHARED_COMPONENTS ],
+  declarations: [ SHARED_COMPONENTS, SHARE_PIPES ],
+  exports: [ SHARED_COMPONENTS, SHARE_PIPES ],
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
       providers: [ ...SHARED_SERVICES ],
-    }
+    };
   }
 }
 

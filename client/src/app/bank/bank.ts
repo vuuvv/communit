@@ -30,39 +30,19 @@ export class BankComponent implements OnInit {
       this.http.get('/service/search'),
     ).subscribe((values: any) => {
       this.overlayService.hideToast();
-      this.menus = this.fillMenu(values[0]);
+      this.menus = values[0];
       this.services = values[1].map((s) => {
         s.data = JSON.parse(s.content);
         return s;
       });
+      this.menus.push({
+        name: '全部',
+        icon: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+      });
     });
-  }
-
-  getIcon(url) {
-    if (/^((https?:\/\/)|(\/\/))/.test(url)) {
-      return url;
-    }
-    return `http://www.crowdnear.com/pc/${url}`;
   }
 
   click() {
     console.log('click');
-  }
-
-  private fillMenu(menus) {
-    if (!menus || !menus.length) {
-      return null;
-    }
-
-    let len = menus.length;
-    let need = 8 - (menus.length % 8);
-
-    if (need !== 8) {
-      for (let i = 0; i < need; i++) {
-        menus.push({});
-      }
-    }
-
-    return menus;
   }
 }

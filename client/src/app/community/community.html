@@ -1,6 +1,6 @@
 <v-page class="page-community">
   <v-header [showBack]="false" slot="header">
-    <img [src]="getIcon(logo?.logo)" *ngIf="logo?.logo"/>
+    <img [src]="logo?.logo | fixurl" *ngIf="logo?.logo"/>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -15,20 +15,9 @@
   </div>
 
   <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
-    <v-slider>
-      <v-slider-item *ngFor="let chunk of icons | chunk: 8">
-        <quickentry>
-          <quickentry-item [icon]="getIcon(icon.image)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4">
-            {{ icon.name }}
-          </quickentry-item>
-        </quickentry>
-        <quickentry>
-          <quickentry-item [icon]="getIcon(icon.image)" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 4:4">
-            {{ icon.name }}
-          </quickentry-item>
-        </quickentry>
-      </v-slider-item>
-    </v-slider>
+    <v-xscroll class="main-nav">
+      <quickentry-item class="ngv-xscroll-item" [icon]="m.image | fixurl" *ngFor="let m of icons" (click)="goto(m)">{{ m.name }}</quickentry-item>
+    </v-xscroll>
   </div>
 
   <empty-page *ngIf="!articles || !articles.length">暂无内容</empty-page>

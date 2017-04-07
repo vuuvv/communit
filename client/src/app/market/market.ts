@@ -31,6 +31,10 @@ export class MarketComponent implements OnInit {
       this.overlayService.hideToast();
       this.categories = value[0];
       this.products = value[1];
+      this.categories.push({
+        name: '全部',
+        icon: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+      });
     });
   }
 

@@ -142,4 +142,12 @@ export class UserController {
     const config = await Config.instance();
     ctx.redirect(config.site.client);
   }
+
+  @get('/points/:type')
+  async points(ctx) {
+    let type = ctx.params.type;
+    if (type === 'activity') {
+    } else {
+    }
+  }
 }

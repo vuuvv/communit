@@ -43,6 +43,10 @@ export class CommunityComponent implements OnInit {
       this.icons = values[1];
       this.articles = values[2];
       this.logo = values[3];
+      this.icons.push({
+        name: '全部',
+        image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+      });
     });
   }
 
@@ -61,12 +65,5 @@ export class CommunityComponent implements OnInit {
         this.router.navigate([`/articles/${id}`]);
       }
     });
-  }
-
-  getIcon(url) {
-    if (/^((https?:\/\/)|(\/\/))/.test(url)) {
-      return url;
-    }
-    return `http://www.crowdnear.com/pc/${url}`;
   }
 }
