@@ -18,3 +18,16 @@
     </service-list-item>
   </div>
 </v-page>
+<div *ngIf="showMask" class="ngv-overlay">
+  <div class="weui-mask"></div>
+  <div class="quickentry-nav qe" *ngIf="menus">
+    <quickentry *ngFor="let chunk of menus | slice: 0:-1 | chunk: 4">
+      <quickentry-item [icon]="icon.icon | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk">
+        {{ icon.name }}
+      </quickentry-item>
+    </quickentry>
+  </div>
+  <div class="close" (click)="showMask=false">
+    <v-icon type="close"></v-icon>
+  </div>
+</div>

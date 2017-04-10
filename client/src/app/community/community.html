@@ -35,4 +35,17 @@
   </div>
 
 </v-page>
+<div *ngIf="showMask" class="ngv-overlay">
+  <div class="weui-mask"></div>
+  <div class="quickentry-nav qe" *ngIf="icons">
+    <quickentry *ngFor="let chunk of icons | slice: 0:-1 | chunk: 4">
+      <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk">
+        {{ icon.name }}
+      </quickentry-item>
+    </quickentry>
+  </div>
+  <div class="close" (click)="showMask=false">
+    <v-icon type="close"></v-icon>
+  </div>
+</div>
 

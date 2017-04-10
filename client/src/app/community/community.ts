@@ -21,6 +21,7 @@ export class CommunityComponent implements OnInit {
   icons: any[];
   articles: any[];
   logo: any;
+  showMask = false;
 
   constructor(
     private overlayService: OverlayService,
@@ -51,6 +52,11 @@ export class CommunityComponent implements OnInit {
   }
 
   goto(icon) {
+    if (icon.name === '全部') {
+      this.showMask = true;
+      return;
+    }
+
     if (icon.url) {
       this.router.navigate([icon.url]);
       return;

@@ -41,3 +41,34 @@
   border: solid transparent 5px;
   border-left-color: #999;
 }
+
+.ngv-overlay {
+  position: absolute;
+  width: 100%;
+  z-index: 10000;
+  height: 100%;
+
+  .weui-mask {
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .quickentry-nav {
+    position: absolute;
+    width: 100%;
+    z-index: 10001;
+    background: none;
+  }
+
+  .close {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    z-index: 10001;
+    bottom: 20px;
+
+    v-icon {
+      font-size: 24px;
+      color: #ccc;
+    }
+  }
+}

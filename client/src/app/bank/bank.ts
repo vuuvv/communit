@@ -16,6 +16,7 @@ export class BankComponent implements OnInit {
   menus: any[] = null;
   activeMenuId: string;
   services: any[] = [];
+  showMask = false;
 
   constructor(
     private http: Http,
@@ -44,5 +45,17 @@ export class BankComponent implements OnInit {
 
   click() {
     console.log('click');
+  }
+
+  goto(icon) {
+    if (icon.name === '全部') {
+      this.showMask = true;
+      return;
+    }
+
+    if (icon.url) {
+      this.router.navigate([icon.url]);
+      return;
+    }
   }
 }

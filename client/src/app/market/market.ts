@@ -15,6 +15,7 @@ import { OverlayService } from '../../components';
 export class MarketComponent implements OnInit {
   categories: any[] = [];
   products: any[] = [];
+  showMask = false;
 
   constructor(
     private http: Http,
@@ -40,5 +41,15 @@ export class MarketComponent implements OnInit {
 
   search(keyword) {
     this.router.navigate(['/market/search', {keyword: keyword}]);
+  }
+
+  goto(icon) {
+    if (icon.name === '全部') {
+      this.showMask = true;
+      return;
+    }
+
+    this.router.navigate(['/market/search', {categoryId: icon.id}]);
+    return;
   }
 }

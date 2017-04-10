@@ -6,11 +6,11 @@ import { Http } from '../shared';
 import { OverlayService, DialogService } from '../../components';
 
 @Component({
-  templateUrl: './order-list.html',
-  styleUrls: ['./order-list.less'],
+  templateUrl: './points.html',
+  styleUrls: ['./points.less'],
   encapsulation: ViewEncapsulation.None,
 })
-export class OrderListComponent implements OnInit {
+export class PointsComponent implements OnInit {
   orders: any[];
   tabs = ['公益购买积分', '公益购买积分'];
   types = {
@@ -30,27 +30,5 @@ export class OrderListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.overlayService.loading();
-    this.route.params.concatMap((params: Params) => {
-      this.type = params['type'];
-      return this.http.get(`/order/list/${this.type}`);
-    }).subscribe((value: any) => {
-      this.overlayService.hideToast();
-      if (!value) {
-        this.orders = [];
-        return;
-      }
-      this.orders = value;
-
-      if (this.type === 'product') {
-        this.orders.forEach((o) => {
-          o.products = o.details.map((d) => JSON.parse(d.data));
-        });
-      }
-
-      setTimeout(() => {
-        this.currentIndex = this.types[this.type] || 0;
-      }, 0);
-    });
   }
 }

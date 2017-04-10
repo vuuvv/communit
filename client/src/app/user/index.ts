@@ -13,6 +13,7 @@ import { SignupComponent } from './signup';
 import { QrcodeComponent } from './qrcode';
 import { OrderListComponent } from './order-list';
 import { WorkerComponent } from './worker';
+import { PointsComponent } from './points';
 
 const routes: Routes = [
   {
@@ -72,6 +73,7 @@ const routes: Routes = [
     QrcodeComponent,
     OrderListComponent,
     WorkerComponent,
+    PointsComponent,
   ]
 })
 export class UserModule {

@@ -1,10 +1,10 @@
 
 @font-face {font-family: "ngv-icon";
-  src: url('iconfont.eot?t=1490970365505'); /* IE9*/
-  src: url('iconfont.eot?t=1490970365505#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1490970365505') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1490970365505') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1490970365505#ngv-icon') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1491530727485'); /* IE9*/
+  src: url('iconfont.eot?t=1491530727485#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1491530727485') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1491530727485') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1491530727485#ngv-icon') format('svg'); /* iOS 4.1- */
 }
 
 .ngv-icon {
@@ -72,6 +72,8 @@
 .icon-chujie:before { content: "\e634"; }
 
 .icon-badaxilietubiao01:before { content: "\e616"; }
+
+.icon-close:before { content: "\e6b5"; }
 
 .icon-dongtai:before { content: "\e633"; }
 

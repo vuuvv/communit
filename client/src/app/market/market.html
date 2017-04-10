@@ -4,7 +4,7 @@
 
   <div class="quickentry-nav ngv-1px-b" *ngIf="categories && categories.length">
     <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" [icon]="c.icon | fixurl" *ngFor="let c of categories" [routerLink]="['/market/search', {categoryId: c.id}]">{{ c.name }}</quickentry-item>
+      <quickentry-item class="ngv-xscroll-item" [icon]="c.icon | fixurl" *ngFor="let c of categories" (click)="goto(c)">{{ c.name }}</quickentry-item>
     </v-xscroll>
   </div>
 
@@ -20,4 +20,18 @@
    </product-list-item>
   </div>
 </v-page>
+
+<div *ngIf="showMask" class="ngv-overlay">
+  <div class="weui-mask"></div>
+  <div class="quickentry-nav qe" *ngIf="categories">
+    <quickentry *ngFor="let chunk of categories | slice: 0:-1 | chunk: 4">
+      <quickentry-item [icon]="icon.icon | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk">
+        {{ icon.name }}
+      </quickentry-item>
+    </quickentry>
+  </div>
+  <div class="close" (click)="showMask=false">
+    <v-icon type="close"></v-icon>
+  </div>
+</div>
 
