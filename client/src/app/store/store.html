@@ -32,13 +32,17 @@
           class="ngv-1px-b"
           [product]="p"
           *ngFor="let p of products"
+          [routerLink]="['/store/product/item/' + p.id]"
         >
         </product-list-item>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="2">
       <v-group>
-        <v-cell *ngFor="let a of accounts" [value]="a.balance">{{ a.typeName }}</v-cell>
+        <v-cell [value]="accounts.storeBalance">捐赠积分余额</v-cell>
+        <v-cell [value]="accounts.storeTotal">捐赠积分积分总额</v-cell>
+        <v-cell [value]="accounts.buyBalance">购买积分余额</v-cell>
+        <v-cell [value]="accounts.buyTotal">购买积分总额</v-cell>
       </v-group>
     </ng-container>
   </ng-container>

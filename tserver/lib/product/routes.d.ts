@@ -5,4 +5,6 @@ export declare class ProductController {
     item(ctx: any): Promise<Response>;
     add(ctx: any): Promise<Response>;
     edit(ctx: any): Promise<Response>;
+    offline(ctx: any): Promise<Response>;
+    online(ctx: any): Promise<Response>;
 }

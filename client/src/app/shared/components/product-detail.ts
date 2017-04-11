@@ -1,5 +1,10 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
+const ProductStatus = {
+  online: '在售中',
+  offline: '已下架',
+};
+
 @Component({
   selector: 'product-detail',
   templateUrl: './product-detail.html',
@@ -8,4 +13,8 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 })
 export class ProductDetailComponent {
   @Input() product: any;
+
+  getStatus() {
+    return ProductStatus[this.product.status];
+  }
 }

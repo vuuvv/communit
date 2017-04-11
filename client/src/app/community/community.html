@@ -25,7 +25,6 @@
     <div class="weui-panel__bd">
       <div class="weui-media-box weui-media-box_text" *ngFor="let a of articles" [routerLink]="['/article/' + a.id]">
         <h4 class="weui-media-box__title">{{ a.title }}</h4>
-        <p class="weui-media-box__desc">{{ a.desc }}</p>
         <ul class="weui-media-box__info">
           <li class="weui-media-box__info__meta">{{ a.type }}</li>
           <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{ a.date | time: 'day' }}</li>

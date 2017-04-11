@@ -3,6 +3,17 @@ import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Store } from '../models';
 import { getStore, getStoreModel } from './store';
+import { AccountType } from '../account';
+
+function sumif(array, fn) {
+  let ret = 0;
+  array.forEach((item) => {
+    if (fn(item)) {
+      ret += item.amount || 0;
+    }
+  });
+  return ret;
+}
 
 @router('/store')
 export class StoreController {
@@ -10,6 +21,7 @@ export class StoreController {
   @login
   async store(ctx) {
     let ret: any = {};
+    let communityId = ctx.session.communityId;
 
     ret.store = await getStore(ctx);
 
@@ -27,7 +39,7 @@ export class StoreController {
       join t_store as s on o.sellerId = s.id
       where s.userId = ? and s.communityId = ?
       order by o.updatedAt desc
-      `, [ctx.session.userId, ctx.session.communityId]);
+      `, [ctx.session.userId, communityId]);
 
       if (ret.orders.length) {
         let details: any[] = await raw(`
@@ -39,11 +51,26 @@ export class StoreController {
         }
       }
 
-      ret.accounts = await raw(`
-      select a.*, at.name as typeName from t_account as a
-      join t_account_type as at on a.typeId=at.id
-      where a.userId = ?
+      let balance = await raw(`
+      select at.id, at.name as typeName, if(a.balance is null, 0, a.balance) as amount from t_account_type as at
+      left join t_account a on a.typeId=at.id and a.userId = ?
+      group by at.id
       `, [ret.store.id]);
+
+      let total = await raw(`
+      select at.id, at.name, sum(if(a.total is null, 0, a.total)) as amount from t_account_type as at
+      left join t_account_detail as a on at.id = a.typeId and a.userId = ?
+      group by at.id
+      `, [ret.store.id]);
+
+      let orderCount = (await first('select count(*) as c from t_order where sellerId = ?', [ret.store.id])).c || 0;
+
+      ret.accounts = {
+        storeBalance: sumif(balance, (item) => item.id === AccountType.Store),
+        storeTotal: sumif(total, (item) => item.id === AccountType.Store),
+        buyBalance: sumif(balance, (item) => item.id === AccountType.Buy),
+        buyTotal: sumif(total, (item) => item.id === AccountType.Buy),
+      };
     }
 
     return success(ret);

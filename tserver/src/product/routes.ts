@@ -55,6 +55,21 @@ export class ProductController {
       where p.id = ?
       `, [ id ]);
 
+    if (ctx.query.isMine) {
+      let communityId = ctx.session.communityId;
+      let userId = ctx.session.userId;
+      if (!userId) {
+        throw new Error('请先注册');
+      }
+      let store = await Table.Store.where({
+        communityId: communityId,
+        userId: userId,
+      }).first();
+      if (store.id !== ret.storeId) {
+        throw new Error('不可查看其他店铺的商品');
+      }
+    }
+
     return success(ret);
   }
 
@@ -104,6 +119,52 @@ export class ProductController {
       normalPrice: model.normalPrice,
     });
 
+    return success();
+  }
+
+  @post('/offline/:id')
+  @login
+  async offline(ctx) {
+    let store = await getStore(ctx);
+    if (_.isNil(store) || store.status !== 'normal') {
+      throw new ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
+    }
+
+    let product = await Table.Product.where('id', ctx.params.id).first();
+
+    if (!product) {
+      throw new ResponseError('该产品不存在');
+    }
+
+    if (product.storeId !== store.id) {
+      throw new ResponseError('不可编辑其他店铺的商品');
+    }
+    await Table.Product.where('id', ctx.params.id).update({
+      status: 'offline',
+    });
+    return success();
+  }
+
+  @post('/online/:id')
+  @login
+  async online(ctx) {
+    let store = await getStore(ctx);
+    if (_.isNil(store) || store.status !== 'normal') {
+      throw new ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
+    }
+
+    let product = await Table.Product.where('id', ctx.params.id).first();
+
+    if (!product) {
+      throw new ResponseError('该产品不存在');
+    }
+
+    if (product.storeId !== store.id) {
+      throw new ResponseError('不可编辑其他店铺的商品');
+    }
+    await Table.Product.where('id', ctx.params.id).update({
+      status: 'online',
+    });
     return success();
   }
 }

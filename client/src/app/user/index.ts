@@ -53,6 +53,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: WorkerComponent,
       },
+      {
+        path: 'points',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: PointsComponent,
+      },
     ],
   },
 ];

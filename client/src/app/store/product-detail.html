@@ -1,0 +1,12 @@
+<v-page class="page-market">
+  <v-header slot="header">
+    {{ product?.title }}
+  </v-header>
+  <v-tabbar slot="footer" *ngIf="product">
+    <v-tabbar-btn class="primary" [routerLink]="['/store/product/edit/' + product.id]">编辑商品</v-tabbar-btn>
+    <v-tabbar-btn class="warn" (click)="change()" *ngIf="product.status === 'online'">下架商品</v-tabbar-btn>
+    <v-tabbar-btn class="warn" (click)="change()" *ngIf="product.status === 'offline'">上架商品</v-tabbar-btn>
+  </v-tabbar>
+
+  <product-detail [product]="product"></product-detail>
+</v-page>

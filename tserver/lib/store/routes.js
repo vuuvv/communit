@@ -13,9 +13,20 @@ const db_1 = require("../db");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
 const store_1 = require("./store");
+const account_1 = require("../account");
+function sumif(array, fn) {
+    let ret = 0;
+    array.forEach((item) => {
+        if (fn(item)) {
+            ret += item.amount || 0;
+        }
+    });
+    return ret;
+}
 let StoreController = class StoreController {
     async store(ctx) {
         let ret = {};
+        let communityId = ctx.session.communityId;
         ret.store = await store_1.getStore(ctx);
         if (ret.store) {
             // ret.products = await Table.Product.where('storeId', ret.store.id).orderBy('updatedAt', 'desc');
@@ -30,7 +41,7 @@ let StoreController = class StoreController {
       join t_store as s on o.sellerId = s.id
       where s.userId = ? and s.communityId = ?
       order by o.updatedAt desc
-      `, [ctx.session.userId, ctx.session.communityId]);
+      `, [ctx.session.userId, communityId]);
             if (ret.orders.length) {
                 let details = await db_1.raw(`
         select * from t_order_detail where orderId in (?)
@@ -39,11 +50,23 @@ let StoreController = class StoreController {
                     o.details = details.filter((d) => o.id === d.orderId);
                 }
             }
-            ret.accounts = await db_1.raw(`
-      select a.*, at.name as typeName from t_account as a
-      join t_account_type as at on a.typeId=at.id
-      where a.userId = ?
+            let balance = await db_1.raw(`
+      select at.id, at.name as typeName, if(a.balance is null, 0, a.balance) as amount from t_account_type as at
+      left join t_account a on a.typeId=at.id and a.userId = ?
+      group by at.id
       `, [ret.store.id]);
+            let total = await db_1.raw(`
+      select at.id, at.name, sum(if(a.total is null, 0, a.total)) as amount from t_account_type as at
+      left join t_account_detail as a on at.id = a.typeId and a.userId = ?
+      group by at.id
+      `, [ret.store.id]);
+            let orderCount = (await db_1.first('select count(*) as c from t_order where sellerId = ?', [ret.store.id])).c || 0;
+            ret.accounts = {
+                storeBalance: sumif(balance, (item) => item.id === account_1.AccountType.Store),
+                storeTotal: sumif(total, (item) => item.id === account_1.AccountType.Store),
+                buyBalance: sumif(balance, (item) => item.id === account_1.AccountType.Buy),
+                buyTotal: sumif(total, (item) => item.id === account_1.AccountType.Buy),
+            };
         }
         return routes_1.success(ret);
     }

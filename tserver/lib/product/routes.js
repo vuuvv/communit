@@ -47,6 +47,20 @@ let ProductController = class ProductController {
       join t_store as s on p.storeId = s.id
       where p.id = ?
       `, [id]);
+        if (ctx.query.isMine) {
+            let communityId = ctx.session.communityId;
+            let userId = ctx.session.userId;
+            if (!userId) {
+                throw new Error('请先注册');
+            }
+            let store = await db_1.Table.Store.where({
+                communityId: communityId,
+                userId: userId,
+            }).first();
+            if (store.id !== ret.storeId) {
+                throw new Error('不可查看其他店铺的商品');
+            }
+        }
         return routes_1.success(ret);
     }
     async add(ctx) {
@@ -80,6 +94,40 @@ let ProductController = class ProductController {
             price: model.price,
             points: model.points,
             normalPrice: model.normalPrice,
+        });
+        return routes_1.success();
+    }
+    async offline(ctx) {
+        let store = await store_1.getStore(ctx);
+        if (_.isNil(store) || store.status !== 'normal') {
+            throw new routes_1.ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
+        }
+        let product = await db_1.Table.Product.where('id', ctx.params.id).first();
+        if (!product) {
+            throw new routes_1.ResponseError('该产品不存在');
+        }
+        if (product.storeId !== store.id) {
+            throw new routes_1.ResponseError('不可编辑其他店铺的商品');
+        }
+        await db_1.Table.Product.where('id', ctx.params.id).update({
+            status: 'offline',
+        });
+        return routes_1.success();
+    }
+    async online(ctx) {
+        let store = await store_1.getStore(ctx);
+        if (_.isNil(store) || store.status !== 'normal') {
+            throw new routes_1.ResponseError('您现在还没有店铺, 或者您的店铺还没通过审核');
+        }
+        let product = await db_1.Table.Product.where('id', ctx.params.id).first();
+        if (!product) {
+            throw new routes_1.ResponseError('该产品不存在');
+        }
+        if (product.storeId !== store.id) {
+            throw new routes_1.ResponseError('不可编辑其他店铺的商品');
+        }
+        await db_1.Table.Product.where('id', ctx.params.id).update({
+            status: 'online',
         });
         return routes_1.success();
     }
@@ -119,6 +167,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "edit", null);
+__decorate([
+    routes_1.post('/offline/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "offline", null);
+__decorate([
+    routes_1.post('/online/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "online", null);
 ProductController = __decorate([
     routes_1.router('/product')
 ], ProductController);

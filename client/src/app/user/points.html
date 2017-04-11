@@ -1,0 +1,26 @@
+<v-page class="page-points">
+  <v-header slot="header">积分</v-header>
+
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+  </v-tab>
+
+  <ng-container [ngSwitch]="currentIndex">
+    <ng-container *ngSwitchCase="0">
+      <v-group *ngIf="account">
+        <v-cell [value]="account.activityBalance">公益活动积分总额</v-cell>
+        <v-cell [value]="account.activityTotal">公益活动积分余额</v-cell>
+        <v-cell [value]="account.activityPay">当月公益活动积分支付额</v-cell>
+        <v-cell [value]="account.activityGet">当月公益活动积分收受额</v-cell>
+      </v-group>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <v-group *ngIf="account">
+        <v-cell [value]="account.buyBalance">公益购买积分总额</v-cell>
+        <v-cell [value]="account.buyTotal">公益购买积分余额</v-cell>
+        <v-cell [value]="account.buyPay">当月公益购买积分支付额</v-cell>
+        <v-cell [value]="account.buyGet">当月公益购买积分收受额</v-cell>
+      </v-group>
+    </ng-container>
+  </ng-container>
+</v-page>

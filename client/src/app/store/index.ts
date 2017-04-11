@@ -9,6 +9,7 @@ import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { StoreComponent, StoreAddComponent, StoreEditComponent } from './store';
 import { ProductAddComponent, ProductEditComponent } from './product';
+import { ProductDetailComponent } from './product-detail';
 
 const routes: Routes = [
   {
@@ -45,6 +46,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ProductAddComponent,
       },
+      {
+        path: 'product/item/:id',
+        pathMatch: 'full',
+        component: ProductDetailComponent,
+      },
     ],
   },
 ];
@@ -64,6 +70,7 @@ const routes: Routes = [
     StoreEditComponent,
     ProductAddComponent,
     ProductEditComponent,
+    ProductDetailComponent,
   ]
 })
 export class StoreModule {

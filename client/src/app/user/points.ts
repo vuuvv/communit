@@ -11,14 +11,9 @@ import { OverlayService, DialogService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class PointsComponent implements OnInit {
-  orders: any[];
+  account;
   tabs = ['公益购买积分', '公益购买积分'];
-  types = {
-    activity: 0,
-    buy: 1,
-  };
-  type = '';
-  currentIndex = 0;
+  currentIndex;
 
   constructor(
     private http: Http,
@@ -30,5 +25,11 @@ export class PointsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.http.get('/account/summary').subscribe((value) => {
+      this.account = value;
+    });
+    setTimeout(() => {
+      this.currentIndex = 0;
+    }, 0);
   }
 }
