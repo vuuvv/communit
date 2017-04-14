@@ -1,0 +1,11 @@
+<div *ngIf="show">
+  <div class="weui-mask"></div>
+  <div class="weui-actionsheet weui-actionsheet_toggle">
+    <div class="weui-actionsheet__menu">
+      <ng-content></ng-content>
+    </div>
+    <div class="weui-actionsheet__action">
+      <div class="weui-actionsheet__cell" (click)="close()">取消</div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Http, FormService, WechatService } from '../shared';
-import { OverlayService } from '../../components';
+import { OverlayService, DialogService } from '../../components';
 
 const validMessages = {
   name: {
@@ -87,12 +87,16 @@ export class StoreComponent implements OnInit {
 export class StoreAddComponent {
   title = '申请店铺';
   store: any = {};
+  actionsShown = false;
+  communityId;
+  photoField;
 
   constructor(
     private http: Http,
     private router: Router,
     private formService: FormService,
     private wechatService: WechatService,
+    private dialogService: DialogService,
   ) {}
 
   submit(form) {
@@ -101,15 +105,41 @@ export class StoreAddComponent {
     });
   }
 
-  takePhoto() {
+  selectPhoto() {
+    this.actionsShown = false;
+
     this.wechatService.chooseImage().then((localIds) => {
-      console.log(localIds[0]);
       return this.wechatService.uploadImage(localIds[0]);
     }).then((serverId: string) => {
       this.wechatService.getCommunityId().subscribe((communityId: string) => {
-        this.store.licenseImage = this.wechatService.previewUrl(communityId, serverId);
+        this.communityId = communityId;
+        this.store[this.photoField] = this.wechatService.previewUrl(communityId, serverId);
       });
     });
+  }
+
+  previewPhotos() {
+    this.actionsShown = false;
+
+    let photo = this.store[this.photoField];
+    if (!photo) {
+      this.dialogService.alert('请先上传图片');
+      return;
+    }
+
+    let serversId = ['licenseImage', 'legalRepresentativeImage']
+      .filter((v) => v && this.photoField !== v)
+      .map((v) => this.store[v]);
+
+    serversId.unshift(photo);
+
+    console.log(serversId);
+    this.wechatService.previewImage(serversId, this.communityId, false);
+  }
+
+  showActions(photoField) {
+    this.actionsShown = true;
+    this.photoField = photoField;
   }
 }
 

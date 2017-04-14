@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'v-img-placeholder',
@@ -9,4 +9,10 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 export class ImgPlaceholderComponent {
   @Input() tip;
   @Input() src;
+  @Output() srcChange = new EventEmitter();
+
+  clear() {
+    this.src = null;
+    this.srcChange.emit(null);
+  }
 }

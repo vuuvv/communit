@@ -25,6 +25,7 @@ import { DynamicFormModule } from './dynamic-form';
 import { QrcodeModule } from './qrcode';
 import { BoxModule } from './box';
 import { ImgPlaceholderModule } from './img-placeholder';
+import { ActionSheetModule } from './actionsheet';
 
 const MODULES = [
   BaseModule,
@@ -52,6 +53,7 @@ const MODULES = [
   QrcodeModule,
   BoxModule,
   ImgPlaceholderModule,
+  ActionSheetModule,
 ];
 
 @NgModule({
@@ -81,6 +83,7 @@ const MODULES = [
     QrcodeModule.forRoot(),
     BoxModule.forRoot(),
     ImgPlaceholderModule.forRoot(),
+    ActionSheetModule.forRoot(),
   ],
   exports: MODULES,
 })

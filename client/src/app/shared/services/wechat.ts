@@ -89,7 +89,7 @@ export class WechatService {
     return buildUrl(`/wechat/preview/${communityId}/${serverId}`);
   }
 
-  previewImage(serverIds: string[], communityId?: string) {
+  previewImage(serverIds: string[], communityId?: string, fixUrl = true) {
     if (!serverIds || !serverIds.length) {
       return;
     }
@@ -101,8 +101,8 @@ export class WechatService {
         return this.getCommunityId();
       }).subscribe((v: string) => {
         wx.previewImage({
-          current: this.previewUrl(v, serverIds[0]),
-          urls: serverIds.map((id) => this.previewUrl(v, id)),
+          current: fixUrl ? this.previewUrl(v, serverIds[0]) : serverIds[0],
+          urls: serverIds.map((id) => fixUrl ? this.previewUrl(v, id) : id),
         });
       });
     });

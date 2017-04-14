@@ -2,12 +2,6 @@
   <v-header slot="header">{{title}}</v-header>
 
   <form #form="ngForm">
-    <v-box title="上传证照资料">
-      <div class="photos">
-        <v-img-placeholder tip="营业执照" [src]="store.licenseImage" (click)="takePhoto()"></v-img-placeholder>
-        <v-img-placeholder tip="法人代表身份证" [src]="store.legalRepresentativeImage"></v-img-placeholder>
-      </div>
-    </v-box>
     <v-group gutter="0">
       <v-cell label="店铺名称">
         <input class="weui-input" type="text" name="name" placeholder="店铺名称" required [(ngModel)]="store.name">
@@ -38,9 +32,19 @@
         <textarea class="weui-textarea" placeholder="店铺地址" rows="3" [(ngModel)]="store.address" name="address"></textarea>
       </v-cell>
     </v-box>
+    <v-box title="上传证照资料">
+      <div class="photos">
+        <v-img-placeholder tip="营业执照" [src]="store.licenseImage" (click)="showActions('licenseImage')"></v-img-placeholder>
+        <v-img-placeholder tip="法人代表身份证" [src]="store.legalRepresentativeImage" (click)="showActions('legalRepresentativeImage')"></v-img-placeholder>
+      </div>
+    </v-box>
 
     <div class="weui-btn-area">
       <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>
   </form>
 </v-page>
+<v-actionsheet [(show)]='actionsShown'>
+  <v-actionsheet-item (click)="selectPhoto()">上传</v-actionsheet-item>
+  <v-actionsheet-item (click)="previewPhotos()">预览</v-actionsheet-item>
+</v-actionsheet>
