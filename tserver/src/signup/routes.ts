@@ -4,6 +4,7 @@ import { router, get, post, all, success, error, Response, ResponseError, login 
 import { getRawBody } from '../utils';
 import { db, Table } from '../db';
 import { uuid } from '../utils';
+import { passwordEncrypt } from './password';
 
 @router('/signup')
 export class SignupController　{
@@ -63,10 +64,16 @@ export class SignupController　{
       } else {
         userId = uuid();
 
-        let ids = await Table.User.transacting(trx).insert({
+        await Table.User.transacting(trx).insert({
           ID: userId,
           username: tel,
-        }).select('ID');
+          status: 1,
+          departId: '2c92d4675b60c24b015b61594a320002',
+          password: passwordEncrypt(tel, model.password),
+        });
+        await db('t_s_base_user').transacting(trx).insert({
+          id: userId,
+        });
         if (wechatUserId) {
           let wUser = await Table.WechatUser.transacting(trx).where('id', wechatUserId).first();
           if (wUser) {

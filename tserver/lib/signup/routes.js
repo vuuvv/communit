@@ -14,6 +14,7 @@ const routes_1 = require("../routes");
 const utils_1 = require("../utils");
 const db_1 = require("../db");
 const utils_2 = require("../utils");
+const password_1 = require("./password");
 let SignupController = class SignupController {
     /**
      * 用户填写注册信息, 生成用户
@@ -67,10 +68,16 @@ let SignupController = class SignupController {
             }
             else {
                 userId = utils_2.uuid();
-                let ids = await db_1.Table.User.transacting(trx).insert({
+                await db_1.Table.User.transacting(trx).insert({
                     ID: userId,
                     username: tel,
-                }).select('ID');
+                    status: 1,
+                    departId: '2c92d4675b60c24b015b61594a320002',
+                    password: password_1.passwordEncrypt(tel, model.password),
+                });
+                await db_1.db('t_s_base_user').transacting(trx).insert({
+                    id: userId,
+                });
                 if (wechatUserId) {
                     let wUser = await db_1.Table.WechatUser.transacting(trx).where('id', wechatUserId).first();
                     if (wUser) {

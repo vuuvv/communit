@@ -16,6 +16,7 @@ export class SignupComponent implements OnInit {
   phone: string = '';
   communityId: string;
   biotopes: any[] = [];
+  showPassword = false;
 
   private validMessages = {
     name: {

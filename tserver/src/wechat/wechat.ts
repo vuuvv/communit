@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as qs from 'querystring';
 import * as xml2js from 'xml2js';
 import * as sha1 from 'sha1';
@@ -6,6 +7,7 @@ import { Request } from 'koa';
 
 import { Table, db } from '../db';
 import { WechatOfficialAccount, WechatUser, WechatLog } from '../models';
+import { Config } from '../config';
 
 import { create, assign, getRawBody } from '../utils';
 
@@ -352,6 +354,9 @@ export class Wechat {
       },
       json: true,
     });
+    if (token.error && token.errcode !== 0) {
+      throw new Error(`[${token.errcode}]${token.errmsg}`);
+    }
     token.expires_in -= 5 * 60;
     officialAccount.accessToken = token.access_token;
     officialAccount.expiresIn = new Date(new Date().getTime() + token.expires_in * 1000);
@@ -371,6 +376,42 @@ export class Wechat {
     return await this.fetchToken();
   }
 
+  async fetchJsApiToken() {
+    const officialAccount = this.officialAccount;
+    let token = await this.getToken();
+    let resp = await request('https://api.weixin.qq.com/cgi-bin/ticket/getticket', {
+      qs: {
+        access_token: token,
+        type: 'jsapi',
+      },
+      json: true,
+    });
+    if (resp.errcode !== 0) {
+      throw new Error(`[${resp.errcode}]${resp.errmsg}`);
+    }
+
+    officialAccount.jsapiticket = resp.ticket;
+    officialAccount.jsapitickettime = new Date(new Date().getTime() + (resp.expires_in - 5 * 60) * 1000);
+
+    await Table.WechatOfficialAccount.where('id', officialAccount.id).update({
+      jsapiticket: officialAccount.jsapiticket,
+      jsapitickettime: officialAccount.jsapitickettime,
+    });
+    return token.ticket;
+  }
+
+  async getJsApiToken() {
+    const officialAccount = this.officialAccount;
+    if (!officialAccount.jsapiticket) {
+      return await this.fetchJsApiToken();
+    }
+    let now = new Date().getTime();
+    if (officialAccount.jsapitickettime.getTime() > now) {
+      return officialAccount.jsapiticket;
+    }
+    return await this.fetchJsApiToken();
+  }
+
   async getUserInfo(openid) {
     let token = await this.getToken();
     let user = await request('https://api.weixin.qq.com/cgi-bin/user/info', {
@@ -385,6 +426,21 @@ export class Wechat {
       return null;
     }
     return user;
+  }
+
+  async getMedia(mediaId) {
+    let token = await this.getToken();
+    let media = await request('https://api.weixin.qq.com/cgi-bin/media/get', {
+      qs: {
+        access_token: this.officialAccount.accessToken,
+        media_id: mediaId,
+      },
+      resolveWithFullResponse: true,
+    });
+    return media;
+  }
+
+  async saveMedia(mediaId: string, path: string) {
   }
 
   async createUser(openid) {

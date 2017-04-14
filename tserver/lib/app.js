@@ -17,7 +17,7 @@ const router = new Router();
  */
 app.use(async (ctx, next) => {
     try {
-        console.log(`${ctx.method} ${ctx.path}`);
+        console.log(`${ctx.method} ${ctx.path} ${ctx.request.ip}`);
         await next();
     }
     catch (err) {

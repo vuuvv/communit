@@ -131,7 +131,11 @@ export declare class Wechat {
     updateToken(officialAccount: WechatOfficialAccount): Promise<void>;
     fetchToken(): Promise<any>;
     getToken(): Promise<any>;
+    fetchJsApiToken(): Promise<any>;
+    getJsApiToken(): Promise<any>;
     getUserInfo(openid: any): Promise<any>;
+    getMedia(mediaId: any): Promise<any>;
+    saveMedia(mediaId: string, path: string): Promise<void>;
     createUser(openid: any): Promise<any>;
     getUserAccessToken(code: string): Promise<any>;
     getWechatUser(openid: string): Promise<WechatUser>;

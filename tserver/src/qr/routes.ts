@@ -62,11 +62,11 @@ export class QrcodeController {
     let userId = ctx.session.userId;
     let communityId = ctx.session.communityId;
 
-    let accounts: Account[] = await Table.Account.where({communityId, userId});
-    let balance = _.sumBy(accounts, a => a.balance);
-    if (balance < order.amount) {
-      throw new Error('您的积分不足');
-    }
+    // let accounts: Account[] = await Table.Account.where({communityId, userId});
+    // let balance = _.sumBy(accounts, a => a.balance);
+    // if (balance < order.amount) {
+    //   throw new Error('您的积分不足');
+    // }
 
     let code = new Qrcode(communityId, QrcodeAction.OrderProduct, {
       buyerId: userId,

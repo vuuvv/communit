@@ -23,13 +23,10 @@ export class UserController {
   }
 
   @get('/me')
-  @wechat
+  @login
   async me(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
-    if (!communityId) {
-      throw new ResponseError('没有社区信息, 请退出后重新从微信进入');
-    }
     let user = await first(`
     select wu.headimgurl as avatar, wu.realname as name, wa.accountname as community from t_wechat_user as wu
     join weixin_account as wa on wu.officialAccountId=wa.id
@@ -55,6 +52,12 @@ export class UserController {
       user,
       store,
     });
+  }
+
+  @get('/community')
+  @wechat
+  async community(ctx) {
+    return success(ctx.session.communityId);
   }
 
   @get('/organizations')

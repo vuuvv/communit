@@ -1,7 +1,10 @@
 import * as request from 'request-promise';
+import * as rawRequest from 'request';
 import * as qs from 'querystring';
 import * as sha1 from 'sha1';
-import { router, get, post, all, success, Response, ResponseError } from '../routes';
+import * as fs from 'fs';
+
+import { router, get, post, all, success, Response, ResponseError, wechat } from '../routes';
 import { Table } from '../db';
 import { Wechat } from './wechat';
 import { create, getJsonBody, getNonceStr, getTimesTamp, errorPage } from '../utils';
@@ -85,47 +88,27 @@ export class WechatController {
   }
 
   @post('/signature/jsapi')
+  @wechat
   async signature(ctx) {
     const id = ctx.session.communityId;
-    if (!id) {
-      throw new ResponseError('为获取社区信息，请退出后重新进入');
-    }
+
     const data = await getJsonBody(ctx);
     const wechat = await Wechat.create(id);
     const account = wechat.officialAccount;
 
-    let ticket = account.jsapiticket;
-    let expires = account.jsapitickettime;
-
-    if (!ticket || !expires || new Date().getTime() > expires.getTime()) {
-      let accessToken = await wechat.getToken();
-      let token = await request(
-        `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${accessToken}&type=jsapi`,
-        {json: true}
-      );
-
-      if (token && !token.errcode) {
-        await Table.WechatOfficialAccount.where('id', id).update({
-          jsapiticket: token.ticket,
-          jsapitickettime: new Date(new Date().getTime() + (token.expires_in - 300) * 1000),
-        });
-        ticket = token.ticket;
-      } else {
-        throw new ResponseError('获取jsapi_token失败');
-      }
-    }
+    let ticket = await wechat.getJsApiToken();
 
     let timestamp = getTimesTamp();
     let nonceStr = getNonceStr();
 
     let str = `jsapi_ticket=${ticket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${data.url}`;
 
-    return {
+    return success({
       signature: sha1(str),
       appId: account.appId,
       timestamp,
       nonceStr,
-    };
+    });
   }
 
   @get('/url')
@@ -138,5 +121,30 @@ export class WechatController {
     ctx.redirect('http://weixin.vuuvv.com/error');
   }
 
+  @get('/media')
+  @wechat
+  async media(ctx) {
+    const id = ctx.session.communityId;
+    const wechat = await Wechat.create(id);
+    let ret = await wechat.getMedia('NbqJ3vJetfppupURAJLUnkIYkJVEdz0vwIlG5p-15MG4aKf27170m7Y23fEXka7G');
+    let disp: string = ret.headers['content-disposition'];
+    return disp.match(/.*?filename=\"(.*)\"/)[1];
+  }
+
+  @get('/preview/:communityId/:serverId')
+  async preview(ctx) {
+    const id = ctx.params.communityId;
+    const wechat = await Wechat.create(id);
+    let ret = await wechat.getMedia(ctx.params.serverId);
+    let media: any = await new Promise((resolve, reject) => {
+      rawRequest({
+        url: 'https://api.weixin.qq.com/cgi-bin/media/get',
+        qs: {
+          access_token: wechat.officialAccount.accessToken,
+          media_id: ctx.params.serverId,
+        },
+      }).pipe(ctx.res);
+    });
+  }
 }
 

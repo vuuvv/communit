@@ -19,9 +19,9 @@ const router = new Router();
 /**
  * Error Handle middleware
  */
-app.use(async (ctx, next) => {
+app.use(async (ctx: Koa.Context, next) => {
   try {
-    console.log(`${ctx.method} ${ctx.path}`);
+    console.log(`${ctx.method} ${ctx.path} ${ctx.request.ip}`);
     await next();
   } catch (err) {
     console.log(err);

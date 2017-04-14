@@ -44,7 +44,7 @@ const routes: Routes = [
       {
         path: 'product/edit/:id',
         pathMatch: 'full',
-        component: ProductAddComponent,
+        component: ProductEditComponent,
       },
       {
         path: 'product/item/:id',

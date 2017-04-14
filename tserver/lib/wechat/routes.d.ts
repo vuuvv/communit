@@ -5,12 +5,9 @@ export declare class WechatController {
     login(ctx: any): Promise<void>;
     notify(ctx: any): Promise<any>;
     createMenu(ctx: any): Promise<Response>;
-    signature(ctx: any): Promise<{
-        signature: any;
-        appId: string;
-        timestamp: number;
-        nonceStr: string;
-    }>;
+    signature(ctx: any): Promise<Response>;
     url(): Promise<any>;
     redirect(ctx: any): void;
+    media(ctx: any): Promise<string>;
+    preview(ctx: any): Promise<void>;
 }

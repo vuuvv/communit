@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 const request = require("request-promise");
+const rawRequest = require("request");
 const sha1 = require("sha1");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
@@ -83,43 +84,46 @@ let WechatController = class WechatController {
     }
     async signature(ctx) {
         const id = ctx.session.communityId;
-        if (!id) {
-            throw new routes_1.ResponseError('为获取社区信息，请退出后重新进入');
-        }
         const data = await utils_1.getJsonBody(ctx);
         const wechat = await wechat_1.Wechat.create(id);
         const account = wechat.officialAccount;
-        let ticket = account.jsapiticket;
-        let expires = account.jsapitickettime;
-        if (!ticket || !expires || new Date().getTime() > expires.getTime()) {
-            let accessToken = await wechat.getToken();
-            let token = await request(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${accessToken}&type=jsapi`, { json: true });
-            if (token && !token.errcode) {
-                await db_1.Table.WechatOfficialAccount.where('id', id).update({
-                    jsapiticket: token.ticket,
-                    jsapitickettime: new Date(new Date().getTime() + (token.expires_in - 300) * 1000),
-                });
-                ticket = token.ticket;
-            }
-            else {
-                throw new routes_1.ResponseError('获取jsapi_token失败');
-            }
-        }
+        let ticket = await wechat.getJsApiToken();
         let timestamp = utils_1.getTimesTamp();
         let nonceStr = utils_1.getNonceStr();
         let str = `jsapi_ticket=${ticket}&noncestr=${nonceStr}&timestamp=${timestamp}&url=${data.url}`;
-        return {
+        return routes_1.success({
             signature: sha1(str),
             appId: account.appId,
             timestamp,
             nonceStr,
-        };
+        });
     }
     async url() {
         return await request('http://www.163.com');
     }
     redirect(ctx) {
         ctx.redirect('http://weixin.vuuvv.com/error');
+    }
+    async media(ctx) {
+        const id = ctx.session.communityId;
+        const wechat = await wechat_1.Wechat.create(id);
+        let ret = await wechat.getMedia('NbqJ3vJetfppupURAJLUnkIYkJVEdz0vwIlG5p-15MG4aKf27170m7Y23fEXka7G');
+        let disp = ret.headers['content-disposition'];
+        return disp.match(/.*?filename=\"(.*)\"/)[1];
+    }
+    async preview(ctx) {
+        const id = ctx.params.communityId;
+        const wechat = await wechat_1.Wechat.create(id);
+        let ret = await wechat.getMedia(ctx.params.serverId);
+        let media = await new Promise((resolve, reject) => {
+            rawRequest({
+                url: 'https://api.weixin.qq.com/cgi-bin/media/get',
+                qs: {
+                    access_token: wechat.officialAccount.accessToken,
+                    media_id: ctx.params.serverId,
+                },
+            }).pipe(ctx.res);
+        });
     }
 };
 __decorate([
@@ -148,6 +152,7 @@ __decorate([
 ], WechatController.prototype, "createMenu", null);
 __decorate([
     routes_1.post('/signature/jsapi'),
+    routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -164,6 +169,19 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], WechatController.prototype, "redirect", null);
+__decorate([
+    routes_1.get('/media'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], WechatController.prototype, "media", null);
+__decorate([
+    routes_1.get('/preview/:communityId/:serverId'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], WechatController.prototype, "preview", null);
 WechatController = __decorate([
     routes_1.router('/wechat')
 ], WechatController);

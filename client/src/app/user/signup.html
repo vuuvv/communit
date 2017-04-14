@@ -9,6 +9,20 @@
       <v-cell label="真实姓名">
         <input class="weui-input" type="text" name="name" placeholder="真实姓名" required [(ngModel)]="user.name">
       </v-cell>
+      <div class="weui-cell weui-cell_vcode">
+        <div class="weui-cell__hd">
+          <div class="weui-label">密码</div>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="password" name="name" placeholder="密码" required [(ngModel)]="user.password" *ngIf="!showPassword">
+          <input class="weui-input" type="text" name="name" placeholder="密码" required [(ngModel)]="user.password" *ngIf="showPassword">
+        </div>
+        <div class="weui-cell__ft" (click)="showPassword = !showPassword">
+          <div class="weui-vcode-img">
+            <v-icon type="eye" [class.off]="showPassword"></v-icon>
+          </div>
+        </div>
+      </div>
       <v-cell class="weui-cell_select weui-cell_select-after" label="小区名称">
         <select class="weui-select" name="biotope" [(ngModel)]="user.biotope">
           <option *ngFor="let b of biotopes" [value]="b.id">{{ b.name }}</option>

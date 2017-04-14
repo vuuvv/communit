@@ -14,6 +14,7 @@ import { QrcodeComponent } from './qrcode';
 import { OrderListComponent } from './order-list';
 import { WorkerComponent } from './worker';
 import { PointsComponent } from './points';
+import { TestComponent } from './test';
 
 const routes: Routes = [
   {
@@ -59,6 +60,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: PointsComponent,
       },
+      {
+        path: 'test',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: TestComponent,
+      },
     ],
   },
 ];
@@ -80,6 +87,7 @@ const routes: Routes = [
     OrderListComponent,
     WorkerComponent,
     PointsComponent,
+    TestComponent,
   ]
 })
 export class UserModule {
