@@ -1,7 +1,13 @@
-<v-page>
+<v-page class="page-store-form">
   <v-header slot="header">{{title}}</v-header>
 
   <form #form="ngForm">
+    <v-box title="上传证照资料">
+      <div class="photos">
+        <v-img-placeholder tip="营业执照" [src]="store.licenseImage" (click)="takePhoto()"></v-img-placeholder>
+        <v-img-placeholder tip="法人代表身份证" [src]="store.legalRepresentativeImage"></v-img-placeholder>
+      </div>
+    </v-box>
     <v-group gutter="0">
       <v-cell label="店铺名称">
         <input class="weui-input" type="text" name="name" placeholder="店铺名称" required [(ngModel)]="store.name">
@@ -22,16 +28,17 @@
         <input class="weui-input" type="text" name="tel" placeholder="联系方式" required [(ngModel)]="store.tel">
       </v-cell>
     </v-group>
-    <v-group title="店铺简介">
+    <v-box title="店铺简介">
       <v-cell>
         <textarea class="weui-textarea" placeholder="店铺简介" rows="3" [(ngModel)]="store.description" name="description"></textarea>
       </v-cell>
-    </v-group>
-    <v-group title="店铺地址">
+    </v-box>
+    <v-box title="店铺地址">
       <v-cell>
         <textarea class="weui-textarea" placeholder="店铺地址" rows="3" [(ngModel)]="store.address" name="address"></textarea>
       </v-cell>
-    </v-group>
+    </v-box>
+
     <div class="weui-btn-area">
       <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>

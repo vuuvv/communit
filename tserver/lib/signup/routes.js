@@ -75,7 +75,7 @@ let SignupController = class SignupController {
                     departId: '2c92d4675b60c24b015b61594a320002',
                     password: password_1.passwordEncrypt(tel, model.password),
                 });
-                await db_1.db('t_s_base_user').transacting(trx).insert({
+                await db_1.db('t_s_user').transacting(trx).insert({
                     id: userId,
                 });
                 if (wechatUserId) {
@@ -180,6 +180,14 @@ let SignupController = class SignupController {
         ctx.session.communityId = user.officialAccountId;
         return user;
     }
+    async updatePassword(ctx) {
+        const users = await db_1.Table.User.whereNull('password');
+        for (let user of users) {
+            await db_1.Table.User.where('id', user.id).update({
+                password: password_1.passwordEncrypt(user.username, 'zhonglin123456'),
+            });
+        }
+    }
 };
 __decorate([
     routes_1.post('/create'),
@@ -229,6 +237,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "login", null);
+__decorate([
+    routes_1.get('/update/password'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "updatePassword", null);
 SignupController = __decorate([
     routes_1.router('/signup')
 ], SignupController);

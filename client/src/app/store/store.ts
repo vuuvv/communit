@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Http, FormService } from '../shared';
+import { Http, FormService, WechatService } from '../shared';
 import { OverlayService } from '../../components';
 
 const validMessages = {
@@ -87,15 +87,28 @@ export class StoreComponent implements OnInit {
 export class StoreAddComponent {
   title = '申请店铺';
   store: any = {};
+
   constructor(
     private http: Http,
     private router: Router,
     private formService: FormService,
+    private wechatService: WechatService,
   ) {}
 
   submit(form) {
     this.formService.submit(form, validMessages, '/store/add', this.store).subscribe(() => {
       this.router.navigate(['/store']);
+    });
+  }
+
+  takePhoto() {
+    this.wechatService.chooseImage().then((localIds) => {
+      console.log(localIds[0]);
+      return this.wechatService.uploadImage(localIds[0]);
+    }).then((serverId: string) => {
+      this.wechatService.getCommunityId().subscribe((communityId: string) => {
+        this.store.licenseImage = this.wechatService.previewUrl(communityId, serverId);
+      });
     });
   }
 }

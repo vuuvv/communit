@@ -23,6 +23,8 @@ import { RankModule } from './rank';
 import { SearchbarModule } from './searchbar';
 import { DynamicFormModule } from './dynamic-form';
 import { QrcodeModule } from './qrcode';
+import { BoxModule } from './box';
+import { ImgPlaceholderModule } from './img-placeholder';
 
 const MODULES = [
   BaseModule,
@@ -48,6 +50,8 @@ const MODULES = [
   SearchbarModule,
   DynamicFormModule,
   QrcodeModule,
+  BoxModule,
+  ImgPlaceholderModule,
 ];
 
 @NgModule({
@@ -75,6 +79,8 @@ const MODULES = [
     SearchbarModule.forRoot(),
     DynamicFormModule.forRoot(),
     QrcodeModule.forRoot(),
+    BoxModule.forRoot(),
+    ImgPlaceholderModule.forRoot(),
   ],
   exports: MODULES,
 })

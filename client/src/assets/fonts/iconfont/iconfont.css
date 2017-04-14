@@ -1,10 +1,10 @@
 
 @font-face {font-family: "ngv-icon";
-  src: url('iconfont.eot?t=1491901794006'); /* IE9*/
-  src: url('iconfont.eot?t=1491901794006#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1491901794006') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1491901794006') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1491901794006#ngv-icon') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1492153467649'); /* IE9*/
+  src: url('iconfont.eot?t=1492153467649#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1492153467649') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1492153467649') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1492153467649#ngv-icon') format('svg'); /* iOS 4.1- */
 }
 
 .ngv-icon {
@@ -116,6 +116,8 @@
 .icon-jiajubaihuo:before { content: "\e617"; }
 
 .icon-muyingyongpin:before { content: "\e618"; }
+
+.icon-paizhao:before { content: "\e726"; }
 
 .icon-zuixin:before { content: "\e61d"; }
 

@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, buildUrl } from './http';
 
-const wx = window['wx'];
+import { Observable } from 'rxjs/Observable';
 
-function previewUrl(communityId: string, serverId: string) {
-  return buildUrl(`/wechat/preview/${communityId}/${serverId}`);
-}
+const wx = window['wx'];
 
 @Injectable()
 export class WechatService {
@@ -25,7 +23,7 @@ export class WechatService {
     this.http.json('/wechat/signature/jsapi', {
       url: `${location.protocol}//${location.host}${location.pathname}`,
     }).subscribe((value: any) => {
-      value.debug = debug;
+      value.debug = false;
       value.jsApiList = [
         'chooseImage',
         'previewImage',
@@ -83,15 +81,28 @@ export class WechatService {
     });
   }
 
-  previewImage(serverIds: string[]) {
+  getCommunityId() {
+    return this.http.get('/user/community');
+  }
+
+  previewUrl(communityId: string, serverId: string) {
+    return buildUrl(`/wechat/preview/${communityId}/${serverId}`);
+  }
+
+  previewImage(serverIds: string[], communityId?: string) {
     if (!serverIds || !serverIds.length) {
       return;
     }
     return this.config().then(() => {
-      this.http.get('/user/community').subscribe((v: string) => {
+      Observable.of(communityId).concatMap((v) => {
+        if (v) {
+          return Observable.of(v);
+        }
+        return this.getCommunityId();
+      }).subscribe((v: string) => {
         wx.previewImage({
-          current: previewUrl(v, serverIds[0]),
-          urls: serverIds.map((id) => previewUrl(v, id)),
+          current: this.previewUrl(v, serverIds[0]),
+          urls: serverIds.map((id) => this.previewUrl(v, id)),
         });
       });
     });

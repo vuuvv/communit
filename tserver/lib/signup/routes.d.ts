@@ -14,4 +14,5 @@ export declare class SignupController {
     crash(): Promise<void>;
     test(ctx: any): Promise<Response>;
     login(ctx: any): Promise<any>;
+    updatePassword(ctx: any): Promise<void>;
 }

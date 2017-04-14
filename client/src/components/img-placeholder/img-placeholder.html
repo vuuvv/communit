@@ -1,0 +1,5 @@
+<div class="placeholder-photo" *ngIf="!src">
+  <v-icon type="paizhao"></v-icon>
+</div>
+<v-image class="placeholder-photo" [src]="src" *ngIf="src"></v-image>
+<div class="placeholder-tip" *ngIf="tip">{{ tip }}</div>

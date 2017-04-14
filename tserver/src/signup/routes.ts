@@ -71,7 +71,7 @@ export class SignupController　{
           departId: '2c92d4675b60c24b015b61594a320002',
           password: passwordEncrypt(tel, model.password),
         });
-        await db('t_s_base_user').transacting(trx).insert({
+        await db('t_s_user').transacting(trx).insert({
           id: userId,
         });
         if (wechatUserId) {
@@ -200,5 +200,15 @@ export class SignupController　{
     ctx.session.userId = user.userId;
     ctx.session.communityId = user.officialAccountId;
     return user;
+  }
+
+  @get('/update/password')
+  async updatePassword(ctx) {
+    const users = await Table.User.whereNull('password');
+    for (let user of users) {
+      await Table.User.where('id', user.id).update({
+        password: passwordEncrypt(user.username, 'zhonglin123456'),
+      });
+    }
   }
 }
