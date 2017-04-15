@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { Context } from 'koa';
 import * as getRawBody_ from 'raw-body';
 import { Config } from '../config';
@@ -32,4 +33,12 @@ export async function errorPage(ctx, message) {
 export async function successPage(ctx, message, tip = null) {
   let config = await Config.instance();
   await ctx.render('success', { message, tip, home: config.clientUrl('/')});
+}
+
+export async function downloadImage(url) {
+  let config = await Config.instance();
+  let dir = config.site.imageDir;
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
 }

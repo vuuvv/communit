@@ -84,12 +84,12 @@ export class StoreComponent implements OnInit {
   templateUrl: './store-form.html',
   styleUrls: ['./store-form.less'],
 })
-export class StoreAddComponent {
-  title = '申请店铺';
+export class StoreAddComponent implements OnInit {
+  title = '申请开店';
   store: any = {};
   actionsShown = false;
   communityId;
-  photoField;
+  uploader;
 
   constructor(
     private http: Http,
@@ -99,7 +99,21 @@ export class StoreAddComponent {
     private dialogService: DialogService,
   ) {}
 
+  ngOnInit() {
+    this.wechatService.getCommunityId().then((communityId) => {
+      this.communityId = communityId;
+    });
+  }
+
   submit(form) {
+    if (!this.store.businessLicense) {
+      this.dialogService.alert('请上传营业执照');
+      return;
+    }
+    if (!this.store.legalRepresentativeIdPicture) {
+      this.dialogService.alert('请上传法人代表身份证');
+      return;
+    }
     this.formService.submit(form, validMessages, '/store/add', this.store).subscribe(() => {
       this.router.navigate(['/store']);
     });
@@ -108,38 +122,39 @@ export class StoreAddComponent {
   selectPhoto() {
     this.actionsShown = false;
 
-    this.wechatService.chooseImage().then((localIds) => {
-      return this.wechatService.uploadImage(localIds[0]);
-    }).then((serverId: string) => {
-      this.wechatService.getCommunityId().subscribe((communityId: string) => {
-        this.communityId = communityId;
-        this.store[this.photoField] = this.wechatService.previewUrl(communityId, serverId);
-      });
-    });
+    // this.wechatService.chooseImage().then((localIds) => {
+    //   return this.wechatService.uploadImage(localIds[0]);
+    // }).then((serverId: string) => {
+    //   this.wechatService.getCommunityId().subscribe((communityId: string) => {
+    //     this.communityId = communityId;
+    //     this.store[this.photoField] = this.wechatService.previewUrl(communityId, serverId);
+    //   });
+    // });
+    this.uploader.chooseImage(this.communityId);
   }
 
   previewPhotos() {
     this.actionsShown = false;
 
-    let photo = this.store[this.photoField];
-    if (!photo) {
-      this.dialogService.alert('请先上传图片');
-      return;
-    }
+    // let photo = this.store[this.photoField];
+    // if (!photo) {
+    //   this.dialogService.alert('请先上传图片');
+    //   return;
+    // }
 
-    let serversId = ['licenseImage', 'legalRepresentativeImage']
-      .filter((v) => v && this.photoField !== v)
-      .map((v) => this.store[v]);
+    // let serversId = ['licenseImage', 'legalRepresentativeImage']
+    //   .filter((v) => v && this.photoField !== v)
+    //   .map((v) => this.store[v]);
 
-    serversId.unshift(photo);
+    // serversId.unshift(photo);
 
-    console.log(serversId);
-    this.wechatService.previewImage(serversId, this.communityId, false);
+    // console.log(serversId);
+    // this.wechatService.previewImage(serversId, this.communityId, false);
   }
 
-  showActions(photoField) {
+  showActions(uploader) {
     this.actionsShown = true;
-    this.photoField = photoField;
+    this.uploader = uploader;
   }
 }
 

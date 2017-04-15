@@ -3,4 +3,6 @@ export declare class Site {
     domain: string;
     host: string;
     client: string;
+    imageDir: string;
+    imageUrl: string;
 }

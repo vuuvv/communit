@@ -1,8 +1,10 @@
 import * as fs from 'fs';
+import * as mkdirp from 'mkdirp';
 import * as qs from 'querystring';
 import * as xml2js from 'xml2js';
 import * as sha1 from 'sha1';
 import * as request from 'request-promise';
+import * as rawRequest from 'request';
 import { Request } from 'koa';
 
 import { Table, db } from '../db';
@@ -397,7 +399,7 @@ export class Wechat {
       jsapiticket: officialAccount.jsapiticket,
       jsapitickettime: officialAccount.jsapitickettime,
     });
-    return token.ticket;
+    return resp.ticket;
   }
 
   async getJsApiToken() {
@@ -428,19 +430,57 @@ export class Wechat {
     return user;
   }
 
+  // async getMedia(mediaId) {
+  //   let token = await this.getToken();
+  //   let media = await request('https://api.weixin.qq.com/cgi-bin/media/get', {
+  //     qs: {
+  //       access_token: this.officialAccount.accessToken,
+  //       media_id: mediaId,
+  //     },
+  //     resolveWithFullResponse: true,
+  //   });
+  //   return media;
+  // }
+
   async getMedia(mediaId) {
+    let filename = mediaId;
     let token = await this.getToken();
-    let media = await request('https://api.weixin.qq.com/cgi-bin/media/get', {
-      qs: {
-        access_token: this.officialAccount.accessToken,
-        media_id: mediaId,
-      },
-      resolveWithFullResponse: true,
+    return new Promise<any>((resolve, reject) => {
+      let stream = rawRequest('https://api.weixin.qq.com/cgi-bin/media/get', {
+        qs: {
+          access_token: token,
+          media_id: mediaId,
+        },
+        encoding: null,
+      }, (err, resp, body) => {
+        resolve({
+          filename: filename,
+          body: body,
+        });
+      });
+
+      stream.on('response', (resp) => {
+        let disp: string = resp.headers['content-disposition'] || resp.headers['Content-disposition'];
+        if (disp) {
+          filename = disp.match(/.*?filename=\"(.*)\"/)[1];
+        }
+      });
     });
-    return media;
   }
 
-  async saveMedia(mediaId: string, path: string) {
+  async saveMedia(mediaId: string) {
+    let config = await Config.instance();
+
+    let dir = config.site.imageDir;
+    if (!fs.existsSync(dir)) {
+      mkdirp.sync(dir);
+    }
+
+    let media = await this.getMedia(mediaId);
+
+    fs.writeFileSync(`${dir}/${media.filename}`, media.body);
+
+    return `${config.site.imageUrl}/${media.filename}`;
   }
 
   async createUser(openid) {

@@ -5,6 +5,8 @@ import * as session from 'koa-session';
 import * as convert from 'koa-convert';
 import * as cors from 'kcors';
 import * as views from 'koa-views';
+import * as server from 'koa-static';
+import * as path from 'path';
 
 
 import { error } from './routes';
@@ -15,6 +17,11 @@ const HOST = process.env.HOST || argv.host || '0.0.0.0';
 
 const app = new Koa();
 const router = new Router();
+
+/**
+ * Static Server
+ */
+app.use(server(path.join(__dirname, '..', 'static')));
 
 /**
  * Error Handle middleware

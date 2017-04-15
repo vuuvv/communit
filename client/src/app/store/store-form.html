@@ -34,8 +34,8 @@
     </v-box>
     <v-box title="上传证照资料">
       <div class="photos">
-        <v-img-placeholder tip="营业执照" [src]="store.licenseImage" (click)="showActions('licenseImage')"></v-img-placeholder>
-        <v-img-placeholder tip="法人代表身份证" [src]="store.legalRepresentativeImage" (click)="showActions('legalRepresentativeImage')"></v-img-placeholder>
+        <wechat-uploader tip="营业执照" [(serverId)]="store.businessLicense" (click)="showActions(licenseUploader)" #licenseUploader></wechat-uploader>
+        <wechat-uploader tip="法人代表身份证" [(serverId)]="store.legalRepresentativeIdPicture" (click)="showActions(legalUploader)" #legalUploader></wechat-uploader>
       </div>
     </v-box>
 

@@ -6,6 +6,8 @@ import { ProductListItemComponent } from './product-list-item';
 import { ProductDetailComponent } from './product-detail';
 import { OrderComponent } from './order.component';
 import { OrderItemComponent } from './order-item.component';
+import { WechatUploaderComponent } from './wechat-uploader';
+import { WechatMultipleUploaderComponent } from './wechat-multiple-uploader';
 
 export const SHARED_COMPONENTS = [
   TabbarComponent,
@@ -17,10 +19,14 @@ export const SHARED_COMPONENTS = [
   ProductDetailComponent,
   OrderComponent,
   OrderItemComponent,
+  WechatUploaderComponent,
+  WechatMultipleUploaderComponent,
 ];
 
 export * from './tabbar';
 export * from './quickentry';
 export * from './empty-page';
 export * from './service-list-item';
+export * from './wechat-uploader';
+export * from './wechat-multiple-uploader';
 

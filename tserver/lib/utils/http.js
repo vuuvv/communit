@@ -1,4 +1,5 @@
 "use strict";
+const fs = require("fs");
 const getRawBody_ = require("raw-body");
 const config_1 = require("../config");
 async function getRawBody(ctx) {
@@ -33,3 +34,11 @@ async function successPage(ctx, message, tip = null) {
     await ctx.render('success', { message, tip, home: config.clientUrl('/') });
 }
 exports.successPage = successPage;
+async function downloadImage(url) {
+    let config = await config_1.Config.instance();
+    let dir = config.site.imageDir;
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+}
+exports.downloadImage = downloadImage;

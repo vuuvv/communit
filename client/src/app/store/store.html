@@ -1,5 +1,8 @@
 <v-page *ngIf="!isNormal">
-  <v-header slot="header">
+  <v-header [showBack]="false" slot="header">
+    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/user']">
+      <div class="left-arrow"></div>
+    </a>
     我的店铺
   </v-header>
   <v-tabbar slot="footer">

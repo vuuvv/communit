@@ -1,10 +1,14 @@
 "use strict";
+const fs = require("fs");
+const mkdirp = require("mkdirp");
 const qs = require("querystring");
 const xml2js = require("xml2js");
 const sha1 = require("sha1");
 const request = require("request-promise");
+const rawRequest = require("request");
 const db_1 = require("../db");
 const models_1 = require("../models");
+const config_1 = require("../config");
 const utils_1 = require("../utils");
 const SUCCESS_RESPONSE = 'success';
 function capitalize(string) {
@@ -268,7 +272,7 @@ class Wechat {
             jsapiticket: officialAccount.jsapiticket,
             jsapitickettime: officialAccount.jsapitickettime,
         });
-        return token.ticket;
+        return resp.ticket;
     }
     async getJsApiToken() {
         const officialAccount = this.officialAccount;
@@ -296,18 +300,50 @@ class Wechat {
         }
         return user;
     }
+    // async getMedia(mediaId) {
+    //   let token = await this.getToken();
+    //   let media = await request('https://api.weixin.qq.com/cgi-bin/media/get', {
+    //     qs: {
+    //       access_token: this.officialAccount.accessToken,
+    //       media_id: mediaId,
+    //     },
+    //     resolveWithFullResponse: true,
+    //   });
+    //   return media;
+    // }
     async getMedia(mediaId) {
+        let filename = mediaId;
         let token = await this.getToken();
-        let media = await request('https://api.weixin.qq.com/cgi-bin/media/get', {
-            qs: {
-                access_token: this.officialAccount.accessToken,
-                media_id: mediaId,
-            },
-            resolveWithFullResponse: true,
+        return new Promise((resolve, reject) => {
+            let stream = rawRequest('https://api.weixin.qq.com/cgi-bin/media/get', {
+                qs: {
+                    access_token: token,
+                    media_id: mediaId,
+                },
+                encoding: null,
+            }, (err, resp, body) => {
+                resolve({
+                    filename: filename,
+                    body: body,
+                });
+            });
+            stream.on('response', (resp) => {
+                let disp = resp.headers['content-disposition'] || resp.headers['Content-disposition'];
+                if (disp) {
+                    filename = disp.match(/.*?filename=\"(.*)\"/)[1];
+                }
+            });
         });
-        return media;
     }
-    async saveMedia(mediaId, path) {
+    async saveMedia(mediaId) {
+        let config = await config_1.Config.instance();
+        let dir = config.site.imageDir;
+        if (!fs.existsSync(dir)) {
+            mkdirp.sync(dir);
+        }
+        let media = await this.getMedia(mediaId);
+        fs.writeFileSync(`${dir}/${media.filename}`, media.body);
+        return `${config.site.imageUrl}/${media.filename}`;
     }
     async createUser(openid) {
         let user = await this.getUserInfo(openid);

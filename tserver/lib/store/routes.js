@@ -8,12 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+const url = require("url");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
 const store_1 = require("./store");
 const account_1 = require("../account");
+const wechat_1 = require("../wechat");
 function sumif(array, fn) {
     let ret = 0;
     array.forEach((item) => {
@@ -22,6 +24,10 @@ function sumif(array, fn) {
         }
     });
     return ret;
+}
+function getServerId(uri) {
+    let u = url.parse(uri);
+    return u.pathname.substr(u.pathname.lastIndexOf('/') + 1);
 }
 let StoreController = class StoreController {
     async store(ctx) {
@@ -84,8 +90,9 @@ let StoreController = class StoreController {
             throw new routes_1.ResponseError('用户和社区不匹配，请关闭页面后重新进入');
         }
         let model = await store_1.getStoreModel(ctx);
+        let wechat = await wechat_1.Wechat.create(communityId);
         await db_1.db.transaction(async (trx) => {
-            let store = await db_1.Table.Store.where({
+            let store = await db_1.Table.Store.transacting(trx).where({
                 communityId: communityId,
                 userId: userId,
             }).forUpdate().first();
@@ -95,6 +102,8 @@ let StoreController = class StoreController {
             let entity = utils_1.create(models_1.Store, model);
             entity.userId = userId;
             entity.communityId = communityId;
+            entity.businessLicense = await wechat.saveMedia(model.businessLicense);
+            entity.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
             await db_1.Table.Store.transacting(trx).insert(entity);
         });
         return routes_1.success();

@@ -1,9 +1,12 @@
+import * as url from 'url';
+
 import { router, get, post, success, Response, ResponseError, login } from '../routes';
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Store } from '../models';
 import { getStore, getStoreModel } from './store';
 import { AccountType } from '../account';
+import { Wechat} from '../wechat';
 
 function sumif(array, fn) {
   let ret = 0;
@@ -13,6 +16,11 @@ function sumif(array, fn) {
     }
   });
   return ret;
+}
+
+function getServerId(uri) {
+  let u = url.parse(uri);
+  return u.pathname.substr(u.pathname.lastIndexOf('/') + 1);
 }
 
 @router('/store')
@@ -95,9 +103,10 @@ export class StoreController {
     }
 
     let model = await getStoreModel(ctx);
+    let wechat = await Wechat.create(communityId);
 
     await db.transaction(async (trx) => {
-      let store = await Table.Store.where({
+      let store = await Table.Store.transacting(trx).where({
         communityId: communityId,
         userId: userId,
       }).forUpdate().first();
@@ -109,6 +118,8 @@ export class StoreController {
       let entity = create(Store, model);
       entity.userId = userId;
       entity.communityId = communityId;
+      entity.businessLicense = await wechat.saveMedia(model.businessLicense);
+      entity.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
       await Table.Store.transacting(trx).insert(entity);
     });
 

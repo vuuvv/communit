@@ -24,11 +24,17 @@
         <input class="weui-input" type="number" name="stock" placeholder="库存" required [(ngModel)]="product.stock">
       </v-cell>
     </v-group>
-    <v-group title="商品简介">
+    <v-box title="商品简介">
       <v-cell>
         <textarea class="weui-textarea" placeholder="商品简介" rows="3" [(ngModel)]="product.description" name="description"></textarea>
       </v-cell>
-    </v-group>
+    </v-box>
+    <v-box title="上传商品图片">
+      <div class="photos">
+        <wechat-uploader tip="营业执照" (click)="showActions(licenseUploader)" #licenseUploader></wechat-uploader>
+        <wechat-uploader tip="法人代表身份证" (click)="showActions(legalUploader)" #legalUploader></wechat-uploader>
+      </div>
+    </v-box>
     <div class="weui-btn-area">
       <button class="weui-btn weui-btn_primary" type="button" (click)="submit(form)">确定</button>
     </div>

@@ -6,12 +6,18 @@ const session = require("koa-session");
 const convert = require("koa-convert");
 const cors = require("kcors");
 const views = require("koa-views");
+const server = require("koa-static");
+const path = require("path");
 const routes_1 = require("./routes");
 const argv = yargs.argv;
 const PORT = process.env.PORT || argv.port || 8383;
 const HOST = process.env.HOST || argv.host || '0.0.0.0';
 const app = new Koa();
 const router = new Router();
+/**
+ * Static Server
+ */
+app.use(server(path.join(__dirname, '..', 'static')));
 /**
  * Error Handle middleware
  */

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, buildUrl } from './http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/toPromise';
 
 const wx = window['wx'];
 
@@ -51,7 +52,7 @@ export class WechatService {
   }
 
   chooseImage(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise<string[]>((resolve, reject) => {
       this.config().then(() => {
         wx.chooseImage({
           count: 1,
@@ -64,7 +65,7 @@ export class WechatService {
   }
 
   uploadImage(localId: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       this.config().then(() => {
         wx.uploadImage({
           localId: localId,
@@ -82,7 +83,7 @@ export class WechatService {
   }
 
   getCommunityId() {
-    return this.http.get('/user/community');
+    return this.http.get('/user/community').toPromise();
   }
 
   previewUrl(communityId: string, serverId: string) {

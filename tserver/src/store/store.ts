@@ -40,5 +40,13 @@ export async function getStoreModel(ctx) {
     throw new ResponseError('请填写店铺简介');
   }
 
+  if (!store.businessLicense) {
+    throw new ResponseError('请上传营业执照');
+  }
+
+  if (!store.legalRepresentativeIdPicture) {
+    throw new ResponseError('请上传法人代表身份证');
+  }
+
   return store;
 }

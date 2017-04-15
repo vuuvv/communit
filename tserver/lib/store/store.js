@@ -33,6 +33,12 @@ async function getStoreModel(ctx) {
     if (!store.description) {
         throw new routes_1.ResponseError('请填写店铺简介');
     }
+    if (!store.businessLicense) {
+        throw new routes_1.ResponseError('请上传营业执照');
+    }
+    if (!store.legalRepresentativeIdPicture) {
+        throw new routes_1.ResponseError('请上传法人代表身份证');
+    }
     return store;
 }
 exports.getStoreModel = getStoreModel;

@@ -126,9 +126,8 @@ export class WechatController {
   async media(ctx) {
     const id = ctx.session.communityId;
     const wechat = await Wechat.create(id);
-    let ret = await wechat.getMedia('NbqJ3vJetfppupURAJLUnkIYkJVEdz0vwIlG5p-15MG4aKf27170m7Y23fEXka7G');
-    let disp: string = ret.headers['content-disposition'];
-    return disp.match(/.*?filename=\"(.*)\"/)[1];
+    let url = await wechat.saveMedia('4vJ9a4ADDnM7EVN4hXFTZ7qHrI5bvATEqXTq3FLRc5Ev6WH3h-ZgjNl35SOJ1Pkm');
+    return success(url);
   }
 
   @get('/preview/:communityId/:serverId')

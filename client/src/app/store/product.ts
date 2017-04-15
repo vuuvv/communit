@@ -36,6 +36,7 @@ export class ProductAddComponent implements OnInit {
   title = '新增商品';
   product: any = {};
   categories: any[] = [];
+  serverIds: string[] = [];
 
   constructor(
     private http: Http,

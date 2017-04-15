@@ -8,6 +8,6 @@ export declare class WechatController {
     signature(ctx: any): Promise<Response>;
     url(): Promise<any>;
     redirect(ctx: any): void;
-    media(ctx: any): Promise<string>;
+    media(ctx: any): Promise<Response>;
     preview(ctx: any): Promise<void>;
 }
