@@ -31,8 +31,7 @@
     </v-box>
     <v-box title="上传商品图片">
       <div class="photos">
-        <wechat-uploader tip="营业执照" (click)="showActions(licenseUploader)" #licenseUploader></wechat-uploader>
-        <wechat-uploader tip="法人代表身份证" (click)="showActions(legalUploader)" #legalUploader></wechat-uploader>
+        <wechat-multiple-uploader [(serverIds)]="serverIds" (clickItem) = "clickItem($event)"></wechat-multiple-uploader>
       </div>
     </v-box>
     <div class="weui-btn-area">
@@ -40,3 +39,8 @@
     </div>
   </form>
 </v-page>
+<v-actionsheet [(show)]='actionsShown'>
+  <v-actionsheet-item (click)="selectPhoto()">上传</v-actionsheet-item>
+  <v-actionsheet-item (click)="previewPhotos()">预览</v-actionsheet-item>
+  <v-actionsheet-item (click)="deletePhoto()">删除</v-actionsheet-item>
+</v-actionsheet>

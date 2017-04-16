@@ -4,6 +4,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 import { Http } from './http';
 import { DialogService } from '../../../components';
@@ -16,6 +17,8 @@ export class Login {
 
 @Injectable()
 export class AuthorizeService {
+  private communityId: string;
+
   isLoggedIn: boolean = false;
   redirectUrl: string;
   user: any;
@@ -29,20 +32,6 @@ export class AuthorizeService {
     this.router.navigateByUrl(redirect);
     return user;
   }
-
-  // login(data: Login): Observable<User> {
-  //   return this.http.post<User>('mo/login', data, true).concatMap((user: User) => {
-  //     this.doLogin(user)
-  //     return this.update();
-  //   });
-  // }
-
-  // logout(): Observable<any> {
-  //   return this.http.get('mo/logout').map(() => {
-  //     this.isLoggedIn = false;
-  //     this.user = null;
-  //   });
-  // }
 
   update(): Observable<any> {
     return this.http.get<any>('/user/me', undefined, undefined, undefined, 'none').map((user: any) => {
@@ -60,5 +49,14 @@ export class AuthorizeService {
       this.doLogin(user);
       return true;
     });
+  }
+
+  getCommunityId() {
+    return this.communityId ?
+      Promise.resolve(this.communityId) :
+      this.http.get('/user/community').toPromise().then((v: string) => {
+        this.communityId = v;
+        return v;
+      });
   }
 }

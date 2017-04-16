@@ -17,6 +17,7 @@ export declare class Product extends BaseModel {
      * 描述
      */
     description: string;
+    images: string;
     /**
      * 积分产品价格(元)
      */

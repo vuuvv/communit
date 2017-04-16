@@ -91,6 +91,8 @@ let StoreController = class StoreController {
         }
         let model = await store_1.getStoreModel(ctx);
         let wechat = await wechat_1.Wechat.create(communityId);
+        model.businessLicense = await wechat.saveMedia(model.businessLicense);
+        model.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
         await db_1.db.transaction(async (trx) => {
             let store = await db_1.Table.Store.transacting(trx).where({
                 communityId: communityId,
@@ -102,8 +104,8 @@ let StoreController = class StoreController {
             let entity = utils_1.create(models_1.Store, model);
             entity.userId = userId;
             entity.communityId = communityId;
-            entity.businessLicense = await wechat.saveMedia(model.businessLicense);
-            entity.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
+            entity.businessLicense = model.businessLicense;
+            entity.legalRepresentativeIdPicture = model.legalRepresentativeIdPicture;
             await db_1.Table.Store.transacting(trx).insert(entity);
         });
         return routes_1.success();

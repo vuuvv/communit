@@ -104,6 +104,8 @@ export class StoreController {
 
     let model = await getStoreModel(ctx);
     let wechat = await Wechat.create(communityId);
+    model.businessLicense = await wechat.saveMedia(model.businessLicense);
+    model.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
 
     await db.transaction(async (trx) => {
       let store = await Table.Store.transacting(trx).where({
@@ -118,8 +120,8 @@ export class StoreController {
       let entity = create(Store, model);
       entity.userId = userId;
       entity.communityId = communityId;
-      entity.businessLicense = await wechat.saveMedia(model.businessLicense);
-      entity.legalRepresentativeIdPicture = await wechat.saveMedia(model.legalRepresentativeIdPicture);
+      entity.businessLicense = model.businessLicense;
+      entity.legalRepresentativeIdPicture = model.legalRepresentativeIdPicture;
       await Table.Store.transacting(trx).insert(entity);
     });
 

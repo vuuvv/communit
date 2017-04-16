@@ -15,6 +15,7 @@ const db_1 = require("../db");
 const utils_1 = require("../utils");
 const store_1 = require("../store");
 const product_1 = require("./product");
+const wechat_1 = require("../wechat");
 const models_1 = require("../models");
 let ProductController = class ProductController {
     async category(ctx) {
@@ -70,6 +71,9 @@ let ProductController = class ProductController {
         }
         let model = await product_1.getProductModel(ctx);
         let product = utils_1.create(models_1.Product, model);
+        let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
+        let images = await product_1.savePhotos(model.serverIds, wechat);
+        product.images = JSON.stringify(images);
         product.storeId = store.id;
         await db_1.Table.Product.insert(product);
         return routes_1.success();

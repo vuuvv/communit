@@ -100,9 +100,6 @@ export class StoreAddComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.wechatService.getCommunityId().then((communityId) => {
-      this.communityId = communityId;
-    });
   }
 
   submit(form) {
@@ -121,16 +118,7 @@ export class StoreAddComponent implements OnInit {
 
   selectPhoto() {
     this.actionsShown = false;
-
-    // this.wechatService.chooseImage().then((localIds) => {
-    //   return this.wechatService.uploadImage(localIds[0]);
-    // }).then((serverId: string) => {
-    //   this.wechatService.getCommunityId().subscribe((communityId: string) => {
-    //     this.communityId = communityId;
-    //     this.store[this.photoField] = this.wechatService.previewUrl(communityId, serverId);
-    //   });
-    // });
-    this.uploader.chooseImage(this.communityId);
+    this.uploader.chooseImage();
   }
 
   previewPhotos() {

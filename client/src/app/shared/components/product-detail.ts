@@ -17,4 +17,11 @@ export class ProductDetailComponent {
   getStatus() {
     return ProductStatus[this.product.status];
   }
+
+  get images() {
+    if (!this.product || !this.product.images) {
+      return null;
+    }
+    return JSON.parse(this.product.images);
+  }
 }

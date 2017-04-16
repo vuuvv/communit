@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, buildUrl } from './http';
+import { AuthorizeService } from './authorize';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
@@ -13,6 +14,7 @@ export class WechatService {
 
   constructor(
     private http: Http,
+    private authorizeService: AuthorizeService,
   ) {}
 
   config(debug = true) {
@@ -82,29 +84,35 @@ export class WechatService {
     });
   }
 
-  getCommunityId() {
-    return this.http.get('/user/community').toPromise();
+  previewUrl(serverId: string) {
+    return Promise.resolve(/^https?:\/\/|^\/\//i.test(serverId)).then((isUrl) => {
+      if (isUrl) {
+        return serverId;
+      } else {
+        return this.authorizeService.getCommunityId().then((communityId) => {
+          return buildUrl(`/wechat/preview/${communityId}/${serverId}`, undefined, false);
+        });
+      }
+    });
   }
 
-  previewUrl(communityId: string, serverId: string) {
-    return buildUrl(`/wechat/preview/${communityId}/${serverId}`);
-  }
-
-  previewImage(serverIds: string[], communityId?: string, fixUrl = true) {
+  previewImage(serverIds: string[], index = 0, fixUrl = true) {
     if (!serverIds || !serverIds.length) {
       return;
     }
-    return this.config().then(() => {
-      Observable.of(communityId).concatMap((v) => {
-        if (v) {
-          return Observable.of(v);
-        }
-        return this.getCommunityId();
-      }).subscribe((v: string) => {
-        wx.previewImage({
-          current: fixUrl ? this.previewUrl(v, serverIds[0]) : serverIds[0],
-          urls: serverIds.map((id) => fixUrl ? this.previewUrl(v, id) : id),
-        });
+    let current = serverIds[index];
+    if (!current) {
+      current = serverIds[0];
+    }
+
+    let a = [this.previewUrl(current)];
+    a = a.concat(serverIds.map((id) => this.previewUrl(id)));
+
+    Promise.all(a).then((values: any[]) => {
+      console.log(values);
+      wx.previewImage({
+        current: fixUrl ? values[0] : current,
+        urls: fixUrl ? values.slice(1) : serverIds.slice(1),
       });
     });
   }

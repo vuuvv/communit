@@ -3,6 +3,7 @@
 # compiled output
 /client/dist
 /tmp
+/static
 
 # dependencies
 node_modules/

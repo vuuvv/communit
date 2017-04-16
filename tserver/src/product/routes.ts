@@ -5,7 +5,8 @@ import { router, get, post, all, success, Response, ResponseError, login, wechat
 import { Table, db, raw, first } from '../db';
 import { create } from '../utils';
 import { getStore } from '../store';
-import { getProductModel } from './product';
+import { getProductModel, savePhotos } from './product';
+import { Wechat } from '../wechat';
 import { Product } from '../models';
 
 @router('/product')
@@ -83,6 +84,11 @@ export class ProductController {
 
     let model = await getProductModel(ctx);
     let product = create(Product, model);
+
+    let wechat = await Wechat.create(ctx.session.communityId);
+    let images = await savePhotos(model.serverIds, wechat);
+    product.images = JSON.stringify(images);
+
     product.storeId = store.id;
 
     await Table.Product.insert(product);

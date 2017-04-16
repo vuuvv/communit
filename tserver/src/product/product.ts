@@ -2,6 +2,7 @@ import { Response, ResponseError } from '../routes';
 import { create, getJsonBody } from '../utils';
 import { Table } from '../db';
 import { Store } from '../models';
+import { Wechat } from '../wechat';
 
 export async function getProductModel(ctx) {
   let product = await getJsonBody(ctx);
@@ -41,4 +42,21 @@ export async function getProductModel(ctx) {
   }
 
   return product;
+}
+
+export async function savePhotos(serverIds: string[], wechat: Wechat) {
+  if (!serverIds || !serverIds.length) {
+    return [];
+  }
+
+  let ret = [];
+  for (let i = 0; i < serverIds.length; i++) {
+    let serverId = serverIds[i];
+    if (serverId.indexOf('/') === -1) {
+      ret.push(await wechat.saveMedia(serverId));
+    } else {
+      ret.push(serverId);
+    }
+  }
+  return ret;
 }

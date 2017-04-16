@@ -14,30 +14,22 @@
     </div>
   </header>
 
-  <section>
-    <p class="title ngv-1px-b">
-      <i class="solid-arrow"></i><span>状态：</span>
-    </p>
-    <div class="description">
-      <p>{{ getStatus() }}</p>
-    </div>
-  </section>
+  <v-group>
+    <v-cell [value]="getStatus()">状态</v-cell>
+  </v-group>
 
-  <section>
-    <p class="title ngv-1px-b">
-      <i class="solid-arrow"></i><span>详情说明：</span>
-    </p>
-    <div class="description">
-      <p>{{ product.description }}</p>
-    </div>
-  </section>
+  <v-box title="购买地址">
+    <v-cell>
+      <div class="weui-textarea">{{ product.storeAddress }}</div>
+    </v-cell>
+  </v-box>
 
-  <section>
-    <p class="title ngv-1px-b">
-      <i class="solid-arrow"></i><span>购买地址：</span>
-    </p>
-    <div class="description">
-      <p>{{ product.storeAddress }}</p>
-    </div>
-  </section>
+  <v-box title="详情说明">
+    <v-cell>
+      <div class="weui-textarea">{{ product.description }}</div>
+      <div class="weui-textarea" *ngIf="images && images.length">
+        <img [src]="src" *ngFor="let src of images" width="100%">
+      </div>
+    </v-cell>
+  </v-box>
 </div>

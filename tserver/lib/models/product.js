@@ -46,6 +46,10 @@ __decorate([
 ], Product.prototype, "description", void 0);
 __decorate([
     utils_1.property(),
+    __metadata("design:type", String)
+], Product.prototype, "images", void 0);
+__decorate([
+    utils_1.property(),
     __metadata("design:type", Number)
 ], Product.prototype, "price", void 0);
 __decorate([

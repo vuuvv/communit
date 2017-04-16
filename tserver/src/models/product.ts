@@ -29,6 +29,9 @@ export class Product extends BaseModel {
   @property()
   description: string;
 
+  @property()
+  images: string;
+
   /**
    * 积分产品价格(元)
    */
