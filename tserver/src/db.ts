@@ -56,6 +56,7 @@ import {
   SociallyActivity, SociallyActivityTableName,
   SociallyActivityUser, SociallyActivityUserTableName,
   Apicall, ApicallTableName,
+  ServiceUser, ServiceUserTableName,
 } from './models';
 
 export interface Model<T> {
@@ -183,4 +184,7 @@ export class Table<T> {
     return new Table<Apicall>(Apicall, ApicallTableName).database;
   }
 
+  static get ServiceUser() {
+    return new Table<ServiceUser>(ServiceUser, ServiceUserTableName).database;
+  }
 }

@@ -53,8 +53,19 @@ let ServiceController = class ServiceController {
         s.id = ?
       order by s.updatedAt desc
     `;
-        let ret = await db_1.first(sql, [ctx.params.id]);
-        return routes_1.success(ret);
+        let service = await db_1.first(sql, [ctx.params.id]);
+        sql = `
+    select * from t_service_user as su
+    join t_service as s on su.serviceId = s.id
+    where s.id = ?
+    order by su.updatedAt desc
+    limit 1
+    `;
+        let user = await db_1.first(sql, [ctx.params.id]);
+        return routes_1.success({
+            service,
+            user,
+        });
     }
     async add(ctx) {
         let model = await utils_1.getJsonBody(ctx);
@@ -73,6 +84,26 @@ let ServiceController = class ServiceController {
         return routes_1.success();
     }
     async join(ctx) {
+        let model = await utils_1.getJsonBody(ctx);
+        model.serviceId = ctx.params.id;
+        model.communityId = ctx.session.communityId;
+        model.userId = ctx.session.userId;
+        model.status = 'submit';
+        await db_1.db.transaction(async (trx) => {
+            // 检查用户是否已经参加
+            let user = await db_1.Table.ServiceUser.transacting(trx).where({
+                serviceId: ctx.params.id,
+                communityId: ctx.session.communityId,
+                userId: ctx.session.userId,
+            }).orderBy('updatedAt', 'desc').forUpdate().first();
+            if (!user || user.status === 'reject') {
+                // 可以添加报名记录
+                await db_1.Table.ServiceUser.transacting(trx).insert(model);
+            }
+            else {
+                throw new Error(`不可重复添加报名记录`);
+            }
+        });
         return routes_1.success();
     }
 };
@@ -126,7 +157,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "add", null);
 __decorate([
-    routes_1.get('/join/:id'),
+    routes_1.post('/:id/join'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

@@ -37,4 +37,5 @@ export declare class Table<T> {
     static readonly SociallyActivity: knex.QueryBuilder;
     static readonly SociallyActivityUser: knex.QueryBuilder;
     static readonly Apicall: knex.QueryBuilder;
+    static readonly ServiceUser: knex.QueryBuilder;
 }

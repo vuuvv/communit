@@ -28,7 +28,9 @@ export class UserController {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
     let user = await first(`
-    select wu.headimgurl as avatar, wu.realname as name, wa.accountname as community from t_wechat_user as wu
+    select
+      wu.headimgurl as avatar, wu.realname as name, wa.accountname as community, wa.id as communityId, wu.userId
+    from t_wechat_user as wu
     join weixin_account as wa on wu.officialAccountId=wa.id
     where wu.officialAccountId=? and wu.userId=?
     `, [communityId, userId]);

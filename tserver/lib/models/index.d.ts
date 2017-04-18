@@ -25,3 +25,4 @@ export * from './carousel';
 export * from './socially_activity';
 export * from './socially_activity_user';
 export * from './api';
+export * from './service_user';

@@ -69,8 +69,20 @@ export class ServiceController {
       order by s.updatedAt desc
     `;
 
-    let ret = await first(sql, [ctx.params.id]);
-    return success(ret);
+    let service = await first(sql, [ctx.params.id]);
+    sql = `
+    select * from t_service_user as su
+    join t_service as s on su.serviceId = s.id
+    where s.id = ?
+    order by su.updatedAt desc
+    limit 1
+    `;
+
+    let user = await first(sql, [ctx.params.id]);
+    return success({
+      service,
+      user,
+    });
   }
 
   @post('/add/:id')
@@ -97,9 +109,30 @@ export class ServiceController {
     return success();
   }
 
-  @get('/join/:id')
+  @post('/:id/join')
   @login
   async join(ctx) {
+    let model = await getJsonBody(ctx);
+    model.serviceId = ctx.params.id;
+    model.communityId = ctx.session.communityId;
+    model.userId = ctx.session.userId;
+    model.status = 'submit';
+
+    await db.transaction(async (trx) => {
+      // 检查用户是否已经参加
+      let user = await Table.ServiceUser.transacting(trx).where({
+        serviceId: ctx.params.id,
+        communityId: ctx.session.communityId,
+        userId: ctx.session.userId,
+      }).orderBy('updatedAt', 'desc').forUpdate().first();
+
+      if (!user || user.status === 'reject') {
+        // 可以添加报名记录
+        await Table.ServiceUser.transacting(trx).insert(model);
+      } else {
+        throw new Error(`不可重复添加报名记录`);
+      }
+    });
     return success();
   }
 }

@@ -115,5 +115,8 @@ class Table {
     static get Apicall() {
         return new Table(models_1.Apicall, models_1.ApicallTableName).database;
     }
+    static get ServiceUser() {
+        return new Table(models_1.ServiceUser, models_1.ServiceUserTableName).database;
+    }
 }
 exports.Table = Table;
