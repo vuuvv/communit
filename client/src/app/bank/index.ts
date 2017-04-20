@@ -9,6 +9,7 @@ import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
+import { ServiceJoinComponent } from './service-join';
 import { ServiceListComponent } from './service-list';
 import { ActivityComponent } from './activity';
 import { ActivityListComponent } from './activity-list';
@@ -32,15 +33,16 @@ const routes: Routes = [
         component: ServiceComponent,
       },
       {
+        path: 'service/:id/join',
+        canActivate: [AuthorizeGuard],
+        pathMatch: 'full',
+        component: ServiceJoinComponent,
+      },
+      {
         path: 'services',
         pathMatch: 'full',
         component: ServiceListComponent,
       },
-      // {
-      //   path: 'worker',
-      //   pathMatch: 'full',
-      //   component: WorkerComponent,
-      // },
       {
         path: 'worker/add/:id',
         canActivate: [AuthorizeGuard],
@@ -88,6 +90,7 @@ const routes: Routes = [
     WorkerAddComponent,
     OrganizationComponent,
     OrganizationDetailComponent,
+    ServiceJoinComponent,
   ]
 })
 export class BankModule {

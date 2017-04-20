@@ -6,9 +6,18 @@ v-slider, .ngv-slider-viewport {
   min-height: 1px;
 }
 
+v-slider.ngv-slider-vertical, .ngv-slider-vertical .ngv-slider-viewport {
+  min-width: 1px;
+  height: 100%;
+}
+
 v-slider-item {
   display: block;
   float: left;
+}
+
+.ngv-slider-vertical v-slider-item {
+  float: none;
 }
 
 .ngv-slider-content {

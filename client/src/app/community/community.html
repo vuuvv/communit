@@ -15,9 +15,23 @@
   </div>
 
   <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
-    <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" [icon]="m.image | fixurl" *ngFor="let m of icons" (click)="goto(m)">{{ m.name }}</quickentry-item>
-    </v-xscroll>
+    <quickentry *ngFor="let chunk of shownIcons | chunk: 4; let i = index">
+      <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4; let i = index">
+      {{ icon.name }}
+      </quickentry-item>
+    </quickentry>
+  </div>
+  <div class="news" *ngIf="articles">
+    <div class="news-item">
+      <span class="title ngv-1px-r">头条</span>
+      <span class="subject">
+        <v-slider [isVertical]="true" [indicator]="false">
+          <v-slider-item *ngFor="let a of articles">
+            {{ a.title }}
+          </v-slider-item>
+        </v-slider>
+      </span>
+    </div>
   </div>
 
   <empty-page *ngIf="!articles || !articles.length">暂无内容</empty-page>
@@ -32,19 +46,5 @@
       </div>
     </div>
   </div>
-
 </v-page>
-<div *ngIf="showMask" class="ngv-overlay">
-  <div class="weui-mask"></div>
-  <div class="quickentry-nav qe" *ngIf="icons">
-    <quickentry *ngFor="let chunk of icons | slice: 0:-1 | chunk: 4">
-      <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk">
-        {{ icon.name }}
-      </quickentry-item>
-    </quickentry>
-  </div>
-  <div class="close" (click)="showMask=false">
-    <v-icon type="close"></v-icon>
-  </div>
-</div>
 

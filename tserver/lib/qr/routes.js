@@ -102,9 +102,6 @@ let QrcodeController = class QrcodeController {
             case models_1.ServiceCategories.Custom:
                 action = models_1.QrcodeAction.OrderCustom;
                 break;
-            case models_1.ServiceCategories.Public:
-                action = models_1.QrcodeAction.OrderPublic;
-                break;
         }
         if (action !== models_1.QrcodeAction.OrderCustom) {
             let accounts = await db_1.Table.Account.where({ communityId, userId });

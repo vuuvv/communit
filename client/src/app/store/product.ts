@@ -119,7 +119,7 @@ export class ProductEditComponent extends BaseProductEditComponent implements On
     private overlayService: OverlayService,
     private formService: FormService,
     private wechatService: WechatService,
-  ) { super() }
+  ) { super(); }
 
   ngOnInit() {
     this.overlayService.loading();
@@ -145,7 +145,7 @@ export class ProductEditComponent extends BaseProductEditComponent implements On
     }
     this.overlayService.loading();
     this.product.serverIds = this.serverIds;
-    this.formService.submit(form, validMessages, `/product/edit/${this.product.id}`, this.product).subscribe(() => {
+    this.formService.submit(form, validMessages, `/product/edit`, this.product).subscribe(() => {
       this.overlayService.hideToast();
       this.router.navigate(['/store']);
     });

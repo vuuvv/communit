@@ -6,11 +6,15 @@ import { BScrollDirective } from '../base';
   templateUrl: './slider.html',
   styleUrls: ['./slider.less'],
   encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.ngv-slider-vertical]': 'isVertical',
+  }
 })
 export class SliderComponent implements AfterViewInit {
   @Input() speed: number = 400;
   @Input() auto: boolean = true;
   @Input() indicator: boolean = true;
+  @Input() isVertical = false;
 
   @ViewChild('content') contentRef: ElementRef;
   @ViewChild('viewport') viewportRef: ElementRef;
@@ -28,15 +32,25 @@ export class SliderComponent implements AfterViewInit {
     let viewportDom = this.viewportRef.nativeElement;
     let contentDom = this.contentRef.nativeElement;
 
-    let width = parseInt(window.getComputedStyle(viewportDom).width, 10);
     let items = contentDom.children;
     let length = this.itemsLength = items.length;
-    let contentWidth = width * length;
 
-    contentDom.style.width = contentWidth + 'px';
+    if (this.isVertical) {
+      let height = parseInt(window.getComputedStyle(viewportDom).height, 10);
+      let contentHeight = height * length;
+      contentDom.style.height = contentHeight + 'px';
 
-    for (let i = 0; i < length; i++) {
-      items[i].style.width = width + 'px';
+      for (let i = 0; i < length; i++) {
+        items[i].style.height = height + 'px';
+      }
+    } else {
+      let width = parseInt(window.getComputedStyle(viewportDom).width, 10);
+      let contentWidth = width * length;
+      contentDom.style.width = contentWidth + 'px';
+
+      for (let i = 0; i < length; i++) {
+        items[i].style.width = width + 'px';
+      }
     }
 
     this.scroll.reload();

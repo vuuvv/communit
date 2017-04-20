@@ -15,6 +15,8 @@ import { OrderListComponent } from './order-list';
 import { WorkerComponent } from './worker';
 import { PointsComponent } from './points';
 import { TestComponent } from './test';
+import { ServiceComponent } from './service';
+import { ServiceUsersComponent } from './service-users';
 
 const routes: Routes = [
   {
@@ -49,7 +51,7 @@ const routes: Routes = [
         component: OrderListComponent,
       },
       {
-        path: 'worker',
+        path: 'worker/:type',
         pathMatch: 'full',
         canActivate: [AuthorizeGuard],
         component: WorkerComponent,
@@ -65,6 +67,18 @@ const routes: Routes = [
         pathMatch: 'full',
         canActivate: [AuthorizeGuard],
         component: TestComponent,
+      },
+      {
+        path: 'service/:id/users/:type',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: ServiceUsersComponent,
+      },
+      {
+        path: 'service/:id',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: ServiceComponent,
       },
     ],
   },
@@ -88,6 +102,8 @@ const routes: Routes = [
     WorkerComponent,
     PointsComponent,
     TestComponent,
+    ServiceUsersComponent,
+    ServiceComponent,
   ]
 })
 export class UserModule {

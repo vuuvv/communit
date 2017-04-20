@@ -26,6 +26,7 @@
     "better-scroll": "^0.1.15",
     "core-js": "^2.4.1",
     "koa-static": "^3.0.0",
+    "lodash.sumby": "^4.6.0",
     "qrious": "^2.2.0",
     "rxjs": "^5.0.1",
     "ts-helpers": "^1.1.1",

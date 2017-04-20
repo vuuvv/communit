@@ -1,8 +1,7 @@
 import { BaseModel } from './base_model';
 export declare class ServiceCategories {
-    static Help: string;
     static Custom: string;
-    static Public: string;
+    static Help: string;
 }
 export declare class ServiceCategory extends BaseModel {
     /**

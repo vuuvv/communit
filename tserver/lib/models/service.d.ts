@@ -28,5 +28,9 @@ export declare class Service extends BaseModel {
      * 排序
      */
     sort: number;
+    /**
+     * 状态
+     */
+    status: string;
 }
 export declare const ServiceTableName = "t_service";

@@ -22,6 +22,7 @@ export class CommunityComponent implements OnInit {
   articles: any[];
   logo: any;
   showMask = false;
+  shownIcons = [];
 
   constructor(
     private overlayService: OverlayService,
@@ -42,18 +43,31 @@ export class CommunityComponent implements OnInit {
       this.overlayService.hideToast();
       this.carousel = values[0];
       this.icons = values[1];
+      this.shownIcons = this.getCollapsedIcons();
       this.articles = values[2];
       this.logo = values[3];
-      this.icons.push({
-        name: '全部',
-        image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
-      });
     });
+  }
+
+  getCollapsedIcons() {
+    if (!this.icons || !this.icons.length) {
+      return [];
+    }
+    if (this.icons.length <= 8) {
+      return this.icons;
+    }
+    let ret = this.icons.slice(0, 7);
+    ret.push({
+      name: '全部',
+      image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+    });
+    return ret;
   }
 
   goto(icon) {
     if (icon.name === '全部') {
-      this.showMask = true;
+      this.shownIcons = this.icons;
+      // this.showMask = true;
       return;
     }
 

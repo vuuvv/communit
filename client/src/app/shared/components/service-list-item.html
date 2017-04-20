@@ -1,20 +1,10 @@
 <v-image [src]="src" width="40" height="40"></v-image>
 <div class="list-item-content">
-  <div class="list-item-title">{{ service.data.content }}</div>
-  <ng-container [ngSwitch]="service.categoryId">
-    <ng-container *ngSwitchCase="'8c4075759d914b1395b8b06bc1b5d19f'">
-      <div class="list-item-desc">{{ service.data.result }}</div>
-    </ng-container>
-    <ng-container *ngSwitchCase="'33ef69e8e2cc4cf3a9f12c36b560ee73'">
-      <div class="list-item-desc">{{ service.data.date + ',' + service.data.target }}</div>
-    </ng-container>
-    <ng-container *ngSwitchCase="'09756aef0f3f43fbb64377baf313b43a'">
-      <div class="list-item-desc">{{ service.data.introduction }}</div>
-    </ng-container>
-  </ng-container>
-  <div class="list-item-meta">{{ service.points }} 积分</div>
+  <div class="list-item-title">{{ title }}</div>
+  <div class="list-item-desc">{{ desc }}</div>
+  <div class="list-item-meta">{{ meta }}</div>
 </div>
 <div class="list-item-right">
-  <div class="list-item-type">{{ service.categoryName }}</div>
-  <div class="list-item-status">{{ status }}</div>
+  <div class="list-item-type">{{ type }}</div>
+  <div class="list-item-right-bottom">{{ bottomRight }}</div>
 </div>

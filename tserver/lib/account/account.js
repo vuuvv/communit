@@ -153,7 +153,6 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points)
         communityId: communityId,
         userId: userId,
     }).forUpdate();
-    console.log(communityId, userId);
     if (!accounts || !accounts.length) {
         throw new Error('余额不足');
     }
@@ -218,8 +217,12 @@ async function refundOrder(trx, orderId) {
     if (order.status === models_1.OrderStatus.Refund) {
         throw new Error('订单已退款，不可重复退款');
     }
-    order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
-    order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+    if (order.buyerTradeTransactionId) {
+        order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
+    }
+    if (order.sellerRefundTransactionId) {
+        order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+    }
     await db_1.Table.Order.transacting(trx).where('id', orderId).update({
         status: models_1.OrderStatus.Refund,
         buyerRefundTransactionId: order.buyerRefundTransactionId,

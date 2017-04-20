@@ -53,11 +53,11 @@ export class WechatService {
     });
   }
 
-  chooseImage(): Promise<string[]> {
+  chooseImage(count = 1): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       this.config().then(() => {
         wx.chooseImage({
-          count: 1,
+          count: count,
           success: function (res) {
             resolve(res.localIds);
           }

@@ -4,7 +4,8 @@ import * as ejs from 'ejs';
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
 import { create, getJsonBody } from '../utils';
-import { Service } from '../models';
+import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories } from '../models';
+import { refundOrder, deductPoints, TransactionType } from '../account';
 
 @router('/service')
 export class ServiceController {
@@ -30,8 +31,28 @@ export class ServiceController {
   }
 
   @get('/list')
-  @wechat
+  @login
   async list(ctx) {
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+
+    let sql = `
+    select
+      s.*,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount,
+      c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName
+    from t_service as s
+    join t_service_category as c on s.categoryId = c.id
+    join t_service_type as t on s.typeId = t.id
+    join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
+    where s.communityId = ? and s.userId = ? and s.categoryId = ?
+    `;
+
+    let ret = await raw(sql, [communityId, userId, ServiceCategories.Custom]);
+
+    return success(ret);
   }
 
   @get('/search')
@@ -40,11 +61,12 @@ export class ServiceController {
     let communityId = ctx.session.communityId;
 
     let sql = `
-      select s.*, c.name as categoryName, t.icon as typeIcon, t.name as typeName from t_service as s
+      select s.*, c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName from t_service as s
       join t_service_category as c on s.categoryId = c.id
       join t_service_type as t on s.typeId = t.id
+      join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
       where
-        s.communityId = :communityId and
+        s.communityId = :communityId and s.status = 'normal' and
         <% if (query.categoryId) { %> s.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
         <% if (query.typeId) { %> s.typeId = :typeId  <% } else { %> 1 = 1 <% } %>
       order by s.updatedAt desc
@@ -60,25 +82,43 @@ export class ServiceController {
   @get('/item/:id')
   @wechat
   async item(ctx) {
+    let serviceId = ctx.params.id;
     let sql = `
-      select s.*, c.name as categoryName, c.fields, t.name as typeName from t_service as s
+      select
+        s.*, c.name as categoryName, c.fields, t.name as typeName, wu.realname as userName,
+        (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
+        (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
+        (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount
+      from t_service as s
       join t_service_category as c on s.categoryId = c.id
       join t_service_type as t on s.typeId = t.id
+      join t_wechat_user as wu on wu.officialAccountId=s.communityId and wu.userId=s.userId
       where
         s.id = ?
       order by s.updatedAt desc
     `;
 
-    let service = await first(sql, [ctx.params.id]);
+    let service = await first(sql, [serviceId]);
+
+    let userId = ctx.session.userId;
+    if (!userId) {
+      return success({
+        service,
+      });
+    }
+
+    // 已注册用户
+
     sql = `
-    select * from t_service_user as su
+    select su.* from t_service_user as su
     join t_service as s on su.serviceId = s.id
-    where s.id = ?
+    where s.id = ? and su.userId = ?
     order by su.updatedAt desc
     limit 1
     `;
 
-    let user = await first(sql, [ctx.params.id]);
+    let user = await first(sql, [serviceId, userId]);
+
     return success({
       service,
       user,
@@ -109,14 +149,31 @@ export class ServiceController {
     return success();
   }
 
+  @get('/:id/users/:status')
+  @login
+  async users(ctx) {
+    let sql = `
+    select su.*, wu.realname  from t_service_user as su
+    join t_wechat_user as wu on su.communityId = wu.officialAccountId and su.userId = wu.userId
+    where su.serviceId = ? and su.status = ?
+    order by su.updatedAt desc
+    `;
+
+    let ret = await raw(sql, [ctx.params.id, ctx.params.status]);
+
+    return success(ret);
+  }
+
   @post('/:id/join')
   @login
   async join(ctx) {
     let model = await getJsonBody(ctx);
-    model.serviceId = ctx.params.id;
-    model.communityId = ctx.session.communityId;
-    model.userId = ctx.session.userId;
-    model.status = 'submit';
+
+    let entity = create(ServiceUser, model);
+    entity.serviceId = ctx.params.id;
+    entity.communityId = ctx.session.communityId;
+    entity.userId = ctx.session.userId;
+    entity.status = 'submit';
 
     await db.transaction(async (trx) => {
       // 检查用户是否已经参加
@@ -126,13 +183,85 @@ export class ServiceController {
         userId: ctx.session.userId,
       }).orderBy('updatedAt', 'desc').forUpdate().first();
 
-      if (!user || user.status === 'reject') {
+      if (!user || user.status !== 'reject') {
         // 可以添加报名记录
-        await Table.ServiceUser.transacting(trx).insert(model);
+        await Table.ServiceUser.transacting(trx).insert(entity);
       } else {
         throw new Error(`不可重复添加报名记录`);
       }
     });
+    return success();
+  }
+
+  @post('/:id/quit')
+  @login
+  async quit(ctx) {
+    let id = ctx.params.id;
+
+    await db.transaction(async (trx) => {
+      let user = await Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
+      if (user && ['accept', 'submit'].indexOf(user.status) !== -1) {
+        await Table.ServiceUser.transacting(trx).where('id', id).update({
+          status: 'quit',
+        });
+        if (user.orderId) {
+          refundOrder(trx, user.orderId);
+        }
+      } else {
+        throw new Error(`不可退出`);
+      }
+    });
+
+    return success();
+  }
+
+  @post('/:id/accept')
+  @login
+  async accept(ctx) {
+    let serviceId = ctx.params.id;
+
+    let ids: string[] = await getJsonBody(ctx);
+    if (!ids || ids.length) {
+      return success();
+    }
+
+    await db.transaction(async (trx) => {
+      let service: Service = await Table.Service.transacting(trx).forUpdate().where('id', serviceId).first();
+      if (!service || service.status === 'closed') {
+        throw new Error('服务不存在或服务已关闭');
+      }
+
+      for (let id of ids) {
+        let user: ServiceUser = await Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
+        if (!user || user.status !== 'submit') {
+          throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
+        }
+
+        let order = new Order();
+        order.type = OrderType.Product;
+        order.communityId = service.communityId;
+        order.sellerId = service.categoryId === ServiceCategories.Custom ? service.userId : user.userId;
+        order.buyerId = service.categoryId === ServiceCategories.Custom ? user.userId : service.userId;
+        order.status = OrderStatus.Payed;
+        order.amount = user.points;
+        order.orderTime = order.payTime = new Date();
+
+        let detail = new OrderDetail();
+        detail.orderId = order.id;
+        detail.type = OrderType.Service;
+        detail.productId = service.id;
+        detail.data = JSON.stringify(service);
+        detail.points = user.points;
+
+        order.buyerTradeTransactionId = await deductPoints(
+          trx, service.communityId, order.buyerId, TransactionType.PayService, order.amount
+        );
+
+        await Table.Order.transacting(trx).insert(order);
+        await Table.OrderDetail.transacting(trx).insert(detail);
+      }
+    });
+
     return success();
   }
 }

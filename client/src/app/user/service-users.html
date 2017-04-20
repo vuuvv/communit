@@ -1,0 +1,19 @@
+<v-page>
+  <v-header slot="header">参与情况</v-header>
+  <v-tab>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['/user/service/' + serviceId + '/users/' + i]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
+  </v-tab>
+
+  <v-box *ngFor="let u of users">
+    <div class="weui-cell weui-cell_switch" slot="title">
+      <div class="weui-cell__bd">{{ u.realname }}</div>
+      <div class="weui-cell__ft">
+        <input class="weui-switch" type="checkbox">
+      </div>
+    </div>
+
+    <v-cell [value]="u.points">积分</v-cell>
+    <v-cell [value]="u.updatedAt | time">报名时间</v-cell>
+  </v-box>
+  <empty-page *ngIf="!users || !users.length">还没有该类型的参与人员</empty-page>
+</v-page>

@@ -1,25 +1,23 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Params } from'@angular/router';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Http, AuthorizeService, sumBy } from '../shared';
+import { isEmptyArray, Http } from '../shared';
+
 import { OverlayService, DialogService } from '../../components';
+
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   templateUrl: './service.html',
-  styleUrls: ['./service.less'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class ServiceComponent implements OnInit {
   service: any;
-  user: any;
 
   constructor(
     private router: Router,
     private http: Http,
     private route: ActivatedRoute,
     private overlayService: OverlayService,
-    private authorizeService: AuthorizeService,
     private dialogService: DialogService,
   ) {}
 
@@ -34,7 +32,6 @@ export class ServiceComponent implements OnInit {
     }).subscribe((resp: any) => {
       this.overlayService.hideToast();
       this.service = resp.service;
-      this.user = resp.user;
       this.parseData();
     });
   }
@@ -54,20 +51,6 @@ export class ServiceComponent implements OnInit {
         content: v,
         type: f.type,
       };
-    });
-  }
-
-  join() {
-    this.router.navigate([`/bank/service/${this.service.id}/join`]);
-  }
-
-  quit() {
-    this.dialogService.confirm('确定要退出该活动？').ok((comp) => {
-      comp.close();
-      this.overlayService.loading();
-      this.http.post(`/service/${this.user.id}/quit`).subscribe(() => {
-        this.init();
-      });
     });
   }
 }

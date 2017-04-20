@@ -8,6 +8,7 @@ import { OrderComponent } from './order.component';
 import { OrderItemComponent } from './order-item.component';
 import { WechatUploaderComponent } from './wechat-uploader';
 import { WechatMultipleUploaderComponent } from './wechat-multiple-uploader';
+import { ServiceDetailComponent } from './service-detail';
 
 export const SHARED_COMPONENTS = [
   TabbarComponent,
@@ -21,6 +22,7 @@ export const SHARED_COMPONENTS = [
   OrderItemComponent,
   WechatUploaderComponent,
   WechatMultipleUploaderComponent,
+  ServiceDetailComponent,
 ];
 
 export * from './tabbar';

@@ -12,10 +12,9 @@ import { OverlayService, DialogService } from '../../components';
 })
 export class OrderListComponent implements OnInit {
   orders: any[];
-  tabs = ['公益服务订单', '个人服务订单', '超市购买订单'];
+  tabs = ['公益服务订单', '超市购买订单'];
   types = {
     activity: 0,
-    service: 1,
     product: 2,
   };
   type = '';

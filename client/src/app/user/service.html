@@ -1,0 +1,11 @@
+<v-page>
+  <v-header slot="header">服务详情</v-header>
+
+  <service-detail [service]="service" [isMine]="true" *ngIf="service"></service-detail>
+
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" (click)="edit()">编辑</v-tabbar-btn>
+    <v-tabbar-btn class="warn" (click)="close()">关闭</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/user/service/' + service?.id + '/users/0']">参与情况</v-tabbar-btn>
+  </v-tabbar>
+</v-page>

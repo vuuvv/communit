@@ -6,21 +6,27 @@
   </v-tabbar>
 
   <v-tab>
-    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['/user/worker/' + i]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
   </v-tab>
 
-  <ng-container [ngSwitch]="currentIndex">
+  <empty-page *ngIf="!isWorker">您还未成为本社区的社工</empty-page>
+
+  <ng-container [ngSwitch]="currentIndex" *ngIf="isWorker">
     <ng-container *ngSwitchCase="0">
-      <v-group gutter="0">
-        <v-cell [isLink]="true" [routerLink]="['/bank/organization/detail/' + w.organizationid]" *ngFor="let w of workers">{{w.organizationname}}</v-cell>
-      </v-group>
-      <empty-page *ngIf="!isWorker">您还未成为本社区的社工</empty-page>
+      <div class="ngv-bg-white ngv-gutter">
+        <service-list-item [service]="s" [isMine]="true" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/user/service/' + s.id]">
+        </service-list-item>
+      </div>
+      <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>
     </ng-container>
     <ng-container *ngSwitchCase="1">
       <empty-page>暂无内容</empty-page>
     </ng-container>
     <ng-container *ngSwitchCase="2">
-      <empty-page>暂无内容</empty-page>
+      <v-group gutter="0">
+        <v-cell [isLink]="true" [routerLink]="['/bank/organization/detail/' + w.organizationid]" *ngFor="let w of workers">{{w.organizationname}}</v-cell>
+      </v-group>
+      <empty-page *ngIf="!isWorker">您还未成为本社区的社工</empty-page>
     </ng-container>
   </ng-container>
 </v-page>

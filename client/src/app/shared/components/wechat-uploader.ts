@@ -36,7 +36,6 @@ export class WechatUploaderComponent implements OnInit {
           this.serverId = serverId;
           this.wechatService.previewUrl(serverId).then((v) => {
             this.previewUrl = v;
-            console.log(this.previewUrl);
             return this.previewUrl;
           });
         }

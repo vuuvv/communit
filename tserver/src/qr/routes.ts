@@ -121,9 +121,6 @@ export class QrcodeController {
       case ServiceCategories.Custom:
         action = QrcodeAction.OrderCustom;
         break;
-      case ServiceCategories.Public:
-        action = QrcodeAction.OrderPublic;
-        break;
     }
 
     if (action !== QrcodeAction.OrderCustom) {

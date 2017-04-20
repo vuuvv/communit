@@ -2,7 +2,7 @@
   class="ngv-slider-viewport"
   v-scroll
   #viewport
-  [scrollOptions]="{scrollX: true, scrollY: false, momentum: false, snap: true, snapLoop: true, snapSpeed: speed, preventDefault: false}"
+  [scrollOptions]="{scrollX: !isVertical, scrollY: isVertical, momentum: false, snap: true, snapLoop: true, snapSpeed: speed, preventDefault: false}"
 >
   <div class="ngv-slider-content" #content>
     <ng-content></ng-content>

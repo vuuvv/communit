@@ -18,6 +18,7 @@ export class Login {
 @Injectable()
 export class AuthorizeService {
   private communityId: string;
+  userId: string;
 
   isLoggedIn: boolean = false;
   redirectUrl: string;
@@ -37,6 +38,8 @@ export class AuthorizeService {
     return this.http.get<any>('/user/me', undefined, undefined, undefined, 'none').map((user: any) => {
       this.isLoggedIn = true;
       this.user = user;
+      this.communityId = user.user.communityId;
+      this.userId = user.user.userId;
       return user;
     });
   }
@@ -49,6 +52,10 @@ export class AuthorizeService {
       this.doLogin(user);
       return true;
     });
+  }
+
+  gotoSignup() {
+    this.router.navigate(['/user/verify']);
   }
 
   getCommunityId() {

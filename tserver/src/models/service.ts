@@ -43,6 +43,11 @@ export class Service extends BaseModel {
    */
   @property()
   sort: number;
+
+  /**
+   * 状态
+   */
+  status: string;
 }
 
 export const ServiceTableName = 't_service';
