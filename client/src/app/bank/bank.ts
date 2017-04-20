@@ -13,10 +13,10 @@ import { OverlayService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class BankComponent implements OnInit {
-  menus: any[] = null;
-  activeMenuId: string;
+  icons: any[] = null;
+  articles: any[];
   services: any[] = [];
-  showMask = false;
+  shownIcons = [];
 
   constructor(
     private http: Http,
@@ -29,32 +29,42 @@ export class BankComponent implements OnInit {
     Observable.forkJoin(
       this.http.get('/menu/bank'),
       this.http.get('/service/search'),
+      this.http.get('/articles/home'),
     ).subscribe((values: any) => {
       this.overlayService.hideToast();
-      this.menus = values[0];
+      this.icons = values[0];
       this.services = values[1].map((s) => {
         s.data = JSON.parse(s.content);
         return s;
       });
-      this.menus.push({
-        name: '全部',
-        icon: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
-      });
+      this.shownIcons = this.getCollapsedIcons();
+      this.articles = values[2];
     });
   }
 
-  click() {
-    console.log('click');
+  getCollapsedIcons() {
+    if (!this.icons || !this.icons.length) {
+      return [];
+    }
+    if (this.icons.length <= 10) {
+      return this.icons;
+    }
+    let ret = this.icons.slice(0, 9);
+    ret.push({
+      name: '全部',
+      image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+    });
+    return ret;
   }
 
   goto(icon) {
     if (icon.name === '全部') {
-      this.showMask = true;
+      this.shownIcons = this.icons;
       return;
     }
 
-    if (icon.url) {
-      this.router.navigate([icon.url]);
+    if (icon.id) {
+      this.router.navigate([`/bank/child/${icon.id}`]);
       return;
     }
   }

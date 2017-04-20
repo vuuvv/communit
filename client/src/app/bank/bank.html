@@ -2,14 +2,28 @@
   <v-header [showBack]="false" slot="header">
     <span>众邻</span>
     <span style="font-size: 14px">...好邻里·轻松自己</span>
-    <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
+    <!--<v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>-->
   </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <div class="quickentry-nav ngv-1px-b qe" *ngIf="menus">
-    <v-xscroll class="main-nav">
-      <quickentry-item class="ngv-xscroll-item" [icon]="m.icon | fixurl" *ngFor="let m of menus" (click)="goto(m)">{{ m.name }}</quickentry-item>
-    </v-xscroll>
+  <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
+    <quickentry *ngFor="let chunk of shownIcons | chunk: 5; let i = index">
+      <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:5; let i = index">
+      {{ icon.name }}
+      </quickentry-item>
+    </quickentry>
+  </div>
+  <div class="news" *ngIf="articles">
+    <div class="news-item">
+      <span class="title ngv-1px-r">头条</span>
+      <span class="subject">
+        <v-slider [isVertical]="true" [indicator]="false">
+          <v-slider-item *ngFor="let a of articles">
+            {{ a.title }}
+          </v-slider-item>
+        </v-slider>
+      </span>
+    </div>
   </div>
 
   <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>

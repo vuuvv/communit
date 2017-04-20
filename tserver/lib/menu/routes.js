@@ -12,7 +12,49 @@ const routes_1 = require("../routes");
 const db_1 = require("../db");
 let MenuController = class MenuController {
     async bank(ctx) {
-        let ret = await db_1.Table.BankMenu.orderBy('sort');
+        let ret = await db_1.raw(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.accountid = ? and (m1.ParentMenuId = '' or m1.ParentMenuId is null)
+    order by m1.seq
+    `, [ctx.session.communityId]);
+        // let ret = await raw(`
+        // select
+        //   id, name, (
+        //     select
+        //       concat(
+        //         '[',
+        //         group_concat(json_object('id', id, 'name', name)),
+        //         ']'
+        //       )
+        //     from t_weixin_bank_menu as m2 where m2.parentId=m1.id
+        //     order by m2.seq
+        //   ) as children
+        // from t_weixin_bank_menu as m1
+        // where m1.accountid = ? and (o1.parentId = '' or o1.parentId is null)
+        // order by m1.seq
+        // `, [ctx.session.communityId]);
+        return routes_1.success(ret);
+    }
+    async bankChildren(ctx) {
+        let ret = await db_1.raw(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.ParentMenuId = ?
+    order by m1.seq
+    `, [ctx.params.id]);
+        return routes_1.success(ret);
+    }
+    async bankMenu(ctx) {
+        let ret = await db_1.first(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.id = ?
+    order by m1.seq
+    `, [ctx.params.id]);
         return routes_1.success(ret);
     }
     async community(ctx) {
@@ -43,6 +85,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MenuController.prototype, "bank", null);
+__decorate([
+    routes_1.get('/bank/:id/children'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], MenuController.prototype, "bankChildren", null);
+__decorate([
+    routes_1.get('/bank/:id'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], MenuController.prototype, "bankMenu", null);
 __decorate([
     routes_1.get('/community'),
     routes_1.wechat,

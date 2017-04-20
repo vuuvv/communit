@@ -17,6 +17,7 @@ import { WorkerComponent } from './worker';
 import { WorkerAddComponent } from './worker-add';
 import { OrganizationComponent } from './organization';
 import { OrganizationDetailComponent } from './organization-detail';
+import { BankChildComponent } from './bank-child';
 
 const routes: Routes = [
   {
@@ -26,6 +27,11 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: BankComponent,
+      },
+      {
+        path: 'child/:id',
+        pathMatch: 'full',
+        component: BankChildComponent,
       },
       {
         path: 'service/:id',
@@ -91,6 +97,7 @@ const routes: Routes = [
     OrganizationComponent,
     OrganizationDetailComponent,
     ServiceJoinComponent,
+    BankChildComponent,
   ]
 })
 export class BankModule {

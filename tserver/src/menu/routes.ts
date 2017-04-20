@@ -12,7 +12,55 @@ export class MenuController {
   @get('/bank')
   @wechat
   async bank(ctx) {
-    let ret = await Table.BankMenu.orderBy('sort');
+    let ret = await raw(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.accountid = ? and (m1.ParentMenuId = '' or m1.ParentMenuId is null)
+    order by m1.seq
+    `, [ctx.session.communityId]);
+    // let ret = await raw(`
+    // select
+    //   id, name, (
+    //     select
+    //       concat(
+    //         '[',
+    //         group_concat(json_object('id', id, 'name', name)),
+    //         ']'
+    //       )
+    //     from t_weixin_bank_menu as m2 where m2.parentId=m1.id
+    //     order by m2.seq
+    //   ) as children
+    // from t_weixin_bank_menu as m1
+    // where m1.accountid = ? and (o1.parentId = '' or o1.parentId is null)
+    // order by m1.seq
+    // `, [ctx.session.communityId]);
+    return success(ret);
+  }
+
+  @get('/bank/:id/children')
+  @wechat
+  async bankChildren(ctx) {
+    let ret = await raw(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.ParentMenuId = ?
+    order by m1.seq
+    `, [ctx.params.id]);
+    return success(ret);
+  }
+
+  @get('/bank/:id')
+  @wechat
+  async bankMenu(ctx) {
+    let ret = await first(`
+    select
+      id, name, image_href as image
+    from weixin_bank_menu as m1
+    where m1.id = ?
+    order by m1.seq
+    `, [ctx.params.id]);
     return success(ret);
   }
 
