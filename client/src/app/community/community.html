@@ -4,7 +4,7 @@
   </v-header>
   <tabbar slot="footer"></tabbar>
 
-  <v-slider *ngIf="carousel">
+  <v-slider *ngIf="carousel" [auto]="4000">
     <v-slider-item *ngFor="let image of carousel">
       <v-image width="100%" height="180" [src]="'http://www.crowdnear.com/pc/' + image.image" size="cover"></v-image>
     </v-slider-item>
@@ -25,7 +25,7 @@
     <div class="news-item">
       <span class="title ngv-1px-r">头条</span>
       <span class="subject">
-        <v-slider [isVertical]="true" [indicator]="false">
+        <v-slider [isVertical]="true" [indicator]="false" [auto]="4000">
           <v-slider-item *ngFor="let a of articles">
             {{ a.title }}
           </v-slider-item>

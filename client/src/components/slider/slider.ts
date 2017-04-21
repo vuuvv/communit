@@ -12,7 +12,7 @@ import { BScrollDirective } from '../base';
 })
 export class SliderComponent implements AfterViewInit {
   @Input() speed: number = 400;
-  @Input() auto: boolean = true;
+  @Input() auto: number = 0;
   @Input() indicator: boolean = true;
   @Input() isVertical = false;
 
@@ -23,6 +23,8 @@ export class SliderComponent implements AfterViewInit {
   pages: number = 0;
 
   itemsLength: number = 0;
+
+  autoTimer: any;
 
   ngAfterViewInit() {
     this.reload();
@@ -57,6 +59,7 @@ export class SliderComponent implements AfterViewInit {
 
     setTimeout(() => {
       this.pages = this.itemsLength;
+      this.autoScroll();
     });
   }
 
@@ -64,6 +67,12 @@ export class SliderComponent implements AfterViewInit {
     if (!this.auto) {
       return;
     }
+
+    clearInterval(this.autoTimer);
+    this.autoTimer = setInterval(() => {
+      console.log('auto');
+      this.scroll.next();
+    }, this.auto);
   }
 
   get page() {

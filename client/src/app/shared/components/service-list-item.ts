@@ -73,6 +73,6 @@ export class ServiceListItemComponent {
   }
 
   get bottomRight() {
-    return this.getServiceData(this.status, '', this.status, '');
+    return this.getServiceData('', this.status, '', this.status);
   }
 }

@@ -46,10 +46,23 @@ export class BankComponent implements OnInit {
     if (!this.icons || !this.icons.length) {
       return [];
     }
-    if (this.icons.length <= 10) {
+
+    let size = 5;
+
+    let length = this.icons.length;
+    let remain = size - length % size;
+
+    if (remain < size) {
+      for (let i = 0; i < remain; i++) {
+        this.icons.push({
+        });
+      }
+    }
+
+    if (this.icons.length <= size * 2) {
       return this.icons;
     }
-    let ret = this.icons.slice(0, 9);
+    let ret = this.icons.slice(0, size * 2 - 1);
     ret.push({
       name: '全部',
       image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',

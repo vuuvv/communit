@@ -43,4 +43,8 @@ export class BScrollDirective implements AfterViewInit {
   getCurrentPage() {
     return this.bscroll.getCurrentPage().pageX;
   }
+
+  next() {
+    return this.bscroll.next();
+  }
 }

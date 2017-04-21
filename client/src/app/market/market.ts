@@ -13,9 +13,10 @@ import { OverlayService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class MarketComponent implements OnInit {
-  categories: any[] = [];
+  icons: any[] = [];
   products: any[] = [];
   showMask = false;
+  shownIcons = [];
 
   constructor(
     private http: Http,
@@ -30,12 +31,9 @@ export class MarketComponent implements OnInit {
       this.http.get('/product')
     ).subscribe((value: any[]) => {
       this.overlayService.hideToast();
-      this.categories = value[0];
+      this.icons = value[0];
+      this.shownIcons = this.getCollapsedIcons();
       this.products = value[1];
-      this.categories.push({
-        name: '全部',
-        icon: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
-      });
     });
   }
 
@@ -43,9 +41,37 @@ export class MarketComponent implements OnInit {
     this.router.navigate(['/market/search', {keyword: keyword}]);
   }
 
+  getCollapsedIcons() {
+    if (!this.icons || !this.icons.length) {
+      return [];
+    }
+
+    let size = 4;
+
+    let length = this.icons.length;
+    let remain = size - length % size;
+
+    if (remain < size) {
+      for (let i = 0; i < remain; i++) {
+        this.icons.push({
+        });
+      }
+    }
+
+    if (this.icons.length <= size * 2) {
+      return this.icons;
+    }
+    let ret = this.icons.slice(0, size * 2 - 1);
+    ret.push({
+      name: '全部',
+      icon: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+    });
+    return ret;
+  }
+
   goto(icon) {
     if (icon.name === '全部') {
-      this.showMask = true;
+      this.shownIcons = this.icons;
       return;
     }
 

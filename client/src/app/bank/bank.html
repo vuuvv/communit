@@ -17,7 +17,7 @@
     <div class="news-item">
       <span class="title ngv-1px-r">头条</span>
       <span class="subject">
-        <v-slider [isVertical]="true" [indicator]="false">
+        <v-slider [isVertical]="true" [indicator]="false" [auto]="4000">
           <v-slider-item *ngFor="let a of articles">
             {{ a.title }}
           </v-slider-item>
