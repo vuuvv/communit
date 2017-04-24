@@ -34,7 +34,7 @@ export class Order extends BaseModel {
   @property()
   amount: number;
   /**
-   * 订单状态, 'done': 已完成, 'reject': 已退款
+   * 订单状态, 'done': 已完成, 'refund': 已退款
    */
   @property()
   status: string;

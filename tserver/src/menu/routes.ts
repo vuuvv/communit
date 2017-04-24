@@ -41,14 +41,38 @@ export class MenuController {
   @get('/bank/:id/children')
   @wechat
   async bankChildren(ctx) {
-    let ret = await raw(`
+    let all: any[] = await raw(`
     select
-      id, name, image_href as image
+      id, name, (
+        select
+          concat(
+            '[',
+            group_concat(json_object('id', id, 'name', name)),
+            ']'
+          )
+        from weixin_bank_menu as m2 where m2.parentMenuId=m1.id
+        order by m2.seq
+      ) as children
     from weixin_bank_menu as m1
-    where m1.ParentMenuId = ?
+    where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
     order by m1.seq
-    `, [ctx.params.id]);
-    return success(ret);
+    `, [ctx.session.communityId]);
+
+    let current = all.find((v) => v.id === ctx.params.id);
+    if (!current) {
+      throw new Error('无效的公益银行分类');
+    }
+    // let ret = await raw(`
+    // select
+    //   id, name, image_href as image
+    // from weixin_bank_menu as m1
+    // where m1.ParentMenuId = ?
+    // order by m1.seq
+    // `, [ctx.params.id]);
+    return success({
+      all,
+      current,
+    });
   }
 
   @get('/bank/:id')

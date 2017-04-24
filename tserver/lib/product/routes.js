@@ -26,7 +26,7 @@ let ProductController = class ProductController {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
         let sql = `
-      select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId from t_product as p
+      select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId, s.name as storeName from t_product as p
       join t_product_category as c on p.categoryId = c.id
       join t_store as s on p.storeId = s.id
       where

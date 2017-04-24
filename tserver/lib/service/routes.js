@@ -46,6 +46,25 @@ let ServiceController = class ServiceController {
         let ret = await db_1.raw(sql, [communityId, userId, models_1.ServiceCategories.Custom]);
         return routes_1.success(ret);
     }
+    async listHelp(ctx) {
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
+        let sql = `
+    select
+      s.*,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount,
+      c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName
+    from t_service as s
+    join t_service_category as c on s.categoryId = c.id
+    join t_service_type as t on s.typeId = t.id
+    join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
+    where s.communityId = ? and s.userId = ? and s.categoryId = ?
+    `;
+        let ret = await db_1.raw(sql, [communityId, userId, models_1.ServiceCategories.Help]);
+        return routes_1.success(ret);
+    }
     async search(ctx) {
         let communityId = ctx.session.communityId;
         let sql = `
@@ -140,7 +159,7 @@ let ServiceController = class ServiceController {
                 communityId: ctx.session.communityId,
                 userId: ctx.session.userId,
             }).orderBy('updatedAt', 'desc').forUpdate().first();
-            if (!user || user.status !== 'reject') {
+            if (!user || ['reject', 'quit'].indexOf(user.status) !== -1) {
                 // 可以添加报名记录
                 await db_1.Table.ServiceUser.transacting(trx).insert(entity);
             }
@@ -154,7 +173,7 @@ let ServiceController = class ServiceController {
         let id = ctx.params.id;
         await db_1.db.transaction(async (trx) => {
             let user = await db_1.Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
-            if (user && ['accept', 'submit'].indexOf(user.status) !== -1) {
+            if (user && ['submit'].indexOf(user.status) !== -1) {
                 await db_1.Table.ServiceUser.transacting(trx).where('id', id).update({
                     status: 'quit',
                 });
@@ -168,10 +187,10 @@ let ServiceController = class ServiceController {
         });
         return routes_1.success();
     }
-    async accept(ctx) {
+    async reject(ctx) {
         let serviceId = ctx.params.id;
         let ids = await utils_1.getJsonBody(ctx);
-        if (!ids || ids.length) {
+        if (!ids || !ids.length) {
             return routes_1.success();
         }
         await db_1.db.transaction(async (trx) => {
@@ -184,8 +203,40 @@ let ServiceController = class ServiceController {
                 if (!user || user.status !== 'submit') {
                     throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
                 }
+                if (user.serviceId !== serviceId) {
+                    throw new Error('所选报价与服务不匹配');
+                }
+                if (user.orderId) {
+                    account_1.refundOrder(trx, user.orderId);
+                }
+            }
+            await db_1.Table.ServiceUser.transacting(trx).whereIn('id', ids).update({
+                status: 'reject',
+            });
+        });
+        return routes_1.success();
+    }
+    async accept(ctx) {
+        let serviceId = ctx.params.id;
+        let ids = await utils_1.getJsonBody(ctx);
+        if (!ids || !ids.length) {
+            return routes_1.success();
+        }
+        await db_1.db.transaction(async (trx) => {
+            let service = await db_1.Table.Service.transacting(trx).forUpdate().where('id', serviceId).first();
+            if (!service || service.status === 'closed') {
+                throw new Error('服务不存在或服务已关闭');
+            }
+            for (let id of ids) {
+                let user = await db_1.Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
+                if (!user || user.status !== 'submit') {
+                    throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
+                }
+                if (user.serviceId !== serviceId) {
+                    throw new Error('所选报价与服务不匹配');
+                }
                 let order = new models_1.Order();
-                order.type = models_1.OrderType.Product;
+                order.type = models_1.OrderType.Service;
                 order.communityId = service.communityId;
                 order.sellerId = service.categoryId === models_1.ServiceCategories.Custom ? service.userId : user.userId;
                 order.buyerId = service.categoryId === models_1.ServiceCategories.Custom ? user.userId : service.userId;
@@ -195,12 +246,17 @@ let ServiceController = class ServiceController {
                 let detail = new models_1.OrderDetail();
                 detail.orderId = order.id;
                 detail.type = models_1.OrderType.Service;
-                detail.productId = service.id;
+                detail.productId = user.id;
                 detail.data = JSON.stringify(service);
                 detail.points = user.points;
                 order.buyerTradeTransactionId = await account_1.deductPoints(trx, service.communityId, order.buyerId, account_1.TransactionType.PayService, order.amount);
                 await db_1.Table.Order.transacting(trx).insert(order);
                 await db_1.Table.OrderDetail.transacting(trx).insert(detail);
+                await db_1.Table.ServiceUser.transacting(trx).where('id', id).update({
+                    payedPoints: user.points,
+                    orderId: order.id,
+                    status: 'accept',
+                });
             }
         });
         return routes_1.success();
@@ -234,6 +290,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "list", null);
+__decorate([
+    routes_1.get('/list/help'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "listHelp", null);
 __decorate([
     routes_1.get('/search'),
     routes_1.wechat,
@@ -276,6 +339,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "quit", null);
+__decorate([
+    routes_1.post('/:id/reject'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "reject", null);
 __decorate([
     routes_1.post('/:id/accept'),
     routes_1.login,

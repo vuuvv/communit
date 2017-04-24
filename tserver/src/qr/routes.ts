@@ -8,6 +8,11 @@ import { Wechat } from '../wechat';
 import { Config } from '../config';
 import { QrcodeConfirm } from './qrcode';
 
+const Actions = {
+  'product': QrcodeAction.OrderProduct,
+  'service': QrcodeAction.OrderService,
+};
+
 @router('/qr')
 export class QrcodeController {
   /**
@@ -68,7 +73,7 @@ export class QrcodeController {
     //   throw new Error('您的积分不足');
     // }
 
-    let code = new Qrcode(communityId, QrcodeAction.OrderProduct, {
+    let code = new Qrcode(communityId, Actions[order.type], {
       buyerId: userId,
       order,
     });
@@ -171,6 +176,7 @@ export class QrcodeController {
       let order = await confirm[qrcode.action](qrcode, user.userId);
       await successPage(ctx, '交易成功', order);
     } catch (err) {
+      console.log(err);
       await errorPage(ctx, err.message);
     }
   }

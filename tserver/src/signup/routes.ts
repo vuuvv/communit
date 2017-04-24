@@ -64,15 +64,16 @@ export class SignupController　{
       } else {
         userId = uuid();
 
+        await db('t_s_user').transacting(trx).insert({
+          id: userId,
+        });
+
         await Table.User.transacting(trx).insert({
           ID: userId,
           username: tel,
           status: 1,
           departId: '2c92d4675b60c24b015b61594a320002',
           password: passwordEncrypt(tel, model.password),
-        });
-        await db('t_s_user').transacting(trx).insert({
-          id: userId,
         });
         if (wechatUserId) {
           let wUser = await Table.WechatUser.transacting(trx).where('id', wechatUserId).first();

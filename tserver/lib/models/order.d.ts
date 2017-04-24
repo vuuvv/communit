@@ -25,7 +25,7 @@ export declare class Order extends BaseModel {
      */
     amount: number;
     /**
-     * 订单状态, 'done': 已完成, 'reject': 已退款
+     * 订单状态, 'done': 已完成, 'refund': 已退款
      */
     status: string;
     /**

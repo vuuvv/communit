@@ -3,7 +3,6 @@ const routes_1 = require("../routes");
 const utils_1 = require("../utils");
 async function getProductModel(ctx) {
     let product = await utils_1.getJsonBody(ctx);
-    console.log(product);
     if (!product.categoryId) {
         throw new routes_1.ResponseError('请选择商品种类');
     }

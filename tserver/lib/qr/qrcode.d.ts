@@ -4,7 +4,7 @@ export interface OrderProductConfirm {
     order: Order;
 }
 export interface OrderServiceConfirm {
-    scanedId: string;
+    buyerId: string;
     serviceId: string;
 }
 export declare class QrcodeConfirm {

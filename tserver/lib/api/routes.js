@@ -60,6 +60,18 @@ let ApiController = class ApiController {
         });
         return routes_1.success(ret);
     }
+    async test(ctx) {
+        await db_1.db.transaction(async (trx) => {
+            let oid = await account_1.ChangeActivityUser(trx, ctx.params.aid, ctx.params.points);
+        });
+        return routes_1.success();
+    }
+    async testc(ctx) {
+        await db_1.db.transaction(async (trx) => {
+            let tid = await account_1.PayCommunity(trx, ctx.params.id, 2000);
+        });
+        return routes_1.success();
+    }
 };
 __decorate([
     routes_1.post('/points/give/community'),
@@ -89,6 +101,18 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ApiController.prototype, "pointsChangeActivity", null);
+__decorate([
+    routes_1.get('/test/:aid/:points'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ApiController.prototype, "test", null);
+__decorate([
+    routes_1.get('/testc/:id'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ApiController.prototype, "testc", null);
 ApiController = __decorate([
     routes_1.router('/api')
 ], ApiController);

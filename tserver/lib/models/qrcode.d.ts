@@ -5,6 +5,7 @@ export declare class QrcodeAction {
     static OrderCustom: string;
     static OrderPublic: string;
     static ActivityCheck: string;
+    static OrderService: string;
 }
 export declare class Qrcode extends BaseModel {
     communityId: string;

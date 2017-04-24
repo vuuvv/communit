@@ -87,4 +87,20 @@ export class ApiController {
 
     return success(ret);
   }
+
+  @get('/test/:aid/:points')
+  async test(ctx) {
+    await db.transaction(async (trx) => {
+      let oid = await ChangeActivityUser(trx, ctx.params.aid, ctx.params.points);
+    });
+    return success();
+  }
+
+  @get('/testc/:id')
+  async testc(ctx) {
+    await db.transaction(async (trx) => {
+      let tid = await PayCommunity(trx, ctx.params.id, 2000);
+    });
+    return success();
+  }
 }

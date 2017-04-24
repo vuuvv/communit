@@ -55,6 +55,31 @@ export class ServiceController {
     return success(ret);
   }
 
+  @get('/list/help')
+  @login
+  async listHelp(ctx) {
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+
+    let sql = `
+    select
+      s.*,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
+      (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount,
+      c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName
+    from t_service as s
+    join t_service_category as c on s.categoryId = c.id
+    join t_service_type as t on s.typeId = t.id
+    join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
+    where s.communityId = ? and s.userId = ? and s.categoryId = ?
+    `;
+
+    let ret = await raw(sql, [communityId, userId, ServiceCategories.Help]);
+
+    return success(ret);
+  }
+
   @get('/search')
   @wechat
   async search(ctx) {
@@ -143,7 +168,6 @@ export class ServiceController {
     service.typeId = model.type;
     service.points = model.points;
 
-
     await Table.Service.insert(service);
 
     return success();
@@ -183,7 +207,7 @@ export class ServiceController {
         userId: ctx.session.userId,
       }).orderBy('updatedAt', 'desc').forUpdate().first();
 
-      if (!user || user.status !== 'reject') {
+      if (!user || ['reject', 'quit'].indexOf(user.status) !== -1) {
         // 可以添加报名记录
         await Table.ServiceUser.transacting(trx).insert(entity);
       } else {
@@ -200,7 +224,7 @@ export class ServiceController {
 
     await db.transaction(async (trx) => {
       let user = await Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
-      if (user && ['accept', 'submit'].indexOf(user.status) !== -1) {
+      if (user && ['submit'].indexOf(user.status) !== -1) {
         await Table.ServiceUser.transacting(trx).where('id', id).update({
           status: 'quit',
         });
@@ -215,13 +239,13 @@ export class ServiceController {
     return success();
   }
 
-  @post('/:id/accept')
+  @post('/:id/reject')
   @login
-  async accept(ctx) {
+  async reject(ctx) {
     let serviceId = ctx.params.id;
 
     let ids: string[] = await getJsonBody(ctx);
-    if (!ids || ids.length) {
+    if (!ids || !ids.length) {
       return success();
     }
 
@@ -237,8 +261,53 @@ export class ServiceController {
           throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
         }
 
+        if (user.serviceId !== serviceId) {
+          throw new Error('所选报价与服务不匹配');
+        }
+
+        if (user.orderId) {
+          refundOrder(trx, user.orderId);
+        }
+      }
+
+      await Table.ServiceUser.transacting(trx).whereIn('id', ids).update({
+        status: 'reject',
+      });
+
+    });
+
+    return success();
+  }
+
+
+  @post('/:id/accept')
+  @login
+  async accept(ctx) {
+    let serviceId = ctx.params.id;
+
+    let ids: string[] = await getJsonBody(ctx);
+    if (!ids || !ids.length) {
+      return success();
+    }
+
+    await db.transaction(async (trx) => {
+      let service: Service = await Table.Service.transacting(trx).forUpdate().where('id', serviceId).first();
+      if (!service || service.status === 'closed') {
+        throw new Error('服务不存在或服务已关闭');
+      }
+
+      for (let id of ids) {
+        let user: ServiceUser = await Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
+        if (!user || user.status !== 'submit') {
+          throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
+        }
+
+        if (user.serviceId !== serviceId) {
+          throw new Error('所选报价与服务不匹配');
+        }
+
         let order = new Order();
-        order.type = OrderType.Product;
+        order.type = OrderType.Service;
         order.communityId = service.communityId;
         order.sellerId = service.categoryId === ServiceCategories.Custom ? service.userId : user.userId;
         order.buyerId = service.categoryId === ServiceCategories.Custom ? user.userId : service.userId;
@@ -249,7 +318,7 @@ export class ServiceController {
         let detail = new OrderDetail();
         detail.orderId = order.id;
         detail.type = OrderType.Service;
-        detail.productId = service.id;
+        detail.productId = user.id;
         detail.data = JSON.stringify(service);
         detail.points = user.points;
 
@@ -259,7 +328,13 @@ export class ServiceController {
 
         await Table.Order.transacting(trx).insert(order);
         await Table.OrderDetail.transacting(trx).insert(detail);
+        await Table.ServiceUser.transacting(trx).where('id', id).update({
+          payedPoints: user.points,
+          orderId: order.id,
+          status: 'accept',
+        });
       }
+
     });
 
     return success();

@@ -7,6 +7,7 @@ export class QrcodeAction {
   static OrderCustom = 'orderCustom';
   static OrderPublic = 'orderPublic';
   static ActivityCheck = 'activityCheck';
+  static OrderService = 'orderService';
 }
 
 const tips = {};
@@ -16,6 +17,7 @@ tips[QrcodeAction.OrderHelp] = '向求助者收取积分';
 tips[QrcodeAction.OrderCustom] = '向服务者支付积分';
 tips[QrcodeAction.OrderPublic] = '向求助者收取积分';
 tips[QrcodeAction.ActivityCheck] = '活动参与者扫码签到';
+tips[QrcodeAction.OrderService] = '服务支付或收取积分';
 
 
 export class Qrcode extends BaseModel {

@@ -7,8 +7,6 @@ import { Wechat } from '../wechat';
 export async function getProductModel(ctx) {
   let product = await getJsonBody(ctx);
 
-  console.log(product);
-
   if (!product.categoryId) {
     throw new ResponseError('请选择商品种类');
   }

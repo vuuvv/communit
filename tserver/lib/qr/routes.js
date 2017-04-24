@@ -16,6 +16,10 @@ const models_1 = require("../models");
 const wechat_1 = require("../wechat");
 const config_1 = require("../config");
 const qrcode_1 = require("./qrcode");
+const Actions = {
+    'product': models_1.QrcodeAction.OrderProduct,
+    'service': models_1.QrcodeAction.OrderService,
+};
 let QrcodeController = class QrcodeController {
     /**
      * 买家生成二维码
@@ -61,7 +65,7 @@ let QrcodeController = class QrcodeController {
         // if (balance < order.amount) {
         //   throw new Error('您的积分不足');
         // }
-        let code = new models_1.Qrcode(communityId, models_1.QrcodeAction.OrderProduct, {
+        let code = new models_1.Qrcode(communityId, Actions[order.type], {
             buyerId: userId,
             order,
         });
@@ -146,6 +150,7 @@ let QrcodeController = class QrcodeController {
             await utils_1.successPage(ctx, '交易成功', order);
         }
         catch (err) {
+            console.log(err);
             await utils_1.errorPage(ctx, err.message);
         }
     }

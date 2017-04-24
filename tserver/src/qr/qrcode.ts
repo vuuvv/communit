@@ -1,5 +1,5 @@
 import { Table, db } from '../db';
-import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product, QrcodeAction, Service } from '../models';
+import { Qrcode, Order, OrderType, OrderStatus, OrderDetail, Product, QrcodeAction, Service, ServiceUser } from '../models';
 import { addPoints, deductPoints, AccountType, TransactionType } from '../account';
 
 export interface OrderProductConfirm {
@@ -8,7 +8,7 @@ export interface OrderProductConfirm {
 }
 
 export interface OrderServiceConfirm {
-  scanedId: string;
+  buyerId: string;
   serviceId: string;
 }
 
@@ -100,79 +100,72 @@ export class QrcodeConfirm {
   }
 
   async orderService(qrcode: Qrcode, confirmerId: string, action: string) {
-    let data: OrderServiceConfirm = JSON.parse(qrcode.data);
-    if (!data.scanedId || !data.serviceId || !confirmerId) {
+    let data: OrderProductConfirm = JSON.parse(qrcode.data);
+    if (!data.buyerId || !data.order || !confirmerId) {
       throw new Error('错误的二维码');
     }
 
-    let buyer = await getWechatUser(qrcode.communityId, data.scanedId);
+    let buyer = await getWechatUser(qrcode.communityId, data.order.buyerId);
     if (!buyer) {
       throw new Error('无效的买家');
     }
 
-    let seller = await getWechatUser(qrcode.communityId, confirmerId);
+    let seller = await getWechatUser(qrcode.communityId, data.order.sellerId);
     if (!seller) {
       throw new Error('无效的卖家');
     }
 
-    let order = new Order();
-    order.type = OrderType.Product;
-    order.communityId = qrcode.communityId;
-    order.sellerId = seller.userId;
-    order.buyerId = buyer.userId;
-    order.orderTime = order.payTime = order.tradeTime = new Date();
+    let detail = await Table.OrderDetail.where('orderId', data.order.id).first();
+    let service = JSON.parse(detail.data);
 
-    let detail = new OrderDetail();
-    detail.orderId = order.id;
-    detail.type = OrderType.Service;
-    detail.productId = data.serviceId;
+    if (service.userId !== confirmerId) {
+      throw new Error('该服务不属于你， 不可操作');
+    }
+
+    let serviceContent = JSON.parse(service.content);
 
     let ret = '';
+
     await db.transaction(async (trx) => {
-      qrcode = await Table.Qrcode.transacting(trx).where('id', qrcode.id).forUpdate().first();
+      let order: Order = await Table.Order.transacting(trx).where('id', data.order.id).forUpdate().first();
+      if (order.status !== 'payed' || order.sellerTradeTransactionId) {
+        throw new Error(`[${order.status}]订单状态已失效，不可进行线下结算`);
+      }
+
+      let user: ServiceUser = await Table.ServiceUser.transacting(trx).where('id', detail.productId).first();
+
+      if (user.status !== 'accept') {
+        throw new Error('用户的参与状态错误, 禁止该操作');
+      }
+
+      qrcode = await Table.Qrcode.transacting(trx).where('id', qrcode.id).first();
+
       if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
         throw new Error('二维码已失效');
       }
 
-      let service: Service = await Table.Service.transacting(trx).where('id', data.serviceId).first();
-      if (!service) {
-        throw new Error('无效的产品');
-      }
-      // TODO: 检查商品状态
-
-      let amount = order.amount = service.points;
-
-      if (action === QrcodeAction.OrderHelp) {
-        order.buyerTradeTransactionId = await addPoints(
-          trx, qrcode.communityId, buyer.userId, AccountType.Normal, TransactionType.GetService, amount
-        );
-        order.sellerTradeTransactionId = await deductPoints(
-          trx, qrcode.communityId, seller.userId, TransactionType.PayService, amount
-        );
-      } else {
-        order.buyerTradeTransactionId = await deductPoints(
-          trx, qrcode.communityId, buyer.userId, TransactionType.PayService, amount
-        );
-        order.sellerTradeTransactionId = await addPoints(
-          trx, qrcode.communityId, seller.userId, AccountType.Normal, TransactionType.GetService, amount
-        );
-      }
-
+      order.sellerTradeTransactionId = await addPoints(
+        trx, qrcode.communityId, order.sellerId, AccountType.Normal, TransactionType.GetService, order.amount
+      );
 
       order.status = OrderStatus.Done;
+      order.tradeTime = new Date();
 
-      await Table.Order.transacting(trx).insert(order);
+      await Table.Order.transacting(trx).where('id', order.id).update({
+        sellerTradeTransactionId: order.sellerTradeTransactionId,
+        status: order.status,
+        tradeTime: order.tradeTime,
+      });
 
-      detail.points = amount;
-      detail.data = JSON.stringify(service);
-
-      await Table.OrderDetail.transacting(trx).insert(detail);
+      await Table.ServiceUser.transacting(trx).where('id', detail.productId).update({
+        status: 'done',
+      });
 
       await Table.Qrcode.transacting(trx).where('id', qrcode.id).update({
         status: 'done',
       });
 
-      ret = `${service.content} 交易金额: ${order.amount}积分`;
+      ret = `${serviceContent.content} 交易金额: ${order.amount}积分`;
     });
     return ret;
   }

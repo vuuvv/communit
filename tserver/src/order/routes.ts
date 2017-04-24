@@ -129,10 +129,20 @@ export class OrderController {
       ret = orders;
     } else if (ctx.params.type === OrderType.Activity) {
       let orders = await raw(`
-      select sau.status, sau.points, sa.content from t_socially_activity_user as sau
-      join t_socially_activity as sa on sau.activityId = sa.id
-      where sau.communityId = ? and sau.userId = ?
-      `, [ctx.session.communityId, userId]);
+      select
+        o.*, od.data, if(wu1.userId=s.userId, wu2.realname, wu1.realname) as name,
+        wa.accountname as communityName, sc.name as categoryName,
+        od.points as points, s.userId as ownerId
+      from t_order as o
+      join t_order_detail as od on o.id = od.orderId
+      left join t_wechat_user as wu1 on wu1.officialAccountId = o.communityId and wu1.userId = o.buyerId
+      left join t_wechat_user as wu2 on wu2.officialAccountId = o.communityId and wu2.userId = o.sellerId
+      left join weixin_account as wa on wa.id = o.buyerId
+      left join t_service_user as su on od.productId = su.id
+      left join t_service as s on su.serviceId = s.id
+      left join t_service_category as sc on s.categoryId = sc.id
+      where o.communityId = ? and (o.buyerId = ? or o.sellerId = ?) and o.type in ('service', 'activity')
+      `, [ctx.session.communityId, userId, userId]);
 
       ret = orders;
     }
