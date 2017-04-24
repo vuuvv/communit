@@ -70,7 +70,6 @@ export class SliderComponent implements AfterViewInit {
 
     clearInterval(this.autoTimer);
     this.autoTimer = setInterval(() => {
-      console.log('auto');
       this.scroll.next();
     }, this.auto);
   }

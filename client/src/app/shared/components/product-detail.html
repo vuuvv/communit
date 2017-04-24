@@ -18,6 +18,12 @@
     <v-cell [value]="getStatus()">状态</v-cell>
   </v-group>
 
+  <v-box title="商家">
+    <v-cell>
+      <div class="weui-textarea">{{ product.storeName }}</div>
+    </v-cell>
+  </v-box>
+
   <v-box title="购买地址">
     <v-cell>
       <div class="weui-textarea">{{ product.storeAddress }}</div>

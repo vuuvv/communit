@@ -1,5 +1,5 @@
 <v-page>
-  <v-header slot="header">服务详情</v-header>
+  <v-header slot="header">{{ service?.categoryName }}</v-header>
 
   <service-detail [service]="service" [isMine]="true" *ngIf="service"></service-detail>
 

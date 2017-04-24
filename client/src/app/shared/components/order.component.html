@@ -3,7 +3,7 @@
     <div class="seller-bd">
       <div class="contact">
         <div class="contact-cont">
-          <p class="title">{{ order.name }}</p>
+          <p class="title">{{ getTitle(order) }}</p>
         </div>
       </div>
       <div class="state">
@@ -14,20 +14,28 @@
     </div>
   </div>
 </div>
-<order-item *ngFor="let item of order.details" [orderItem]="item"></order-item>
+<order-item *ngFor="let item of order.details" [orderItem]="item" [type]="order.type"></order-item>
 <div class="pay">
   <div class="pay-wrap">
     <div class="pay-cont">
-      <span>共<b>{{ getProductCount(order) }}</b>件商品</span>
-      <span>合计:<b>{{ getProductPoints(order) }}积分</b></span>
-      <span><b>{{ getProductPrice(order) | yuan }}</b></span>
+      <ng-container [ngSwitch]="order.type">
+        <ng-container *ngSwitchCase="'product'">
+          <span>共<b>{{ getProductCount(order) }}</b>件商品</span>
+          <span>合计:<b>{{ getProductPoints(order) }}积分</b></span>
+          <span><b>{{ getProductPrice(order) | yuan }}</b></span>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <span> {{ getType() }} </span>
+          <span><b>{{ order.points }}积分</b></span>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>
-<div class="orderop" *ngIf="order.status === 'payed' && !isStore">
+<div class="orderop" *ngIf="getActions().length">
   <div class="operators">
     <ul class="clearfix">
-      <li (click)="pay()">线下结算</li>
+      <li (click)="act(a)" *ngFor="let a of getActions()">{{ actions[a] }}</li>
     </ul>
   </div>
 </div>

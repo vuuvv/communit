@@ -46,7 +46,7 @@ export class MarketComponent implements OnInit {
       return [];
     }
 
-    let size = 4;
+    let size = 5;
 
     let length = this.icons.length;
     let remain = size - length % size;

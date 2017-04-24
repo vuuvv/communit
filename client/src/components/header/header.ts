@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -11,15 +12,20 @@ export class HeaderComponent {
   @Input() title: string;
   @Input() showBack: boolean = true;
   @Input() backText: string = '';
+  @Input() backUrl: string;
   @Input() showMore: boolean = false;
 
   @Output('more') moreEvent = new EventEmitter();
 
-  constructor(private location: Location) {
+  constructor(private location: Location, private router: Router) {
   }
 
   back(event) {
-    this.location.back();
+    if (this.backUrl) {
+      this.router.navigate([this.backUrl]);
+    } else {
+      this.location.back();
+    }
   }
 
   more(event) {

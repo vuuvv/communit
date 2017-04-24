@@ -1,0 +1,13 @@
+<v-page>
+  <v-header slot="header">邻里互助</v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/publish/action/8c4075759d914b1395b8b06bc1b5d19f']">我要求助</v-tabbar-btn>
+  </v-tabbar>
+
+  <div class="ngv-bg-white ngv-gutter">
+    <service-list-item [service]="s" [isMine]="true" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/user/service/' + s.id]">
+    </service-list-item>
+  </div>
+
+  <empty-page *ngIf="!services || !services.length">还未发布求助内容</empty-page>
+</v-page>

@@ -3,8 +3,8 @@
   <tabbar slot="footer"></tabbar>
 
   <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
-    <quickentry *ngFor="let chunk of shownIcons | chunk: 4; let i = index">
-      <quickentry-item [icon]="icon.icon | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:4; let i = index">
+    <quickentry *ngFor="let chunk of shownIcons | chunk: 5; let i = index">
+      <quickentry-item [icon]="icon.icon | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:5; let i = index">
       {{ icon.name }}
       </quickentry-item>
     </quickentry>

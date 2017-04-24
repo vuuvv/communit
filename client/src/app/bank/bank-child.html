@@ -1,6 +1,59 @@
-
-<v-page>
-  <v-header>{{ parent?.name }}</v-header>
+<v-page class="bank-child">
+  <v-header>{{ menu?.name }}</v-header>
   <tabbar slot="footer"></tabbar>
-  <empty-page>暂无内容</empty-page>
+
+  <div class="ngv-bg-white">
+    <v-flexbox [class.ngv-1px-b]="!(isShowAll && last)" *ngFor="let chunk of shownChildren | chunk: 4; let i = index; let last = last">
+      <v-flexbox-item [class.ngv-1px-r]="icon.name && !last1" *ngFor="let icon of chunk | slice: 0:4; let j = index; let last1 = last">
+        <div>
+          {{ icon.name }}
+        </div>
+      </v-flexbox-item>
+    </v-flexbox>
+    <div class="collapse-btn" (click)="showAll()" *ngIf="!isShowAll">
+      展开全部
+      <v-icon type="arrowdown"></v-icon>
+    </div>
+  </div>
+
+  <div class="filter-container ngv-gutter ngv-1px-b">
+    <div class="filter-item">
+      <div class="filter-item-container">
+        <div class="ngv-1px-r">
+          分类
+          <v-icon type="arrowdown"></v-icon>
+        </div>
+      </div>
+      <div class="category-container filter-detail-type">
+        <div class="category-left">
+
+        </div>
+        <div class="category-right"></div>
+      </div>
+    </div>
+    <div class="filter-item">
+      <div class="filter-item-container">
+        <div class="ngv-1px-r">
+          排序
+          <v-icon type="arrowdown"></v-icon>
+        </div>
+      </div>
+      <div class="category-container"></div>
+    </div>
+    <div class="filter-item">
+      <div class="filter-item-container">
+        <div>
+          筛选
+          <v-icon type="arrowdown"></v-icon>
+        </div>
+      </div>
+      <div class="category-container"></div>
+    </div>
+  </div>
+
+  <div class="service-list">
+    <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
+    </service-list-item>
+  </div>
 </v-page>
+

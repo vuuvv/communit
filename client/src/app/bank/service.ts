@@ -70,4 +70,15 @@ export class ServiceComponent implements OnInit {
       });
     });
   }
+
+  qr() {
+    if (!this.user.orderId) {
+      return;
+    }
+    this.overlayService.loading();
+    this.http.post(`/qr/g/order/${this.user.orderId}`).subscribe((v) => {
+      this.overlayService.hideToast();
+      this.router.navigate([`/user/qr/${v}`]);
+    });
+  }
 }

@@ -13,8 +13,12 @@ import { OverlayService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class BankChildComponent implements OnInit {
+  services: any[];
+  menus: any[];
   children: any[];
   menu: any;
+  shownChildren = [];
+  isShowAll = false;
 
   constructor(
     private http: Http,
@@ -28,12 +32,51 @@ export class BankChildComponent implements OnInit {
       let id = params['id'];
       return Observable.forkJoin(
         this.http.get(`/menu/bank/${id}/children`),
-        this.http.get(`/menu/bank/${id}`),
+        this.http.get('/service/search'),
       );
     }).subscribe((values: any) => {
       this.overlayService.hideToast();
-      this.children = values[0];
-      this.menu = values[1];
+      let menus = values[0];
+      this.menus = menus.all;
+      this.menu = menus.current;
+      this.children = JSON.parse(this.menu.children);
+      this.shownChildren = this.getCollapsedMenus();
+      this.services = values[1].map((s) => {
+        s.data = JSON.parse(s.content);
+        return s;
+      });
     });
+  }
+
+  getCollapsedMenus() {
+    if (!this.children || !this.children.length) {
+      return [];
+    }
+
+    let size = 4;
+
+    let length = this.children.length;
+    let remain = size - length % size;
+
+    if (remain < size) {
+      for (let i = 0; i < remain; i++) {
+        this.children.push({
+        });
+      }
+    }
+
+    if (this.children.length <= size * 2) {
+      return this.children;
+    }
+    let ret = this.children.slice(0, size * 2);
+    return ret;
+  }
+
+  showAll() {
+    this.shownChildren = this.children;
+    this.isShowAll = true;
+  }
+
+  goto(menu) {
   }
 }

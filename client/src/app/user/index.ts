@@ -17,6 +17,7 @@ import { PointsComponent } from './points';
 import { TestComponent } from './test';
 import { ServiceComponent } from './service';
 import { ServiceUsersComponent } from './service-users';
+import { HelpComponent } from './help';
 
 const routes: Routes = [
   {
@@ -80,6 +81,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: ServiceComponent,
       },
+      {
+        path: 'help',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: HelpComponent,
+      },
     ],
   },
 ];
@@ -104,6 +111,7 @@ const routes: Routes = [
     TestComponent,
     ServiceUsersComponent,
     ServiceComponent,
+    HelpComponent,
   ]
 })
 export class UserModule {

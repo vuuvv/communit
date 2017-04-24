@@ -1,21 +1,16 @@
 <v-page class="page-order-list">
-  <v-header slot="header">订单</v-header>
+  <v-header slot="header" backUrl="/user">订单</v-header>
 
   <v-tab>
-    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['/user/' + types[i] + '/orders']" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
   </v-tab>
 
-  <ng-container [ngSwitch]="currentIndex">
-    <ng-container *ngSwitchCase="0">
-      <v-group>
-        <v-cell *ngFor="let o of orders" [value]="o.status">{{ o.content }}</v-cell>
-      </v-group>
-      <empty-page *ngIf="!orders || !orders.length">>暂无内容</empty-page>
+  <ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'activity'">
+      <order *ngFor="let o of orders" [order]="o"></order>
+      <empty-page *ngIf="!orders || !orders.length">暂无内容</empty-page>
     </ng-container>
-    <ng-container *ngSwitchCase="1">
-      <empty-page>暂无内容</empty-page>
-    </ng-container>
-    <ng-container *ngSwitchCase="2">
+    <ng-container *ngSwitchCase="'product'">
       <order *ngFor="let o of orders" [order]="o"></order>
       <empty-page *ngIf="!orders || !orders.length">暂无内容</empty-page>
     </ng-container>

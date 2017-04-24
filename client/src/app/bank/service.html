@@ -6,9 +6,10 @@
     </a>
     {{ service?.categoryName }}
   </v-header>
-  <v-tabbar slot="footer" *ngIf="service && service.status === 'normal' && (!user || user.status !== 'done')">
+  <v-tabbar slot="footer" *ngIf="service && service.status === 'normal'">
     <v-tabbar-btn class="primary" (click)="join()" *ngIf="!user || ['submit', 'accept'].indexOf(user.status) === -1">我要参加</v-tabbar-btn>
-    <v-tabbar-btn class="primary" (click)="quit()" *ngIf="user && ['submit', 'accept'].indexOf(user.status) !== -1">我要退出</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="quit()" *ngIf="user && ['submit'].indexOf(user.status) !== -1">我要退出</v-tabbar-btn>
+    <v-tabbar-btn class="primary" (click)="qr()" *ngIf="user && ['accept'].indexOf(user.status) !== -1">我要支付</v-tabbar-btn>
   </v-tabbar>
   <service-detail [service]="service" *ngIf="service"></service-detail>
 </v-page>

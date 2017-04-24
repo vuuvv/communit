@@ -1,11 +1,18 @@
 <v-image [src]="src" width="40" height="40"></v-image>
 <div class="list-item-content">
   <div class="list-item-title">{{ product.title }}</div>
-  <div class="list-item-desc">{{ product.description }}</div>
-  <div class="list-item-price">
+  <div class="list-item-desc">{{ product.storeName }}</div>
+  <div class="list-item-price" *ngIf="!full">
+    <span class="num list-item-highlight">￥12</span>
+    <span class="unit list-item-highlight">+</span>
+    <span class="num list-item-highlight">10</span>
+    <span class="unit list-item-highlight">积分</span>
+    <span class="rmb">￥23</span>
+  </div>
+  <div class="list-item-price" *ngIf="full">
     <span>积分售价: ￥</span><span class="list-item-highlight">{{product.price}} + {{product.points}}</span><span>&nbsp;积分</span>
   </div>
-  <div class="list-item-real-price">
+  <div class="list-item-real-price" *ngIf="full">
     <span>现场售价: ￥</span><span class="list-item-highlight">{{product.normalPrice}}</span>
   </div>
   <div class="list-item-price" *ngIf="full">

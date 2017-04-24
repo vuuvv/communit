@@ -13,10 +13,7 @@ import { OverlayService, DialogService } from '../../components';
 export class OrderListComponent implements OnInit {
   orders: any[];
   tabs = ['公益服务订单', '超市购买订单'];
-  types = {
-    activity: 0,
-    product: 2,
-  };
+  types = ['activity', 'product'];
   type = '';
   currentIndex = 0;
 
@@ -42,15 +39,16 @@ export class OrderListComponent implements OnInit {
       }
       this.orders = value;
 
-      if (this.type === 'product') {
-        this.orders.forEach((o) => {
+      this.orders.forEach((o) => {
+        if (this.type === 'product') {
           o.products = o.details.map((d) => JSON.parse(d.data));
-        });
-      }
-
-      setTimeout(() => {
-        this.currentIndex = this.types[this.type] || 0;
-      }, 0);
+        } else if (this.type === 'service') {
+          o.details = [JSON.parse(o.data)];
+        } else if (this.type === 'activity') {
+          o.details = [JSON.parse(o.data)];
+        }
+        console.log(o.products);
+      });
     });
   }
 }

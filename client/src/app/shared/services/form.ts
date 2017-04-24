@@ -16,7 +16,6 @@ export class FormService {
   ) {}
 
   submit(form: NgForm, messages: any, url: string, data: any) {
-    console.log(form);
     if (form.invalid) {
       for (let name of Object.keys(form.controls)) {
         let control = form.controls[name];

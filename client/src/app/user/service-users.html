@@ -1,4 +1,4 @@
-<v-page>
+<v-page class="page-service-users">
   <v-header slot="header">参与情况</v-header>
   <v-tab>
     <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['/user/service/' + serviceId + '/users/' + i]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
@@ -7,8 +7,8 @@
   <v-box *ngFor="let u of users">
     <div class="weui-cell weui-cell_switch" slot="title">
       <div class="weui-cell__bd">{{ u.realname }}</div>
-      <div class="weui-cell__ft">
-        <input class="weui-switch" type="checkbox">
+      <div class="weui-cell__ft" *ngIf="u.status === 'submit'">
+        <input class="weui-switch" type="checkbox" (change)="check($event, u.id, u.realname)">
       </div>
     </div>
 
@@ -16,4 +16,9 @@
     <v-cell [value]="u.updatedAt | time">报名时间</v-cell>
   </v-box>
   <empty-page *ngIf="!users || !users.length">还没有该类型的参与人员</empty-page>
+
+  <v-tabbar slot="footer" *ngIf="hasChecked">
+    <v-tabbar-btn class="primary" (click)="accept()">接受</v-tabbar-btn>
+    <v-tabbar-btn class="warn" (click)="reject()">拒绝</v-tabbar-btn>
+  </v-tabbar>
 </v-page>

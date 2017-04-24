@@ -27,7 +27,9 @@
       <span class="subject">
         <v-slider [isVertical]="true" [indicator]="false" [auto]="4000">
           <v-slider-item *ngFor="let a of articles">
-            {{ a.title }}
+            <div class="ellipsis">
+              {{ a.title }}
+            </div>
           </v-slider-item>
         </v-slider>
       </span>
