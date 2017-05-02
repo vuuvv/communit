@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <v-group gutter="0">
-    <v-cell [class.weui-cell_select]="input.type === 'select'" [class.weui-cell_select-after]="input.type === 'select'" [label]="input.label" *ngFor="let input of inputs">
+    <v-cell [class.weui-cell_select]="['select', 'child-select'].indexOf(input.type) !== -1" [class.weui-cell_select-after]="['select', 'child-select'].indexOf(input.type) !== -1" [label]="input.label" *ngFor="let input of inputs">
       <ng-container [ngSwitch]="input.type">
         <ng-container *ngSwitchCase="'text'">
           <input class="weui-input" type="text" [formControlName]="input.key" [placeholder]="input.label">
@@ -10,10 +10,17 @@
         </ng-container>
         <ng-container *ngSwitchCase="'textarea'">
           <textarea class="weui-textarea" [placeholder]="input.label" rows="3" [formControlName]="input.key"></textarea>
-         </ng-container>
+        </ng-container>
         <ng-container *ngSwitchCase="'select'">
           <select class="weui-select" [formControlName]="input.key">
+            <option value="">---请选择---</option>
             <option *ngFor="let opt of input.options" [value]="opt.key">{{opt.value}}</option>
+          </select>
+        </ng-container>
+        <ng-container *ngSwitchCase="'child-select'">
+          <select class="weui-select" [formControlName]="input.key">
+            <option value="">---请选择---</option>
+            <option *ngFor="let opt of getOptions(input.target)" [value]="opt.key">{{opt.value}}</option>
           </select>
         </ng-container>
       </ng-container>

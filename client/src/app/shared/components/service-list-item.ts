@@ -18,17 +18,17 @@ export class ServiceListItemComponent {
   @Input() service: any;
   @Input() isMine = false;
 
-  get src() {
-    let icon: string = this.service.typeIcon;
-    if (!icon) {
-      return null;
-    }
+  // get src() {
+  //   let icon: string = this.service.typeIcon;
+  //   if (!icon) {
+  //     return null;
+  //   }
 
-    if (icon.startsWith('http://')) {
-      return icon;
-    }
-    return `assets/images/ios/@2x/${icon}@2x.png`;
-  }
+  //   if (icon.startsWith('http://')) {
+  //     return icon;
+  //   }
+  //   return `assets/images/ios/@2x/${icon}@2x.png`;
+  // }
 
   get status() {
     if (this.service && this.service.status) {
@@ -73,6 +73,6 @@ export class ServiceListItemComponent {
   }
 
   get bottomRight() {
-    return this.getServiceData('', this.status, '', this.status);
+    return this.getServiceData(this.service.childTypeName, this.status, this.service.childTypeName, this.status);
   }
 }

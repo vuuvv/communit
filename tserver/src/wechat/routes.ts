@@ -35,6 +35,21 @@ export class WechatController {
     ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
   }
 
+  @get('/:id/r(.*)')
+  async redirect(ctx) {
+    const id = ctx.params.id.trim();
+    const wechat = await Wechat.create(id);
+    if (!wechat) {
+      await errorPage(ctx, '无效的微信公众号');
+      return;
+    }
+    const config = await Config.instance();
+    ctx.session.communityId = id;
+    ctx.session.wechatRedirectUrl = ctx.params[0];
+    delete ctx.session.userId;
+    ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
+  }
+
   @get('/login')
   async login(ctx) {
     const wechat = await Wechat.create(ctx.session.communityId);
@@ -43,7 +58,13 @@ export class WechatController {
     if (wechatUser.userId) {
       ctx.session.userId = wechatUser.userId;
     }
-    ctx.redirect(config.site.client);
+    let url = ctx.session.wechatRedirectUrl;
+    if (url) {
+      delete ctx.session.wechatRedirectUrl;
+      ctx.redirect(`${config.site.client}/#${url}`);
+    } else {
+      ctx.redirect(config.site.client);
+    }
 
     // if (!wechatUser.userId) {
     //   ctx.redirect(`${config.site.client}/#/user/verify`);
@@ -114,11 +135,6 @@ export class WechatController {
   @get('/url')
   async url() {
     return await request('http://www.163.com');
-  }
-
-  @get('/redirect')
-  redirect(ctx) {
-    ctx.redirect('http://weixin.vuuvv.com/error');
   }
 
   @get('/media')

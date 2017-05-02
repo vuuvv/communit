@@ -5,6 +5,7 @@
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "outDir": "../lib",
     "lib": ["es2016"],
     "typeRoots": [
       "../node_modules/@types"
@@ -12,5 +13,9 @@
     "types": [
       "node"
     ]
-  }
+  },
+  "include": [
+    "**/*"
+  ],
+  "compileOnSave": true
 }

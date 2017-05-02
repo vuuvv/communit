@@ -15,9 +15,54 @@ export class ProductController {
   @get('/category')
   @wechat
   async category(ctx) {
-    let ret = await Table.ProductCategory.orderBy('sort');
-
+    let ret = await raw(`
+    select
+      id, name, icon as image
+    from t_product_category as m1
+    where m1.parentId = '' or m1.parentId is null
+    order by m1.sort
+    `, []);
     return success(ret);
+  }
+
+  @get('/category/:id/children')
+  @wechat
+  async categoryChildren(ctx) {
+    let curr = await first('select id, parentId from t_product_category where id = ?', [ctx.params.id]);
+    if (!curr) {
+      throw new Error('无效的商品分类');
+    }
+    let id = curr.parentId || curr.id;
+
+    let all = [];
+    await db.transaction(async (trx) => {
+      await raw('SET SESSION group_concat_max_len = 1000000', [], trx);
+      all = await raw(`
+      select
+        id, name, (
+          select
+            concat(
+              '[',
+              group_concat(json_object('id', m2.id, 'name', m2.name)),
+              ']'
+            )
+          from t_product_category as m2 where m2.parentId=m1.id
+          order by m2.sort
+        ) as children
+      from t_product_category as m1
+      where m1.parentId = '' or m1.parentId is null
+      order by m1.sort
+      `, [], trx);
+    });
+
+
+
+    let current = all.find((v) => v.id === id);
+
+    return success({
+      all,
+      current,
+    });
   }
 
   @get('/')
@@ -25,6 +70,14 @@ export class ProductController {
   async list(ctx) {
     let communityId = ctx.session.communityId;
     let userId = ctx.session.userId;
+
+    let categoryId = ctx.query.categoryId;
+    let categories = [];
+    if (categoryId) {
+      categories = await raw('select id from t_product_category where parentId = ?', [categoryId]);
+      categories = categories.map((v) => v.id);
+      categories.push(categoryId);
+    }
 
     let sql = `
       select p.*, c.icon as categoryIcon, c.name as categoryName, c.id as categoryId, s.name as storeName from t_product as p
@@ -34,14 +87,18 @@ export class ProductController {
         s.communityId = :communityId and
         s.status = 'normal' and
         p.status = 'online' and
-        <% if (query.categoryId) { %> p.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
+        <% if (query.categoryId) { %> p.categoryId in (:categories)  <% } else { %> 1 = 1 <% } %> and
         <% if (query.keyword) { %> p.title like :keyword  <% } else { %> 1 = 1 <% } %>
+      <% if(query.sort === 'points') { %>
+      order by p.points asc
+      <% } else { %>
       order by p.updatedAt desc
+      <% } %>
     `;
 
     sql = ejs.render(sql, ctx);
 
-    let ret = await raw(sql, Object.assign({communityId: communityId}, ctx.query, {keyword: `%${ctx.query.keyword}%`}));
+    let ret = await raw(sql, Object.assign({communityId: communityId, categories}, ctx.query, {keyword: `%${ctx.query.keyword}%`}));
 
     return success(ret);
   }

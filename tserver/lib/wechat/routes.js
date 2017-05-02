@@ -37,6 +37,19 @@ let WechatController = class WechatController {
         delete ctx.session.userId;
         ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
     }
+    async redirect(ctx) {
+        const id = ctx.params.id.trim();
+        const wechat = await wechat_1.Wechat.create(id);
+        if (!wechat) {
+            await utils_1.errorPage(ctx, '无效的微信公众号');
+            return;
+        }
+        const config = await config_1.Config.instance();
+        ctx.session.communityId = id;
+        ctx.session.wechatRedirectUrl = ctx.params[0];
+        delete ctx.session.userId;
+        ctx.redirect(wechat.redirectUrl(`${config.site.host}/wechat/login`));
+    }
     async login(ctx) {
         const wechat = await wechat_1.Wechat.create(ctx.session.communityId);
         const wechatUser = await wechat.login(ctx);
@@ -44,7 +57,14 @@ let WechatController = class WechatController {
         if (wechatUser.userId) {
             ctx.session.userId = wechatUser.userId;
         }
-        ctx.redirect(config.site.client);
+        let url = ctx.session.wechatRedirectUrl;
+        if (url) {
+            delete ctx.session.wechatRedirectUrl;
+            ctx.redirect(`${config.site.client}/#${url}`);
+        }
+        else {
+            ctx.redirect(config.site.client);
+        }
         // if (!wechatUser.userId) {
         //   ctx.redirect(`${config.site.client}/#/user/verify`);
         // } else {
@@ -101,9 +121,6 @@ let WechatController = class WechatController {
     async url() {
         return await request('http://www.163.com');
     }
-    redirect(ctx) {
-        ctx.redirect('http://weixin.vuuvv.com/error');
-    }
     async media(ctx) {
         const id = ctx.session.communityId;
         const wechat = await wechat_1.Wechat.create(id);
@@ -131,6 +148,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], WechatController.prototype, "test", null);
+__decorate([
+    routes_1.get('/:id/r(.*)'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], WechatController.prototype, "redirect", null);
 __decorate([
     routes_1.get('/login'),
     __metadata("design:type", Function),
@@ -162,12 +185,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], WechatController.prototype, "url", null);
-__decorate([
-    routes_1.get('/redirect'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], WechatController.prototype, "redirect", null);
 __decorate([
     routes_1.get('/media'),
     routes_1.wechat,

@@ -19,14 +19,46 @@ export class ServiceController {
   @get('/category/:id')
   @wechat
   async category(ctx) {
-    let ret = await Table.ServiceCategory.where('id', ctx.params.id).first();
+   let ret = await Table.ServiceCategory.where('id', ctx.params.id).first();
+    // let ret: any[] = await raw(`
+    // select
+    //   id as key, name as value, (
+    //     select
+    //       concat(
+    //         '[',
+    //         group_concat(json_object('key', id, 'value', name)),
+    //         ']'
+    //       )
+    //     from weixin_bank_menu as m2 where m2.parentMenuId=m1.id
+    //     order by m2.seq
+    //   ) as children
+    // from weixin_bank_menu as m1
+    // where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
+    // order by m1.seq
+    // `, [ctx.session.communityId]);
     return success(ret);
   }
 
   @get('/types/:id')
   @wechat
   async types(ctx) {
-    let ret = await Table.ServiceType.where('categoryId', ctx.params.id).orderBy('sort');
+    let ret: any[] = await raw(`
+    select
+      id as \`key\`, name as \`value\`, (
+        select
+          concat(
+            '[',
+            group_concat(json_object('key', id, 'value', name)),
+            ']'
+          )
+        from weixin_bank_menu as m2 where m2.parentMenuId=m1.id
+        order by m2.seq
+      ) as children
+    from weixin_bank_menu as m1
+    where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
+    order by m1.seq
+    `, [ctx.session.communityId]);
+
     return success(ret);
   }
 
@@ -42,10 +74,11 @@ export class ServiceController {
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount,
-      c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName
+      c.name as categoryName, t.image_href as typeIcon, t.name as typeName, t1.name as childTypeName, wu.realname as userName
     from t_service as s
     join t_service_category as c on s.categoryId = c.id
-    join t_service_type as t on s.typeId = t.id
+    join weixin_bank_menu as t on s.mainTypeId = t.id
+    join weixin_bank_menu as t1 on s.typeId = t1.id
     join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
     where s.communityId = ? and s.userId = ? and s.categoryId = ?
     `;
@@ -67,10 +100,11 @@ export class ServiceController {
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='submit') as submitCount,
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='accept') as acceptCount,
       (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount,
-      c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName
+      c.name as categoryName, t.image_href as typeIcon, t.name as typeName, t1.name as childTypeName, wu.realname as userName
     from t_service as s
     join t_service_category as c on s.categoryId = c.id
-    join t_service_type as t on s.typeId = t.id
+    join weixin_bank_menu as t on s.mainTypeId = t.id
+    join weixin_bank_menu as t1 on s.typeId = t1.id
     join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
     where s.communityId = ? and s.userId = ? and s.categoryId = ?
     `;
@@ -85,21 +119,33 @@ export class ServiceController {
   async search(ctx) {
     let communityId = ctx.session.communityId;
 
+    let types = [];
+    if (ctx.query.typeId) {
+      types = await raw('select id from weixin_bank_menu where parentMenuId = ?', [ctx.query.typeId]);
+      types = types.map((v) => v.id);
+      types.push(ctx.query.typeId);
+    }
+
     let sql = `
-      select s.*, c.name as categoryName, t.icon as typeIcon, t.name as typeName, wu.realname as userName from t_service as s
+      select s.*, c.name as categoryName, t.image_href as typeIcon, t1.name as childTypeName, wu.realname as userName from t_service as s
       join t_service_category as c on s.categoryId = c.id
-      join t_service_type as t on s.typeId = t.id
+      join weixin_bank_menu as t on s.mainTypeId = t.id
+      join weixin_bank_menu as t1 on s.typeId = t1.id
       join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
       where
         s.communityId = :communityId and s.status = 'normal' and
         <% if (query.categoryId) { %> s.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
-        <% if (query.typeId) { %> s.typeId = :typeId  <% } else { %> 1 = 1 <% } %>
+        <% if (query.typeId) { %> s.typeId in (:types)  <% } else { %> 1 = 1 <% } %>
+      <% if(query.sort === 'points') { %>
+      order by s.points asc
+      <% } else { %>
       order by s.updatedAt desc
+      <% } %>
     `;
 
     sql = ejs.render(sql, ctx);
 
-    let ret = await raw(sql, Object.assign({communityId: communityId}, ctx.query));
+    let ret = await raw(sql, Object.assign({communityId: communityId, types}, ctx.query));
 
     return success(ret);
   }
@@ -116,7 +162,7 @@ export class ServiceController {
         (select count(*) from t_service_user as su1 where s.id=su1.serviceId and status='done') as doneCount
       from t_service as s
       join t_service_category as c on s.categoryId = c.id
-      join t_service_type as t on s.typeId = t.id
+      join weixin_bank_menu as t on s.typeId = t.id
       join t_wechat_user as wu on wu.officialAccountId=s.communityId and wu.userId=s.userId
       where
         s.id = ?
@@ -160,12 +206,33 @@ export class ServiceController {
       throw new ResponseError('非法类型');
     }
 
+    if (!model.type) {
+      throw new ResponseError('请选择类型');
+    }
+
+    if (!model.childType) {
+      throw new ResponseError('请选择子类型');
+    }
+
+    let type = await first(`
+    select
+      *
+    from weixin_bank_menu as m1
+    join weixin_bank_menu as m2 on m2.parentMenuId = m1.id
+    where (m1.parentMenuId is null or m1.parentMenuId = '') and m1.id = ? and m2.id = ?
+    `, [model.type, model.childType]);
+
+    if (!type) {
+      throw new ResponseError('子类型和主类型不匹配， 请重新选择');
+    }
+
     let service = new Service();
     service.categoryId = category.id;
     service.communityId = ctx.session.communityId;
     service.userId = ctx.session.userId;
     service.content = JSON.stringify(model);
-    service.typeId = model.type;
+    service.mainTypeId = model.type;
+    service.typeId = model.childType;
     service.points = model.points;
 
     await Table.Service.insert(service);

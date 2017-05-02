@@ -62,7 +62,7 @@ export class OverlayService {
 
     return this.instanceEmitter.asObservable().filter((value, index) => {
       return value.id === id;
-    })
+    });
   }
 
   instance(config: OverlayConfig) {

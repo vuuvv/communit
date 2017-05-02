@@ -7,6 +7,18 @@ import 'rxjs/add/observable/forkJoin';
 
 import { OverlayService, DialogService, SliderComponent } from '../../components';
 import { Http } from '../shared';
+import { paddingArray } from '../utils';
+
+
+const allButton = {
+  name: '更多',
+  image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+};
+
+const collapseButton = {
+  name: '收起',
+  image: 'http://www.crowdnear.com/m2/assets/images/collapse.png',
+};
 
 @Component({
   templateUrl: './community.html',
@@ -23,6 +35,7 @@ export class CommunityComponent implements OnInit {
   logo: any;
   showMask = false;
   shownIcons = [];
+  isShowAll = false;
 
   constructor(
     private overlayService: OverlayService,
@@ -43,44 +56,23 @@ export class CommunityComponent implements OnInit {
       this.overlayService.hideToast();
       this.carousel = values[0];
       this.icons = values[1];
-      this.shownIcons = this.getCollapsedIcons();
+      this.isShowAll = false;
+      this.shownIcons = this.getShowIcons();
       this.articles = values[2];
       this.logo = values[3];
     });
   }
 
-  getCollapsedIcons() {
-    if (!this.icons || !this.icons.length) {
-      return [];
-    }
-
-    let size = 4;
-
-    let length = this.icons.length;
-    let remain = size - length % size;
-
-    if (remain < size) {
-      for (let i = 0; i < remain; i++) {
-        this.icons.push({
-        });
-      }
-    }
-
-    if (this.icons.length <= size * 2) {
-      return this.icons;
-    }
-    let ret = this.icons.slice(0, size * 2 - 1);
-    ret.push({
-      name: '全部',
-      image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
-    });
-    return ret;
+  getShowIcons() {
+    return this.isShowAll ?
+      paddingArray(this.icons, 5, 0, {}, collapseButton) :
+      paddingArray(this.icons, 5, 2, {}, allButton);
   }
 
   goto(icon) {
-    if (icon.name === '全部') {
-      this.shownIcons = this.icons;
-      // this.showMask = true;
+    if ([collapseButton.name, allButton.name].indexOf(icon.name) !== -1) {
+      this.isShowAll = !this.isShowAll;
+      this.shownIcons = this.getShowIcons();
       return;
     }
 

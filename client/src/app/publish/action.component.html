@@ -1,13 +1,15 @@
 <v-page>
-    <v-header [showBack]="false">
-    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
-      <span>返回</span>
-      <div class="left-arrow"></div>
-    </a>
+    <v-header backUrl="/bank" slot="header">
     请填写{{ category?.name }}信息
   </v-header>
-  <tabbar slot="footer"></tabbar>
 
-  <dynamic-form [inputs]="fields" *ngIf="fields" (submit)="submit($event)"></dynamic-form>
+  <tabbar slot="footer" *ngIf="!showNeedWorker"></tabbar>
+  <dynamic-form [inputs]="fields" *ngIf="fields && !showNeedWorker" (submit)="submit($event)"></dynamic-form>
+
+
+  <v-tabbar slot="footer" *ngIf="showNeedWorker">
+    <v-tabbar-btn class="primary" [routerLink]="['/bank/worker']" *ngIf="!isWorker">我要加入</v-tabbar-btn>
+  </v-tabbar>
+  <empty-page *ngIf="showNeedWorker">您还未成为本社区的社工</empty-page>
 </v-page>
 

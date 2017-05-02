@@ -9,6 +9,10 @@ export declare class Service extends BaseModel {
      */
     typeId: string;
     /**
+     * 最上层的类型
+     */
+    mainTypeId: string;
+    /**
      * 用户Id
      */
     userId: string;

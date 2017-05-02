@@ -6,6 +6,17 @@ import 'rxjs/add/observable/forkJoin';
 
 import { Http } from '../shared';
 import { OverlayService } from '../../components';
+import { paddingArray } from '../utils';
+
+const allButton = {
+  name: '更多',
+  image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
+};
+
+const collapseButton = {
+  name: '收起',
+  image: 'http://www.crowdnear.com/m2/assets/images/collapse.png',
+};
 
 @Component({
   templateUrl: './bank.html',
@@ -17,6 +28,7 @@ export class BankComponent implements OnInit {
   articles: any[];
   services: any[] = [];
   shownIcons = [];
+  isShowAll = false;
 
   constructor(
     private http: Http,
@@ -37,42 +49,22 @@ export class BankComponent implements OnInit {
         s.data = JSON.parse(s.content);
         return s;
       });
-      this.shownIcons = this.getCollapsedIcons();
+      this.isShowAll = false;
+      this.shownIcons = this.getShowIcons();
       this.articles = values[2];
     });
   }
 
-  getCollapsedIcons() {
-    if (!this.icons || !this.icons.length) {
-      return [];
-    }
-
-    let size = 5;
-
-    let length = this.icons.length;
-    let remain = size - length % size;
-
-    if (remain < size) {
-      for (let i = 0; i < remain; i++) {
-        this.icons.push({
-        });
-      }
-    }
-
-    if (this.icons.length <= size * 2) {
-      return this.icons;
-    }
-    let ret = this.icons.slice(0, size * 2 - 1);
-    ret.push({
-      name: '全部',
-      image: 'http://www.crowdnear.com/m2/assets/images/ios/@2x/qb.png',
-    });
-    return ret;
+  getShowIcons() {
+    return this.isShowAll ?
+      paddingArray(this.icons, 5, 0, {}, collapseButton) :
+      paddingArray(this.icons, 5, 2, {}, allButton);
   }
 
   goto(icon) {
-    if (icon.name === '全部') {
-      this.shownIcons = this.icons;
+    if ([collapseButton.name, allButton.name].indexOf(icon.name) !== -1) {
+      this.isShowAll = !this.isShowAll;
+      this.shownIcons = this.getShowIcons();
       return;
     }
 

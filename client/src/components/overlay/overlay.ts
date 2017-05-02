@@ -91,7 +91,7 @@ export class Overlay implements OnInit {
       if (config.duration) {
         setTimeout(() => {
           this.showToast = false;
-        }, config.duration)
+        }, config.duration);
       }
     });
 

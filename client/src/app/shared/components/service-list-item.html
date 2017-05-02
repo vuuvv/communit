@@ -1,4 +1,4 @@
-<v-image [src]="src" width="40" height="40"></v-image>
+<v-image [src]="service.typeIcon | fixurl" width="40" height="40" *ngIf="service && service.typeIcon"></v-image>
 <div class="list-item-content">
   <div class="list-item-title">{{ title }}</div>
   <div class="list-item-desc">{{ desc }}</div>

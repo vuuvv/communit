@@ -4,13 +4,27 @@
 
   <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
     <quickentry *ngFor="let chunk of shownIcons | chunk: 5; let i = index">
-      <quickentry-item [icon]="icon.icon | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:5; let i = index">
+      <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:5; let i = index">
       {{ icon.name }}
       </quickentry-item>
     </quickentry>
   </div>
+  <div class="news" *ngIf="articles">
+    <div class="news-item">
+      <span class="title ngv-1px-r">头条</span>
+      <span class="subject">
+        <v-slider [isVertical]="true" [indicator]="false" [auto]="4000">
+          <v-slider-item *ngFor="let a of articles">
+            <div class="ellipsis">
+              {{ a.title }}
+            </div>
+          </v-slider-item>
+        </v-slider>
+      </span>
+    </div>
+  </div>
 
-  <empty-page *ngIf="!products || !products.length">暂无内容</empty-page>
+  <empty-page *ngIf="!products || !products.length">暂无商品</empty-page>
   <div class="product-list ngv-bg-white">
     <product-list-item
       class="ngv-1px-b"

@@ -23,6 +23,10 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Service.prototype, "mainTypeId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Service.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
@@ -40,5 +44,9 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
 ], Service.prototype, "sort", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Service.prototype, "status", void 0);
 exports.Service = Service;
 exports.ServiceTableName = 't_service';

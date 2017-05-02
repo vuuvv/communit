@@ -1,53 +1,52 @@
-<v-page class="bank-child">
-  <v-header>{{ menu?.name }}</v-header>
+<v-page class="page-bank-child">
+  <v-header slot="header">
+    <span>{{ menu?.name }}</span>
+    <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
+  </v-header>
   <tabbar slot="footer"></tabbar>
 
   <div class="ngv-bg-white">
-    <v-flexbox [class.ngv-1px-b]="!(isShowAll && last)" *ngFor="let chunk of shownChildren | chunk: 4; let i = index; let last = last">
-      <v-flexbox-item [class.ngv-1px-r]="icon.name && !last1" *ngFor="let icon of chunk | slice: 0:4; let j = index; let last1 = last">
+    <v-flexbox class = "ngv-1px-b" *ngFor="let chunk of shownChildren | chunk: 4; let i = index; let last = last">
+      <v-flexbox-item  [routerLink]="['/bank/child/' + icon.id]" [class.ngv-1px-r]="icon.name && !last1" *ngFor="let icon of chunk | slice: 0:4; let j = index; let last1 = last">
         <div>
           {{ icon.name }}
         </div>
       </v-flexbox-item>
     </v-flexbox>
-    <div class="collapse-btn" (click)="showAll()" *ngIf="!isShowAll">
+    <div class="collapse-btn" (click)="toggle()" *ngIf="!isShowAll && needCollapse">
       展开全部
       <v-icon type="arrowdown"></v-icon>
+    </div>
+    <div class="collapse-btn" (click)="toggle()" *ngIf="isShowAll && needCollapse">
+      收起
+      <v-icon type="arrowup"></v-icon>
     </div>
   </div>
 
   <div class="filter-container ngv-gutter ngv-1px-b">
-    <div class="filter-item">
+    <div class="filter-item" (click)="showCategories()">
       <div class="filter-item-container">
         <div class="ngv-1px-r">
           分类
           <v-icon type="arrowdown"></v-icon>
         </div>
       </div>
-      <div class="category-container filter-detail-type">
-        <div class="category-left">
-
-        </div>
-        <div class="category-right"></div>
-      </div>
     </div>
-    <div class="filter-item">
+    <div class="filter-item" (click)="showSort()">
       <div class="filter-item-container">
         <div class="ngv-1px-r">
           排序
           <v-icon type="arrowdown"></v-icon>
         </div>
       </div>
-      <div class="category-container"></div>
     </div>
-    <div class="filter-item">
+    <div class="filter-item" (click)="showCategory()">
       <div class="filter-item-container">
         <div>
           筛选
           <v-icon type="arrowdown"></v-icon>
         </div>
       </div>
-      <div class="category-container"></div>
     </div>
   </div>
 
@@ -55,5 +54,80 @@
     <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
     </service-list-item>
   </div>
+  <empty-page *ngIf="!services || !services.length">暂无该类服务</empty-page>
+
+  <div class="filter-detail-container" *ngIf="filterStatus">
+    <div class="weui-mask" (click)="clickMask()"></div>
+    <div class="filter-detail-type" *ngIf="filterStatus === 1">
+      <div class="category-left">
+        <ul>
+          <li *ngFor="let m of menus" (click)="selectMain(m)" [class.category-left-active]="selectedMenu && m.id === selectedMenu.id">
+            <span>{{ m.name }}</span>
+            <v-icon type="right"></v-icon>
+          </li>
+        </ul>
+      </div>
+      <div class="category-right">
+        <ul>
+          <li  class="ngv-1px-b" [routerLink]="['/bank/child/' + selectedMenu.id]" [class.category-right-active]="selectedMenu.id === currentId">
+            <span>全部</span>
+            <v-icon type="right"></v-icon>
+          </li>
+          <li *ngFor="let c of selectedChildren" [routerLink]="['/bank/child/' + c.id]" class="ngv-1px-b" [class.category-right-active]="c.id === currentId">
+            <span>{{ c.name }}</span>
+            <v-icon type="right"></v-icon>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="filter-detail-type" *ngIf="filterStatus === 2">
+      <ul class="sort-list">
+        <li (click)="selectSort('points')">
+          <v-icon type="jifen" color="#37C7B7"></v-icon>
+          <p class="ngv-1px-b" [class.sort-list-active]="sort ==='points'">
+            <span>积分最少</span>
+            <v-icon type="duigou" *ngIf="sort ==='points'"></v-icon>
+          </p>
+        </li>
+        <li (click)="selectSort('sales')">
+          <v-icon type="remai" color="#F07373"></v-icon>
+          <p class="ngv-1px-b" [class.sort-list-active]="sort ==='sales'">
+            <span>销量最高</span>
+            <v-icon type="duigou" *ngIf="sort ==='sales'"></v-icon>
+          </p>
+        </li>
+        <li (click)="selectSort('rank')">
+          <v-icon type="wujiaoxingkong" color="#F1C177"></v-icon>
+          <p class="ngv-1px-b" [class.sort-list-active]="sort ==='rank'">
+            <span>评价最高</span>
+            <v-icon type="duigou" *ngIf="sort ==='rank'"></v-icon>
+          </p>
+        </li>
+      </ul>
+    </div>
+    <div class="filter-detail-type" *ngIf="filterStatus === 3">
+      <ul class="sort-list">
+        <li (click)="selectCategory('')">
+          <p class="ngv-1px-b" [class.sort-list-active]="!category">
+            <span>全部</span>
+            <v-icon type="duigou" *ngIf="!category"></v-icon>
+          </p>
+        </li>
+        <li (click)="selectCategory('33ef69e8e2cc4cf3a9f12c36b560ee73')">
+          <p class="ngv-1px-b" [class.sort-list-active]="category === '33ef69e8e2cc4cf3a9f12c36b560ee73'">
+            <span>服务自选</span>
+            <v-icon type="duigou" *ngIf="category === '33ef69e8e2cc4cf3a9f12c36b560ee73'"></v-icon>
+          </p>
+        </li>
+        <li (click)="selectCategory('8c4075759d914b1395b8b06bc1b5d19f')">
+          <p class="ngv-1px-b" [class.sort-list-active]="category === '8c4075759d914b1395b8b06bc1b5d19f'">
+            <span>邻里互助</span>
+            <v-icon type="duigou" *ngIf="category === '8c4075759d914b1395b8b06bc1b5d19f'"></v-icon>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
 </v-page>
 

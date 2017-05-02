@@ -1,6 +1,6 @@
 <div>
   <div>
-    <v-image [width]="width" [height]="height" [src]="src" [block]="false"></v-image>
+    <v-image [width]="width" [height]="height" [src]="src" [block]="false" *ngIf="src"></v-image>
   </div>
   <div class="quickentry-item-text">
     <ng-content></ng-content>

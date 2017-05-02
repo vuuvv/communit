@@ -15,6 +15,12 @@ export class Service extends BaseModel {
   typeId: string;
 
   /**
+   * 最上层的类型
+   */
+  @property()
+  mainTypeId: string;
+
+  /**
    * 用户Id
    */
   @property()
@@ -47,7 +53,9 @@ export class Service extends BaseModel {
   /**
    * 状态
    */
+  @property()
   status: string;
+
 }
 
 export const ServiceTableName = 't_service';

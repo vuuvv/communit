@@ -14,6 +14,7 @@ export class ControlService {
       group[input.key] = input.required ? new FormControl(input.value || '', Validators.required)
                                               : new FormControl(input.value || '');
     });
+    console.log(group);
     return new FormGroup(group);
   }
 }

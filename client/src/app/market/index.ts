@@ -8,6 +8,7 @@ import { SharedModule } from '../shared';
 
 import { MarketComponent } from './market';
 import { ProductComponent } from './product';
+import { MarketChildComponent } from './market-child';
 import { SearchComponent } from './search';
 
 const routes: Routes = [
@@ -23,6 +24,11 @@ const routes: Routes = [
         path: 'product/:id',
         pathMatch: 'full',
         component: ProductComponent,
+      },
+      {
+        path: 'child/:id',
+        pathMatch: 'full',
+        component: MarketChildComponent,
       },
       {
         path: 'search',
@@ -44,6 +50,7 @@ const routes: Routes = [
   declarations: [
     MarketComponent,
     ProductComponent,
+    MarketChildComponent,
     SearchComponent,
   ]
 })

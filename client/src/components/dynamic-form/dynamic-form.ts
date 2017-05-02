@@ -25,4 +25,25 @@ export class DynamicFormComponent implements OnInit {
   onSubmit() {
     this.submit.emit(this.form.value);
   }
+
+  change(event) {
+    console.log(event);
+  }
+
+  getOptions(target) {
+    if (!this.inputs || !this.inputs.length) {
+      return [];
+    }
+
+    let input: any = this.inputs.find((value) => value.key === target);
+    if (!input) {
+      return [];
+    }
+    let opt = input.options.find((value) => value.key === this.form.value[input.key]);
+    if (!opt) {
+      return [];
+    }
+
+    return opt.children;
+  }
 }

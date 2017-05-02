@@ -2,7 +2,7 @@
   <v-header [showBack]="false" slot="header">
     <span>众邻</span>
     <span style="font-size: 14px">...好邻里·轻松自己</span>
-    <!--<v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>-->
+    <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <empty-page *ngIf="!services || !services.length">暂无内容</empty-page>
+  <empty-page *ngIf="!services || !services.length">暂无该类服务</empty-page>
   <div class="service-list">
     <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
     </service-list-item>
