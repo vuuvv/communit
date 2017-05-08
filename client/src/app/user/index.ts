@@ -18,6 +18,8 @@ import { TestComponent } from './test';
 import { ServiceComponent } from './service';
 import { ServiceUsersComponent } from './service-users';
 import { HelpComponent } from './help';
+import { ProfileComponent } from './profile';
+import { ProfileFormComponent } from './profile-form';
 
 const routes: Routes = [
   {
@@ -87,6 +89,18 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: HelpComponent,
       },
+      {
+        path: 'profile',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: ProfileComponent,
+      },
+      {
+        path: 'profile/edit',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: ProfileFormComponent,
+      }
     ],
   },
 ];
@@ -112,6 +126,8 @@ const routes: Routes = [
     ServiceUsersComponent,
     ServiceComponent,
     HelpComponent,
+    ProfileComponent,
+    ProfileFormComponent,
   ]
 })
 export class UserModule {

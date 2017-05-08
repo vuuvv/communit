@@ -1,0 +1,27 @@
+<v-page class="page-profile">
+  <v-header slot="header">
+    <span>个人信息</span>
+    <div class="ngv-header-button" slot="right" [routerLink]="['/user/profile/edit']">编辑</div>
+  </v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <v-group gutter="0">
+    <v-cell [value]="profile.realname">姓名</v-cell>
+    <v-cell [value]="constants.SEX[profile.sex]">性别</v-cell>
+    <v-cell [value]="profile.phone">手机号码</v-cell>
+    <v-cell [value]="profile.birth || '未填写'">出生日期</v-cell>
+  </v-group>
+
+  <v-group>
+    <v-cell [value]="profile.biotope || profile.area">小区名称</v-cell>
+    <v-cell [value]="profile.address">门牌号</v-cell>
+  </v-group>
+
+  <v-group>
+    <v-cell [value]="constants.POLITICAL[profile.political] || '未填写'">政治面貌</v-cell>
+    <v-cell [value]="constants.EDUCATION[profile.wenHuaChengDu] || '未填写'">文化程度</v-cell>
+    <v-cell [value]="constants.HEALTH[profile.jianKuanZK] || '未填写'">健康状况</v-cell>
+    <v-cell [value]="profile.zhiYeZiGe || '未填写'">职业资格</v-cell>
+    <v-cell [value]="profile.biYeYuanXiao || '未填写'">毕业院校及专业</v-cell>
+  </v-group>
+</v-page>

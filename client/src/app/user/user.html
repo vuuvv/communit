@@ -2,7 +2,7 @@
   <tabbar slot="footer"></tabbar>
 
   <section>
-    <div class="info-box ngv-flexbox ngv-flexbox-vcenter">
+    <div class="info-box ngv-flexbox ngv-flexbox-vcenter" routerLink="/user/profile">
       <img [src]="user?.avatar" *ngIf="user?.avatar">
       <div class="user-info ngv-flexbox-item">
         <p>{{ user?.name }}</p>
@@ -27,7 +27,7 @@
       </a>
       <a class="ngv-flexbox-item">
         <p class="rank">
-          <span>D</span>
+          <span>参与公益</span>
         </p>
         <p>公益等级</p>
       </a>
@@ -49,7 +49,7 @@
     <v-cell [isLink]="true" [routerLink]="['/user/worker/0']"><v-icon slot="icon" type="shegong" color="#FF601A"></v-icon>社工</v-cell>
     <v-cell [isLink]="true" [routerLink]="['/user/help']"><v-icon slot="icon" type="help" color="#38ceff"></v-icon>求助</v-cell>
     <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="xiangdao" color="#02A3FE"></v-icon>向导</v-cell>
-    <v-cell [isLink]="true" [routerLink]="['/empty']"><v-icon slot="icon" type="zhanghu" color="#65C700" style="font-size:16px"></v-icon>账户</v-cell>
+    <v-cell [isLink]="true" [routerLink]="['/user/profile']"><v-icon slot="icon" type="zhanghu" color="#65C700" style="font-size:16px"></v-icon>账户</v-cell>
   </v-group>
 
   <v-group>
