@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
-    "build": "start ng build --prod --aot --base-url=/m2/",
+    "build": "start ng build --prod --aot --base-href=/m2/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
