@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, buildUrl } from './http';
+import { Http } from './http';
+import { buildUrl } from '../../utils';
 import { AuthorizeService } from './authorize';
 
 import { Observable } from 'rxjs/Observable';

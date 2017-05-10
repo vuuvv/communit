@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Http, FormService, buildUrl } from '../shared';
+import { Http, FormService } from '../shared';
+import { buildUrl } from '../utils';
 import { DialogService, OverlayService } from '../../components';
 
 @Component({

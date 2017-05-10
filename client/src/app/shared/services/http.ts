@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http as RawHttp, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
 import { Router } from '@angular/router';
 
+import { buildQueryString, buildUrl } from '../../utils';
 import { DialogService, OverlayService } from '../../../components';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -9,47 +10,6 @@ import 'rxjs/add/observable/empty';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/catch';
-
-function fixUrl(url: string): string {
-  const absoluteUrlPattern = new RegExp('^([a-z]+://|//)', 'i');
-  let base = window['BASE_URL'];
-  if (absoluteUrlPattern.test(url) || !base) {
-    return url;
-  }
-  url = url.replace(/^\//, '');
-  base = base.replace(/\/$/, '');
-  return `${base}/${url}`;
-}
-
-export function buildQueryString(data: any) {
-  if (!data) {
-    return '';
-  }
-  return Object.keys(data).filter(
-    value => data[value] !== undefined && data[value] !== null
-  ).map(
-    key => `${key}=${encodeURIComponent(data[key])}`
-  ).join('&');
-}
-
-export function buildUrl(url: string, data: any = null, noCache = true) {
-  url = fixUrl(url);
-
-  if (!data) {
-    data = {};
-  }
-
-  if (noCache) {
-    data['_t'] = new Date().getTime();
-  }
-
-  let qs = buildQueryString(data);
-  if (qs && url.indexOf('?') === -1) {
-    url += '?';
-  }
-
-  return url + qs;
-}
 
 export class HttpError extends Error {
   code: string;

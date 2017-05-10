@@ -22,7 +22,7 @@ export class WechatUploaderComponent implements OnInit {
 
   ngOnInit() {
     if (!this.alwaysNull && this.serverId) {
-      this.wechatService.previewUrl(this.serverId).then((v) => {
+      this.wechatService.previewUrl(this.serverId).then((v: any) => {
         this.previewUrl = v;
       });
     }
@@ -34,7 +34,7 @@ export class WechatUploaderComponent implements OnInit {
       .then((serverId) => {
         if (!this.alwaysNull) {
           this.serverId = serverId;
-          this.wechatService.previewUrl(serverId).then((v) => {
+          this.wechatService.previewUrl(serverId).then((v: any) => {
             this.previewUrl = v;
             return this.previewUrl;
           });
