@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
 
 import { Http } from '../shared';
 import { InputBase, InputSelect, InputText, OverlayService } from '../../components';

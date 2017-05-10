@@ -2,8 +2,8 @@ import { Component, Type, OnInit, ViewChild, ViewEncapsulation } from '@angular/
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
+import { Observable } from '../utils';
+
 
 import { OverlayService, DialogService, SliderComponent } from '../../components';
 import { Http } from '../shared';

@@ -5,8 +5,6 @@ import { isEmptyArray, Http } from '../shared';
 
 import { OverlayService, DialogService } from '../../components';
 
-import { Observable } from 'rxjs/Observable';
-
 @Component({
   templateUrl: './service.html',
 })

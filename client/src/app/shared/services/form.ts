@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from '../../utils';
 
 import { Http } from './http';
 

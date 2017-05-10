@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from '../utils';
 
 import { Http, FormService } from '../shared';
 import { DialogService, OverlayService } from '../../components';

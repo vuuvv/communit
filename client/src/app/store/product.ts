@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-
 import { Http, FormService, WechatService } from '../shared';
 import { DialogService, OverlayService } from '../../components';
+
+import { Observable } from '../utils';
 
 const validMessages = {
   title: {

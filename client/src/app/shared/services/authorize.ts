@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+import { Observable } from '../../utils';
+
 
 import { Http } from './http';
 import { DialogService } from '../../../components';

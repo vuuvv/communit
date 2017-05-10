@@ -1,5 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
+import { Observable } from './utils';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

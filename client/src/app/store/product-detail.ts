@@ -1,9 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-
 import { Http } from '../shared';
 import { OverlayService, DialogService } from '../../components';
 

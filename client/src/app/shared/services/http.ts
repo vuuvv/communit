@@ -2,14 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http as RawHttp, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
 import { Router } from '@angular/router';
 
-import { buildQueryString, buildUrl } from '../../utils';
+import { buildQueryString, buildUrl, Observable } from '../../utils';
 import { DialogService, OverlayService } from '../../../components';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/concatMap';
-import 'rxjs/add/operator/catch';
 
 export class HttpError extends Error {
   code: string;

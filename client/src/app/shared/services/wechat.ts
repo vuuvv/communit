@@ -3,9 +3,6 @@ import { Http } from './http';
 import { buildUrl } from '../../utils';
 import { AuthorizeService } from './authorize';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/toPromise';
-
 const wx = window['wx'];
 
 @Injectable()
