@@ -1,10 +1,7 @@
 <v-page class="page-market">
   <v-header slot="header">
-    {{ product?.title }}
   </v-header>
   <v-tabbar slot="footer">
     <v-tabbar-btn class="primary" (click)="chooseImage()">选择照片</v-tabbar-btn>
   </v-tabbar>
-
-  <product-detail [product]="product"></product-detail>
 </v-page>

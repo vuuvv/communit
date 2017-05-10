@@ -23,7 +23,7 @@ import { ProfileFormComponent } from './profile-form';
 
 const routes: Routes = [
   {
-    path: 'user',
+    path: '',
     children: [
       {
         path: '',

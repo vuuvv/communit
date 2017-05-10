@@ -13,7 +13,7 @@ import * as constants from '../constants';
   encapsulation: ViewEncapsulation.None,
 })
 export class ProfileFormComponent implements OnInit {
-  profile = {};
+  profile: any = {};
   constants = constants;
 
   constructor(
@@ -29,5 +29,8 @@ export class ProfileFormComponent implements OnInit {
     this.http.get('/user/profile').subscribe((v: any) => {
       this.profile = v;
     });
+  }
+
+  submit() {
   }
 }

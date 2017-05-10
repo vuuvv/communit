@@ -13,7 +13,7 @@ import { SearchComponent } from './search';
 
 const routes: Routes = [
   {
-    path: 'market',
+    path: '',
     children: [
       {
         path: '',

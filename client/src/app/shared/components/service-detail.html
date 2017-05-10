@@ -19,9 +19,11 @@
   <v-cell [value]="service?.userName" [isLink]="true">信息发布人</v-cell>
 </v-group>
 
+<!--
 <v-group *ngIf="user && user.status && isMine">
   <v-cell [value]="getUserStatus(user.status)">我的参加状态</v-cell>
 </v-group>
+-->
 
 <v-box title="服务对象情况">
   <v-cell [value]="service.submitCount" [isLink]="isMine" (click)="gotoUsers(0)">报名中</v-cell>

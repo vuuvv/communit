@@ -1,5 +1,5 @@
 import { Directive, ElementRef, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
-const BSCroll = require('better-scroll');
+import * as BSCroll from 'better-scroll';
 
 @Directive({
   selector: '[v-scroll]',

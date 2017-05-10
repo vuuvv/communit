@@ -8,7 +8,7 @@
   <form #form="ngForm">
     <v-group gutter="0">
       <v-cell [value]="profile.realname" lable="姓名">
-        <input class="weui-input" type="text" placeholder="姓名" name="capcha" [(ngModel)]="verify.capcha">
+        <input class="weui-input" type="text" placeholder="姓名" name="realname" [(ngModel)]="profile.realname">
       </v-cell>
 
       <v-cell class="weui-cell_select weui-cell_select-after right" label="性别">

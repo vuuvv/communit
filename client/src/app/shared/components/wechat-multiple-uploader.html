@@ -1,4 +1,4 @@
 <wechat-uploader *ngFor="let serverId of serverIds; let i = index" [serverId]="serverId" (serverIdChange)="updateServerIds($event, i)" (hit)="itemClick($event, i)" [tip]="i + 1">
 </wechat-uploader>
-<wechat-uploader (serverIdChange)="updateServerIds($event, -1)" (hit)="itemClick($event)" tip="增加" [alwaysNull] = "true">
+<wechat-uploader (serverIdChange)="updateServerIds($event, -1)" (hit)="itemClick($event, -1)" tip="增加" [alwaysNull] = "true">
 </wechat-uploader>

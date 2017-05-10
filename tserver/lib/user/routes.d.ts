@@ -3,6 +3,7 @@ export declare class UserController {
     carousel(ctx: any): Promise<Response>;
     logo(ctx: any): Promise<Response>;
     me(ctx: any): Promise<Response>;
+    profile(ctx: any): Promise<Response>;
     community(ctx: any): Promise<Response>;
     organizations(ctx: any): Promise<Response>;
     biotype(ctx: any): Promise<Response>;

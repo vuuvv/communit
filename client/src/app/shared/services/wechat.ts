@@ -17,7 +17,7 @@ export class WechatService {
     private authorizeService: AuthorizeService,
   ) {}
 
-  config(debug = true) {
+  config(debug = true): Promise<any> {
     if (this.isConfiged) {
       return Promise.resolve();
     }

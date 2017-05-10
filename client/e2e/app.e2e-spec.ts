@@ -1,10 +1,10 @@
-import { CommunityPage } from './app.po';
+import { ClientPage } from './app.po';
 
-describe('community App', function() {
-  let page: CommunityPage;
+describe('client App', () => {
+  let page: ClientPage;
 
   beforeEach(() => {
-    page = new CommunityPage();
+    page = new ClientPage();
   });
 
   it('should display message saying app works', () => {

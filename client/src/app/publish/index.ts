@@ -13,7 +13,7 @@ import { ActivityComponent } from './activity';
 
 const routes: Routes = [
   {
-    path: 'publish',
+    path: '',
     canActivateChild: [AuthorizeGuard],
     children: [
       {

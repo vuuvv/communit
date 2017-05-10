@@ -93,7 +93,7 @@ export class Http {
       if (err.code === '100004') {
         this.overlayService.hideToast();
         this.router.navigate(['/user/verify']);
-        return Observable.empty();
+        return Observable.throw(err);
       }
       msg = err.message;
     } else if (err.status === 0) {

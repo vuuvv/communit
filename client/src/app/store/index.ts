@@ -13,7 +13,7 @@ import { ProductDetailComponent } from './product-detail';
 
 const routes: Routes = [
   {
-    path: 'store',
+    path: '',
     canActivateChild: [AuthorizeGuard],
     children: [
       {

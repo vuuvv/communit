@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 
 import { AppComponent } from './app.component';
 
@@ -10,21 +10,36 @@ import { NgvModule } from '../components';
 
 import { SharedModule } from './shared';
 import { CommunityModule } from './community';
-import { BankModule } from './bank';
-import { MarketModule } from './market';
-import { UserModule } from './user';
-import { PublishModule } from './publish';
 import { ArticleModule } from './article';
-import { StoreModule } from './store';
 
 const appRoutes: Routes = [
   {
     path: '',
     redirectTo: '/community',
     pathMatch: 'full',
-  }
+  },
+  {
+    path: 'user',
+    loadChildren: 'app/user/index#UserModule',
+  },
+  {
+    path: 'bank',
+    loadChildren: 'app/bank/index#BankModule',
+  },
+  {
+    path: 'market',
+    loadChildren: 'app/market/index#MarketModule',
+  },
+  {
+    path: 'publish',
+    loadChildren: 'app/publish/index#PublishModule',
+  },
+  {
+    path: 'store',
+    loadChildren: 'app/store/index#StoreModule',
+  },
 ];
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { useHash: true });
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { useHash: true, preloadingStrategy: PreloadAllModules });
 
 @NgModule({
   declarations: [
@@ -41,12 +56,7 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { us
     SharedModule.forRoot(),
 
     CommunityModule,
-    BankModule,
-    MarketModule,
-    UserModule,
-    PublishModule,
     ArticleModule,
-    StoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

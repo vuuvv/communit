@@ -48,6 +48,20 @@ let UserController = class UserController {
             store,
         });
     }
+    async profile(ctx) {
+        let sql = `
+    select
+      wu.realname, wu.sex, wu.address, wu.area, wu.address, bu.username as phone, bt.name as biotope,
+      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, su.birth, su.political,
+      su.jianKuanZK, su.JianKangLB, su.fuWuXingJi, su.geRenTZ from t_wechat_user as wu
+    join t_s_user as su on wu.userId=su.id
+    join t_s_base_user as bu on su.id=bu.id
+    left join t_biotope as bt on wu.biotope=bt.id
+    where wu.officialAccountId=? and wu.userId=?
+    `;
+        let ret = await db_1.first(sql, [ctx.session.communityId, ctx.session.userId]);
+        return routes_1.success(ret);
+    }
     async community(ctx) {
         return routes_1.success(ctx.session.communityId);
     }
@@ -141,6 +155,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "me", null);
+__decorate([
+    routes_1.get('/profile'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "profile", null);
 __decorate([
     routes_1.get('/community'),
     routes_1.wechat,

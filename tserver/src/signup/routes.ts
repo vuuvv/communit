@@ -190,6 +190,7 @@ export class SignupController　{
       return error('无效的用户');
     }
     ctx.session.communityId = u.officialAccountId;
+    delete ctx.session.userId;
     ctx.session.wechatUserId = u.id;
     ctx.session.verifiedPhone = '13599997777';
     return success();

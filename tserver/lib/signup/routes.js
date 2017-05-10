@@ -170,6 +170,7 @@ let SignupController = class SignupController {
             return routes_1.error('无效的用户');
         }
         ctx.session.communityId = u.officialAccountId;
+        delete ctx.session.userId;
         ctx.session.wechatUserId = u.id;
         ctx.session.verifiedPhone = '13599997777';
         return routes_1.success();

@@ -21,7 +21,7 @@ import { BankChildComponent } from './bank-child';
 
 const routes: Routes = [
   {
-    path: 'bank',
+    path: '',
     children: [
       {
         path: '',

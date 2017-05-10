@@ -154,7 +154,9 @@ export class StoreAddComponent implements OnInit {
 export class StoreEditComponent implements OnInit {
   title = '编辑店铺';
   store: any = {};
-  products: any[] = [];
+  actionsShown = false;
+  communityId;
+  uploader;
 
   constructor(
     private http: Http,
@@ -172,5 +174,19 @@ export class StoreEditComponent implements OnInit {
     this.formService.submit(form, validMessages, '/store/edit', this.store).subscribe(() => {
       this.router.navigate(['/store']);
     });
+  }
+
+  selectPhoto() {
+    this.actionsShown = false;
+    this.uploader.chooseImage();
+  }
+
+  previewPhotos() {
+    this.actionsShown = false;
+  }
+
+  showActions(uploader) {
+    this.actionsShown = true;
+    this.uploader = uploader;
   }
 }

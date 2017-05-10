@@ -11,6 +11,7 @@ export class AuthorizeGuard implements CanActivate, CanActivateChild {
   }
 
   private notLoginHandler(): Observable<boolean> {
+    console.log('need login');
     this.authorize.gotoSignup();
     return Observable.of(false);
   }

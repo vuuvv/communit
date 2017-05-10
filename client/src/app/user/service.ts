@@ -36,6 +36,12 @@ export class ServiceComponent implements OnInit {
     });
   }
 
+  edit() {
+  }
+
+  close() {
+  }
+
   parseData() {
     let fields = JSON.parse(this.service.fields);
     let contents = JSON.parse(this.service.content);

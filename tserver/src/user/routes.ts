@@ -56,6 +56,24 @@ export class UserController {
     });
   }
 
+  @get('/profile')
+  async profile(ctx) {
+    let sql = `
+    select
+      wu.realname, wu.sex, wu.address, wu.area, wu.address, bu.username as phone, bt.name as biotope,
+      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, su.birth, su.political,
+      su.jianKuanZK, su.JianKangLB, su.fuWuXingJi, su.geRenTZ from t_wechat_user as wu
+    join t_s_user as su on wu.userId=su.id
+    join t_s_base_user as bu on su.id=bu.id
+    left join t_biotope as bt on wu.biotope=bt.id
+    where wu.officialAccountId=? and wu.userId=?
+    `;
+
+    let ret = await first(sql, [ctx.session.communityId, ctx.session.userId]);
+
+    return success(ret);
+  }
+
   @get('/community')
   @wechat
   async community(ctx) {

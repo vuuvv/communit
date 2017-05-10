@@ -12,7 +12,7 @@ import * as constants from '../constants';
   encapsulation: ViewEncapsulation.None,
 })
 export class ProfileComponent implements OnInit {
-  profile = {};
+  profile: any = {};
   constants = constants;
 
   constructor(
