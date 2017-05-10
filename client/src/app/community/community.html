@@ -26,7 +26,7 @@
       <span class="title ngv-1px-r">头条</span>
       <span class="subject">
         <v-slider [isVertical]="true" [indicator]="false" [auto]="4000">
-          <v-slider-item *ngFor="let a of articles">
+          <v-slider-item *ngFor="let a of articles"  [routerLink]="['/article/' + a.id]">
             <div class="ellipsis">
               {{ a.title }}
             </div>
