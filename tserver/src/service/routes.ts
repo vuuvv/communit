@@ -39,7 +39,7 @@ export class ServiceController {
     return success(ret);
   }
 
-  @get('/types/:id')
+  @get('/types/:online')
   @wechat
   async types(ctx) {
     let ret: any[] = await raw(`
@@ -390,7 +390,7 @@ export class ServiceController {
         detail.points = user.points;
 
         order.buyerTradeTransactionId = await deductPoints(
-          trx, service.communityId, order.buyerId, TransactionType.PayService, order.amount
+          trx, service.communityId, order.buyerId, TransactionType.PayService, order.amount, order.id
         );
 
         await Table.Order.transacting(trx).insert(order);

@@ -41,7 +41,7 @@ export class BankChildComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.concatMap((params: Params) => {
-      let id = params['id'];
+      const id = params['id'];
       this.currentId = id;
       this.overlayService.loading();
       return Observable.forkJoin(
@@ -50,7 +50,7 @@ export class BankChildComponent implements OnInit {
       );
     }).subscribe((values: any) => {
       this.overlayService.hideToast();
-      let menus = values[0];
+      const menus = values[0];
       this.menus = menus.all.map((v) => {
         v.children = JSON.parse(v.children);
         return v;

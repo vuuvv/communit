@@ -10,39 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class Transaction extends base_model_1.BaseModel {
+class Answer extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Transaction.prototype, "userId", void 0);
+], Answer.prototype, "questionId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Transaction.prototype, "communityId", void 0);
+], Answer.prototype, "content", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Transaction.prototype, "typeId", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], Transaction.prototype, "amount", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", Number)
-], Transaction.prototype, "remain", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Transaction.prototype, "remainDetail", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Transaction.prototype, "reverseTransactionId", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Transaction.prototype, "orderId", void 0);
-exports.Transaction = Transaction;
-exports.TransactionTableName = 't_transaction';
+], Answer.prototype, "points", void 0);
+exports.Answer = Answer;

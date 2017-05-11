@@ -54,7 +54,7 @@ let OrderController = class OrderController {
         detail.data = JSON.stringify(product);
         detail.points = product.points;
         await db_1.db.transaction(async (trx) => {
-            order.buyerTradeTransactionId = await account_1.deductPoints(trx, communityId, order.buyerId, account_1.TransactionType.PayProduct, order.amount);
+            order.buyerTradeTransactionId = await account_1.deductPoints(trx, communityId, order.buyerId, account_1.TransactionType.PayProduct, order.amount, order.id);
             await db_1.Table.Order.transacting(trx).insert(order);
             await db_1.Table.OrderDetail.transacting(trx).insert(detail);
         });

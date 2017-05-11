@@ -24,6 +24,10 @@ export class TransactionType {
   static GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
   static PayService = '88c09b4eefe345d59cba1cb55fcafe74';
   static GetService = '469e867fb97a4f998726880ada7608c8';
+  static PayHelper = 'd797447ed34046b7aa93cf3e691a2395';
+  static GetHelper = '6159a3ccdf3c4520bba65b3be8596407';
+  static PayAnswer = '13592beb5cfb4909a3deb55b4fa0504c';
+  static GetAnswer = '622e613d206d4e5297e2d330a9e706dc';
   static PayCommunity = '6f822ac9c88a4e13bf4eaacf1050dcac';
   static PayActivity = '20869530294748e2971f46b19d5da328';
   static GetActivity = '68c5a973a00c4f33a10b9ae9d60879fa';
@@ -47,7 +51,7 @@ async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, p
   return td;
 }
 
-async function insertTransaction(trx: any, account: Account, transactionTypeId: string, points: number, id = null) {
+async function insertTransaction(trx: any, account: Account, transactionTypeId: string, points: number, id = null, orderId = null) {
     let accounts: Account[] = await Table.Account.transacting(trx).where({
       communityId: account.communityId,
       userId: account.userId,
@@ -68,6 +72,7 @@ async function insertTransaction(trx: any, account: Account, transactionTypeId: 
     if (id) {
       t.id = id;
     }
+    t.orderId = orderId;
     await Table.Transaction.transacting(trx).insert(t);
     return t;
 }
@@ -120,7 +125,7 @@ export async function reverseTransaction(trx: any, transactionId: string) {
 
   let type = reverseTransactionTypes[t.typeId] || t.typeId;
 
-  await insertTransaction(trx, accounts[0], type, -t.amount, tid);
+  await insertTransaction(trx, accounts[0], type, -t.amount, tid, t.orderId);
   await Table.Transaction.transacting(trx).where('id', t.id).update({
     reverseTransactionId: tid
   });
@@ -138,7 +143,7 @@ export async function reverseTransaction(trx: any, transactionId: string) {
  * @param points 增加的积分数
  * @param expiresIn 有效期限(天)
  */
-export async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180) {
+export async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180, orderId = null) {
   let account: Account = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -170,14 +175,14 @@ export async function addPoints(trx, communityId, userId, accountTypeId, transac
     });
   }
 
-  let t = await insertTransaction(trx, account, transactionTypeId, points);
+  let t = await insertTransaction(trx, account, transactionTypeId, points, orderId);
 
   await insertTransactionDetail(trx, accountDetail, points, t.id);
 
   return t.id;
 }
 
-export async function deductPoints(trx, communityId, userId, transactionTypeId, points) {
+export async function deductPoints(trx, communityId, userId, transactionTypeId, points, orderId = null) {
   let accounts: Account[] = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -242,7 +247,7 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
     await Table.Account.transacting(trx).where('id', account.id).update('balance', account.balance + v[1]);
   }
 
-  await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid);
+  await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid, orderId);
   return tid;
 }
 
@@ -332,11 +337,11 @@ export async function PayActivity(trx, activityUserId, points) {
     let amount = order.amount = points;
 
     order.buyerTradeTransactionId = await deductPoints(
-      trx, communityId, order.buyerId, TransactionType.PayActivity, amount
+      trx, communityId, order.buyerId, TransactionType.PayActivity, amount, order.id
     );
 
     order.sellerTradeTransactionId = await addPoints(
-      trx, communityId, order.sellerId , AccountType.Normal, TransactionType.GetActivity, amount
+      trx, communityId, order.sellerId , AccountType.Normal, TransactionType.GetActivity, amount, undefined, order.id
     );
 
     order.status = OrderStatus.Done;

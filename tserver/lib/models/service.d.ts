@@ -5,11 +5,11 @@ export declare class Service extends BaseModel {
      */
     categoryId: string;
     /**
-     * 类型Id
+     * 小类
      */
     typeId: string;
     /**
-     * 最上层的类型
+     * 大类
      */
     mainTypeId: string;
     /**
@@ -21,7 +21,7 @@ export declare class Service extends BaseModel {
      */
     communityId: string;
     /**
-     * json格式的内容, 根据服务类型所需的字段决定的
+     * 内容
      */
     content: string;
     /**

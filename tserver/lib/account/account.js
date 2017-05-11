@@ -18,6 +18,10 @@ TransactionType.PayProduct = '04b80557548d4d6588bff877afe03c6d';
 TransactionType.GetProduct = 'd94d01e8d6b4411f842bf4dc295c969d';
 TransactionType.PayService = '88c09b4eefe345d59cba1cb55fcafe74';
 TransactionType.GetService = '469e867fb97a4f998726880ada7608c8';
+TransactionType.PayHelper = 'd797447ed34046b7aa93cf3e691a2395';
+TransactionType.GetHelper = '6159a3ccdf3c4520bba65b3be8596407';
+TransactionType.PayAnswer = '13592beb5cfb4909a3deb55b4fa0504c';
+TransactionType.GetAnswer = '622e613d206d4e5297e2d330a9e706dc';
 TransactionType.PayCommunity = '6f822ac9c88a4e13bf4eaacf1050dcac';
 TransactionType.PayActivity = '20869530294748e2971f46b19d5da328';
 TransactionType.GetActivity = '68c5a973a00c4f33a10b9ae9d60879fa';
@@ -38,7 +42,7 @@ async function insertTransactionDetail(trx, accountDetail, points, transactionId
     await db_1.Table.TransactionDetail.transacting(trx).insert(td);
     return td;
 }
-async function insertTransaction(trx, account, transactionTypeId, points, id = null) {
+async function insertTransaction(trx, account, transactionTypeId, points, id = null, orderId = null) {
     let accounts = await db_1.Table.Account.transacting(trx).where({
         communityId: account.communityId,
         userId: account.userId,
@@ -57,6 +61,7 @@ async function insertTransaction(trx, account, transactionTypeId, points, id = n
     if (id) {
         t.id = id;
     }
+    t.orderId = orderId;
     await db_1.Table.Transaction.transacting(trx).insert(t);
     return t;
 }
@@ -96,7 +101,7 @@ async function reverseTransaction(trx, transactionId) {
         });
     }
     let type = reverseTransactionTypes[t.typeId] || t.typeId;
-    await insertTransaction(trx, accounts[0], type, -t.amount, tid);
+    await insertTransaction(trx, accounts[0], type, -t.amount, tid, t.orderId);
     await db_1.Table.Transaction.transacting(trx).where('id', t.id).update({
         reverseTransactionId: tid
     });
@@ -113,7 +118,7 @@ exports.reverseTransaction = reverseTransaction;
  * @param points 增加的积分数
  * @param expiresIn 有效期限(天)
  */
-async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180) {
+async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180, orderId = null) {
     let account = await db_1.Table.Account.transacting(trx).where({
         communityId: communityId,
         userId: userId,
@@ -143,12 +148,12 @@ async function addPoints(trx, communityId, userId, accountTypeId, transactionTyp
             balance: account.balance
         });
     }
-    let t = await insertTransaction(trx, account, transactionTypeId, points);
+    let t = await insertTransaction(trx, account, transactionTypeId, points, orderId);
     await insertTransactionDetail(trx, accountDetail, points, t.id);
     return t.id;
 }
 exports.addPoints = addPoints;
-async function deductPoints(trx, communityId, userId, transactionTypeId, points) {
+async function deductPoints(trx, communityId, userId, transactionTypeId, points, orderId = null) {
     let accounts = await db_1.Table.Account.transacting(trx).where({
         communityId: communityId,
         userId: userId,
@@ -202,7 +207,7 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points)
         let account = v[0];
         await db_1.Table.Account.transacting(trx).where('id', account.id).update('balance', account.balance + v[1]);
     }
-    await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid);
+    await insertTransaction(trx, accounts[0], transactionTypeId, -points, tid, orderId);
     return tid;
 }
 exports.deductPoints = deductPoints;
@@ -275,8 +280,8 @@ async function PayActivity(trx, activityUserId, points) {
     detail.type = models_1.OrderType.Activity;
     detail.productId = activityUserId;
     let amount = order.amount = points;
-    order.buyerTradeTransactionId = await deductPoints(trx, communityId, order.buyerId, TransactionType.PayActivity, amount);
-    order.sellerTradeTransactionId = await addPoints(trx, communityId, order.sellerId, AccountType.Normal, TransactionType.GetActivity, amount);
+    order.buyerTradeTransactionId = await deductPoints(trx, communityId, order.buyerId, TransactionType.PayActivity, amount, order.id);
+    order.sellerTradeTransactionId = await addPoints(trx, communityId, order.sellerId, AccountType.Normal, TransactionType.GetActivity, amount, undefined, order.id);
     order.status = models_1.OrderStatus.Done;
     await db_1.Table.Order.transacting(trx).insert(order);
     detail.points = amount;

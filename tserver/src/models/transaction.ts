@@ -16,6 +16,8 @@ export class Transaction extends BaseModel {
   remainDetail: string;
   @property()
   reverseTransactionId: string;
+  @property()
+  orderId: string;
 }
 
 export const TransactionTableName = 't_transaction';

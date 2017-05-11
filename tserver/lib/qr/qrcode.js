@@ -52,8 +52,8 @@ class QrcodeConfirm {
                     throw new Error('产品已下线，不可售卖');
                 }
             }
-            // 我们把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
-            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, store.id, account_1.AccountType.Store, account_1.TransactionType.GetProduct, order.amount);
+            // 把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
+            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, store.id, account_1.AccountType.Store, account_1.TransactionType.GetProduct, order.amount, undefined, order.id);
             order.status = models_1.OrderStatus.Done;
             order.tradeTime = new Date();
             await db_1.Table.Order.transacting(trx).where('id', order.id).update({
@@ -102,7 +102,7 @@ class QrcodeConfirm {
             if (!qrcode || new Date() > new Date(qrcode.expiresIn) || qrcode.status !== 'submit') {
                 throw new Error('二维码已失效');
             }
-            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, order.sellerId, account_1.AccountType.Normal, account_1.TransactionType.GetService, order.amount);
+            order.sellerTradeTransactionId = await account_1.addPoints(trx, qrcode.communityId, order.sellerId, account_1.AccountType.Normal, account_1.TransactionType.GetService, order.amount, undefined, order.id);
             order.status = models_1.OrderStatus.Done;
             order.tradeTime = new Date();
             await db_1.Table.Order.transacting(trx).where('id', order.id).update({

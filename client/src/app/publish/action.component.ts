@@ -37,7 +37,7 @@ export class ActionComponent implements OnInit {
       this.category = values[0];
       console.log(this.fields);
       this.fields = JSON.parse(this.category.fields);
-      let types = values[1];
+      const types = values[1];
       this.showNeedWorker = this.category.needWorker && (!values[2] || !values[2].length);
       this.fields.forEach((value) => {
         if (value.type === 'select') {

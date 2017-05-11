@@ -310,7 +310,7 @@ let ServiceController = class ServiceController {
                 detail.productId = user.id;
                 detail.data = JSON.stringify(service);
                 detail.points = user.points;
-                order.buyerTradeTransactionId = await account_1.deductPoints(trx, service.communityId, order.buyerId, account_1.TransactionType.PayService, order.amount);
+                order.buyerTradeTransactionId = await account_1.deductPoints(trx, service.communityId, order.buyerId, account_1.TransactionType.PayService, order.amount, order.id);
                 await db_1.Table.Order.transacting(trx).insert(order);
                 await db_1.Table.OrderDetail.transacting(trx).insert(detail);
                 await db_1.Table.ServiceUser.transacting(trx).where('id', id).update({
@@ -338,7 +338,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "category", null);
 __decorate([
-    routes_1.get('/types/:id'),
+    routes_1.get('/types/:online'),
     routes_1.wechat,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

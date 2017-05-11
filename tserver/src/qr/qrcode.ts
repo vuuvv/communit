@@ -74,9 +74,9 @@ export class QrcodeConfirm {
         }
       }
 
-      // 我们把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
+      // 把店铺和店铺所有人的账户分开, 售卖商品的时候是店铺的账户进行收款
       order.sellerTradeTransactionId = await addPoints(
-        trx, qrcode.communityId, store.id, AccountType.Store, TransactionType.GetProduct, order.amount
+        trx, qrcode.communityId, store.id, AccountType.Store, TransactionType.GetProduct, order.amount, undefined, order.id
       );
 
       order.status = OrderStatus.Done;
@@ -145,7 +145,7 @@ export class QrcodeConfirm {
       }
 
       order.sellerTradeTransactionId = await addPoints(
-        trx, qrcode.communityId, order.sellerId, AccountType.Normal, TransactionType.GetService, order.amount
+        trx, qrcode.communityId, order.sellerId, AccountType.Normal, TransactionType.GetService, order.amount, undefined, order.id
       );
 
       order.status = OrderStatus.Done;

@@ -7,5 +7,6 @@ export declare class Transaction extends BaseModel {
     remain: number;
     remainDetail: string;
     reverseTransactionId: string;
+    orderId: string;
 }
 export declare const TransactionTableName = "t_transaction";

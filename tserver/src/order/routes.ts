@@ -63,7 +63,7 @@ export class OrderController {
 
     await db.transaction(async (trx) => {
       order.buyerTradeTransactionId = await deductPoints(
-        trx, communityId, order.buyerId, TransactionType.PayProduct, order.amount
+        trx, communityId, order.buyerId, TransactionType.PayProduct, order.amount, order.id
       );
 
       await Table.Order.transacting(trx).insert(order);
