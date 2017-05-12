@@ -173,6 +173,11 @@ export class ProductController {
       throw new ResponseError('不可编辑其他店铺的商品');
     }
 
+    let wechat = await Wechat.create(ctx.session.communityId);
+    let images = await savePhotos(model.serverIds, wechat);
+    product.images = JSON.stringify(images);
+
+
     await Table.Product.where('id', model.id).update({
       categoryId: model.categoryId,
       title: model.title,
@@ -180,6 +185,7 @@ export class ProductController {
       price: model.price,
       points: model.points,
       normalPrice: model.normalPrice,
+      images: product.images,
     });
 
     return success();

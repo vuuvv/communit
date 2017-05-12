@@ -222,11 +222,17 @@ async function refundOrder(trx, orderId) {
     if (order.status === models_1.OrderStatus.Refund) {
         throw new Error('订单已退款，不可重复退款');
     }
-    if (order.buyerTradeTransactionId) {
-        order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
-    }
-    if (order.sellerRefundTransactionId) {
-        order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+    // if (order.buyerTradeTransactionId) {
+    //   order.buyerRefundTransactionId = await reverseTransaction(trx, order.buyerTradeTransactionId);
+    // }
+    // if (order.sellerRefundTransactionId) {
+    //   order.sellerRefundTransactionId = await reverseTransaction(trx, order.sellerTradeTransactionId);
+    // }
+    let transactions = await db_1.Table.Transaction.transacting(trx).where('orderId', orderId);
+    for (let t of transactions) {
+        if (!t.reverseTransaction) {
+            await reverseTransaction(trx, t.id);
+        }
     }
     await db_1.Table.Order.transacting(trx).where('id', orderId).update({
         status: models_1.OrderStatus.Refund,

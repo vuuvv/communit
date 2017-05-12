@@ -140,6 +140,9 @@ let ProductController = class ProductController {
         if (product.storeId !== store.id) {
             throw new routes_1.ResponseError('不可编辑其他店铺的商品');
         }
+        let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
+        let images = await product_1.savePhotos(model.serverIds, wechat);
+        product.images = JSON.stringify(images);
         await db_1.Table.Product.where('id', model.id).update({
             categoryId: model.categoryId,
             title: model.title,
@@ -147,6 +150,7 @@ let ProductController = class ProductController {
             price: model.price,
             points: model.points,
             normalPrice: model.normalPrice,
+            images: product.images,
         });
         return routes_1.success();
     }

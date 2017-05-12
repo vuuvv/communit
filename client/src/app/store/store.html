@@ -1,20 +1,5 @@
-<v-page *ngIf="!isNormal">
-  <v-header [showBack]="false" slot="header">
-    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/user']">
-      <div class="left-arrow"></div>
-    </a>
-    我的店铺
-  </v-header>
-  <v-tabbar slot="footer">
-    <v-tabbar-btn class="primary" [routerLink]="['/store/add']" *ngIf="!store">申请开店</v-tabbar-btn>
-    <v-tabbar-btn class="primary" [routerLink]="['/user']" *ngIf="isSubmit">返回</v-tabbar-btn>
-  </v-tabbar>
-  <empty-page *ngIf="!store">您还没有店铺</empty-page>
-  <empty-page *ngIf="isSubmit">您的店铺正在审核中，请等待审核完成</empty-page>
-</v-page>
-
-<v-page *ngIf="isNormal" class="page-store">
-  <v-header slot="header">
+<v-page>
+  <v-header slot="header" backUrl="/user">
     我的店铺
     <v-icon class="ngv-header-button" type="weixiu" [headerButton]="true" slot="right" [routerLink]="['/store/edit']"></v-icon>
   </v-header>
@@ -22,15 +7,16 @@
     <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
   </v-tabbar>
   <v-tab>
-    <v-tab-item *ngFor="let tab of tabs; let i = index" (click)="currentIndex = i" [class.ngv-tab-selected]="i === currentIndex">{{ tab }}</v-tab-item>
+    <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="['/store/page/' + i]" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
   </v-tab>
   <ng-container [ngSwitch]="currentIndex">
     <ng-container *ngSwitchCase="0">
+      <div class="ngv-gutter"></div>
       <order *ngFor="let o of orders" [order]="o" [isStore]="true"></order>
       <empty-page *ngIf="!orders || !orders.length">暂无内容</empty-page>
     </ng-container>
     <ng-container *ngSwitchCase="1">
-      <div class="product-list ngv-bg-white">
+      <div class="product-list ngv-bg-white ngv-gutter">
         <product-list-item
           class="ngv-1px-b"
           [product]="p"

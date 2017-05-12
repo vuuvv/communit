@@ -1,6 +1,6 @@
 @import '../../styles/variable';
 
-.ngv-tab {
+v-tab {
   display: flex;
   background-color: #fff;
   height: 44px;
@@ -14,7 +14,7 @@
     appearance: none;
   }
 
-  .ngv-tab-item {
+  v-tab-item {
     display: block;
     flex: 1;
     width: 100%;
@@ -26,10 +26,12 @@
     text-align: center;
     line-height: 44px;
     color: #666;
+    outline: none;
 
     &.ngv-tab-selected {
       color: @main-color;
       border-bottom: 3px solid @main-color;
+      outline: none;
     }
   }
 

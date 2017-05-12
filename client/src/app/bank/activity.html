@@ -1,9 +1,5 @@
 <v-page *ngIf="activity">
-  <v-header [showBack]="false" slot="header">
-    <a class="ngv-header-back ngv-header-button" slot="left" [routerLink]="['/bank']">
-      <span>返回</span>
-      <div class="left-arrow"></div>
-    </a>
+  <v-header backUrl="/bank/activities" slot="header">
     公益活动
   </v-header>
   <v-tabbar slot="footer" *ngIf="canJoin || canCheck || canStart">

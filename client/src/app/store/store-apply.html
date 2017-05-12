@@ -1,0 +1,11 @@
+<v-page *ngIf="!isNormal">
+  <v-header backUrl="/user" slot="header">
+    申请开店
+  </v-header>
+  <v-tabbar slot="footer">
+    <v-tabbar-btn class="primary" [routerLink]="['/store/add']" *ngIf="status == 'empty'">申请开店</v-tabbar-btn>
+    <v-tabbar-btn class="primary" [routerLink]="['/user']" *ngIf="status == 'submit'">返回</v-tabbar-btn>
+  </v-tabbar>
+  <empty-page *ngIf="status == 'empty'">您还没有店铺</empty-page>
+  <empty-page *ngIf="status == 'submit'">您的店铺正在审核中，请等待审核完成</empty-page>
+</v-page>

@@ -48,22 +48,24 @@ export class StoreComponent implements OnInit {
     private http: Http,
     private overlayService: OverlayService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit() {
-    this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
       this.currentIndex = params['id'];
+      this.overlayService.loading();
       return this.http.get('/store');
     }).subscribe((ret: any) => {
+      this.overlayService.hideToast();
       this.store = ret.store;
+      if (!this.isNormal) {
+        this.router.navigate(['/store/apply/' + (this.isEmpty ? 'empty' : 'submit')]);
+        return;
+      }
       this.products = ret.products;
       this.orders = ret.orders;
       this.accounts = ret.accounts;
-      this.overlayService.hideToast();
-      setTimeout(() => {
-        this.currentIndex = 0;
-      }, 0);
     });
   }
 

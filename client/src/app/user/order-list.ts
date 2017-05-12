@@ -47,7 +47,6 @@ export class OrderListComponent implements OnInit {
         } else if (this.type === 'activity') {
           o.details = [JSON.parse(o.data)];
         }
-        console.log(o.products);
       });
     });
   }

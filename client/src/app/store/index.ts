@@ -8,6 +8,7 @@ import { NgvModule } from '../../components';
 import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { StoreComponent, StoreAddComponent, StoreEditComponent } from './store';
+import { StoreApplyComponent } from './store-apply';
 import { ProductAddComponent, ProductEditComponent } from './product';
 import { ProductDetailComponent } from './product-detail';
 
@@ -20,6 +21,11 @@ const routes: Routes = [
         path: '',
         redirectTo: '/store/page/0',
         pathMatch: 'full',
+      },
+      {
+        path: 'apply/:status',
+        pathMatch: 'full',
+        component: StoreApplyComponent,
       },
       {
         path: 'page/:id',
@@ -68,6 +74,7 @@ const routes: Routes = [
     StoreComponent,
     StoreAddComponent,
     StoreEditComponent,
+    StoreApplyComponent,
     ProductAddComponent,
     ProductEditComponent,
     ProductDetailComponent,
