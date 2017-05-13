@@ -10,6 +10,8 @@ import { WechatService, Http } from '../services';
 export class WechatMultipleUploaderComponent {
   @Input() tip: string;
   @Input() serverIds: string[] = [];
+  @Input() showAdd = true;
+  @Input() showTip = true;
   @Output() serverIdsChange = new EventEmitter();
   @Output() clickItem = new EventEmitter();
 

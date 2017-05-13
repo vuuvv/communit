@@ -31,7 +31,7 @@ export class OrganizationController {
         select
           concat(
             '[',
-            group_concat(json_object('id', id, 'organizationname', organizationname)),
+            group_concat(json_object('id', id, 'organizationname', organizationname, 'image', image_href)),
             ']'
           )
         from t_organization as o2 where o2.parentId=o1.id
@@ -47,8 +47,28 @@ export class OrganizationController {
   @get('/item/:id')
   @wechat
   async item(ctx) {
-    let ret = await Table.Organization.where('id', ctx.params.id).first();
-    return success(ret);
+    const sql = `
+    select
+      o.id,
+      o.organizationname as name,
+      o.description,
+      (select count(*) from t_organuser as ou1 where ou1.organizationId=o.id) as userCount
+    from t_organization as o
+    where o.id = ?
+    `;
+    let org = await first(sql, [ctx.params.id]);
+    if (!org) {
+      throw new Error('无此社工机构');
+    }
+
+    org.isJoined = !!(await first(`
+    select * from t_wechat_user as wu
+    join t_organuser as ou on wu.id=ou.subuserid
+    join t_organization as o on ou.organizationId=o.id
+    where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
+    `, [ctx.session.communityId, ctx.session.userId, ctx.params.id]));
+
+    return success(org);
   }
 
   @get('/:id/users')
@@ -76,6 +96,7 @@ export class OrganizationController {
     return success(ouser);
   }
 
+/*
   @post('/join/:id')
   @login
   async join(ctx) {
@@ -93,6 +114,68 @@ export class OrganizationController {
     data.roleId = 1;
     delete data.name;
     await Table.OrganizationUser.insert(data);
+    return success();
+  }
+*/
+
+  @post('/join/:id')
+  @login
+  async join(ctx) {
+    let organizationId = ctx.params.id;
+
+    let org = await Table.Organization.where('id', ctx.params.id).first();
+    if (!org) {
+      throw new Error('无效的社工机构');
+    }
+
+
+    let user = await Table.WechatUser.where({
+      officialAccountId: ctx.session.communityId,
+      userId: ctx.session.userId,
+    }).first();
+
+    await db.transaction(async (trx) => {
+      const orgUser = await Table.OrganizationUser.transacting(trx).forUpdate().where({
+        organizationId,
+        subuserid: user.id
+      }).first();
+
+      if (orgUser) {
+        throw new Error('您已经加入了该社区');
+      }
+
+      await Table.OrganizationUser.transacting(trx).insert({
+        id: uuid(),
+        organizationId,
+        subuserid: user.id,
+        username: user.realname,
+        roleId: 1,
+        status: 'submit',
+      });
+    });
+    return success();
+  }
+
+  @post('/quit/:id')
+  @login
+  async quit(ctx) {
+    let organizationId = ctx.params.id;
+
+    let org = await Table.Organization.where('id', ctx.params.id).first();
+    if (!org) {
+      throw new Error('无效的社工机构');
+    }
+
+    let user = await Table.WechatUser.where({
+      officialAccountId: ctx.session.communityId,
+      userId: ctx.session.userId,
+    }).first();
+
+    await Table.OrganizationUser.where({
+      organizationId,
+      subuserid: user.id
+    }).delete();
+
     return success();
   }
 }

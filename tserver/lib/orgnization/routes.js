@@ -29,7 +29,7 @@ let OrganizationController = class OrganizationController {
         select
           concat(
             '[',
-            group_concat(json_object('id', id, 'organizationname', organizationname)),
+            group_concat(json_object('id', id, 'organizationname', organizationname, 'image', image_href)),
             ']'
           )
         from t_organization as o2 where o2.parentId=o1.id
@@ -42,8 +42,26 @@ let OrganizationController = class OrganizationController {
         return routes_1.success(ret);
     }
     async item(ctx) {
-        let ret = await db_1.Table.Organization.where('id', ctx.params.id).first();
-        return routes_1.success(ret);
+        const sql = `
+    select
+      o.id,
+      o.organizationname as name,
+      o.description,
+      (select count(*) from t_organuser as ou1 where ou1.organizationId=o.id) as userCount
+    from t_organization as o
+    where o.id = ?
+    `;
+        let org = await db_1.first(sql, [ctx.params.id]);
+        if (!org) {
+            throw new Error('无此社工机构');
+        }
+        org.isJoined = !!(await db_1.first(`
+    select * from t_wechat_user as wu
+    join t_organuser as ou on wu.id=ou.subuserid
+    join t_organization as o on ou.organizationId=o.id
+    where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
+    `, [ctx.session.communityId, ctx.session.userId, ctx.params.id]));
+        return routes_1.success(org);
     }
     async users(ctx) {
         let ret = await db_1.Table.OrganizationUser.where({
@@ -62,20 +80,70 @@ let OrganizationController = class OrganizationController {
         }).first();
         return routes_1.success(ouser);
     }
-    async join(ctx) {
-        let user = await db_1.Table.WechatUser.where({
-            officialAccountId: ctx.session.communityId,
-            userId: ctx.session.userId,
+    /*
+      @post('/join/:id')
+      @login
+      async join(ctx) {
+        let user = await Table.WechatUser.where({
+          officialAccountId: ctx.session.communityId,
+          userId: ctx.session.userId,
         }).first();
-        let data = await utils_1.getJsonBody(ctx);
-        data.id = utils_1.uuid();
+    
+        let data = await getJsonBody(ctx);
+        data.id = uuid();
         data.username = data.realname = data.name;
         data.organizationid = ctx.params.id;
         data.subuserid = user.id;
         data.status = 'submit';
         data.roleId = 1;
         delete data.name;
-        await db_1.Table.OrganizationUser.insert(data);
+        await Table.OrganizationUser.insert(data);
+        return success();
+      }
+    */
+    async join(ctx) {
+        let organizationId = ctx.params.id;
+        let org = await db_1.Table.Organization.where('id', ctx.params.id).first();
+        if (!org) {
+            throw new Error('无效的社工机构');
+        }
+        let user = await db_1.Table.WechatUser.where({
+            officialAccountId: ctx.session.communityId,
+            userId: ctx.session.userId,
+        }).first();
+        await db_1.db.transaction(async (trx) => {
+            const orgUser = await db_1.Table.OrganizationUser.transacting(trx).forUpdate().where({
+                organizationId,
+                subuserid: user.id
+            }).first();
+            if (orgUser) {
+                throw new Error('您已经加入了该社区');
+            }
+            await db_1.Table.OrganizationUser.transacting(trx).insert({
+                id: utils_1.uuid(),
+                organizationId,
+                subuserid: user.id,
+                username: user.realname,
+                roleId: 1,
+                status: 'submit',
+            });
+        });
+        return routes_1.success();
+    }
+    async quit(ctx) {
+        let organizationId = ctx.params.id;
+        let org = await db_1.Table.Organization.where('id', ctx.params.id).first();
+        if (!org) {
+            throw new Error('无效的社工机构');
+        }
+        let user = await db_1.Table.WechatUser.where({
+            officialAccountId: ctx.session.communityId,
+            userId: ctx.session.userId,
+        }).first();
+        await db_1.Table.OrganizationUser.where({
+            organizationId,
+            subuserid: user.id
+        }).delete();
         return routes_1.success();
     }
 };
@@ -121,6 +189,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "join", null);
+__decorate([
+    routes_1.post('/quit/:id'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "quit", null);
 OrganizationController = __decorate([
     routes_1.router('/organization')
 ], OrganizationController);

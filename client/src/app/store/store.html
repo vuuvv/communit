@@ -3,7 +3,7 @@
     我的店铺
     <v-icon class="ngv-header-button" type="weixiu" [headerButton]="true" slot="right" [routerLink]="['/store/edit']"></v-icon>
   </v-header>
-  <v-tabbar slot="footer" *ngIf="currentIndex === 1">
+  <v-tabbar slot="footer" *ngIf="currentIndex === '1'">
     <v-tabbar-btn class="warn" [routerLink]="['/store/product/add']">新增产品</v-tabbar-btn>
   </v-tabbar>
   <v-tab>

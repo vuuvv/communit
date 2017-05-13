@@ -22,31 +22,33 @@ export class OrganizationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.overlayService.loading();
-    this.route.params.concatMap((params: Params) => {
-      this.id = params['id'];
-      if (this.id) {
-        return this.http.get(`/organization/children/${this.id}`);
-      } else {
-        return this.http.get(`/organization/home`);
-      }
-    }).subscribe((resp: any) => {
-      this.overlayService.hideToast();
-      if (this.id) {
-        this.organization = resp.organization;
-        this.organizations = resp.children;
-      } else {
-        this.organizations = resp;
-        this.organizations.forEach((v) => {
-          v.children = JSON.parse(v.children);
-          if (v.children) {
-            v.children.forEach((c) => {
-              c.url = `/organization/children/${c.id}`;
-            });
-          };
-        });
-      }
-    });
+    this.router.navigate(['/group']);
+    return;
+    // this.overlayService.loading();
+    // this.route.params.concatMap((params: Params) => {
+    //   this.id = params['id'];
+    //   if (this.id) {
+    //     return this.http.get(`/organization/children/${this.id}`);
+    //   } else {
+    //     return this.http.get(`/organization/home`);
+    //   }
+    // }).subscribe((resp: any) => {
+    //   this.overlayService.hideToast();
+    //   if (this.id) {
+    //     this.organization = resp.organization;
+    //     this.organizations = resp.children;
+    //   } else {
+    //     this.organizations = resp;
+    //     this.organizations.forEach((v) => {
+    //       v.children = JSON.parse(v.children);
+    //       if (v.children) {
+    //         v.children.forEach((c) => {
+    //           c.url = `/organization/children/${c.id}`;
+    //         });
+    //       };
+    //     });
+    //   }
+    // });
   }
 
   get title() {

@@ -1,0 +1,37 @@
+<v-page class="page-group-list">
+  <v-header [showBack]="false" slot="header">社工社区</v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <div class="threads-list ngv-bg-white">
+    <div class="threads">
+      <div class="thread ellipsis ngv-1px-b">
+        <v-image src="./assets/images/group/headline.png" [block]='false' width="18px" height="18px"></v-image>
+        <span class="thread-title">舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协会会会会会会会会舞蹈协会</span>
+      </div>
+      <div class="thread ellipsis ngv-1px-b">
+        <v-image src="./assets/images/group/headline.png" [block]='false' width="18px" height="18px"></v-image>
+        <span class="thread-title">舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协会会会会会会会会舞蹈协会</span>
+      </div>
+      <div class="thread ellipsis ngv-1px-b">
+        <v-image src="./assets/images/group/headline.png" [block]='false' width="18px" height="18px"></v-image>
+        <span class="thread-title">舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协舞蹈协会会会会会会会会舞蹈协会</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-list">
+    <ng-container *ngFor="let o of organizations">
+      <div class="groups ngv-bg-white" *ngIf="o.children && o.children.length">
+        <div class="groups-hd">{{ o.organizationname }}</div>
+        <div class="groups-bd">
+          <div class="group ngv-1px-t" *ngFor="let c of o.children" [routerLink]="'/group/item/' + c.id">
+            <v-image [src]="c.image" width="18px" height="18px"></v-image>
+            <div class="group-title">{{ c.organizationname }}</div>
+            <div class="group-meta">10/100</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</v-page>
+

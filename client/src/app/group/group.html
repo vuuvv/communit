@@ -1,0 +1,73 @@
+<v-page class="page-group" *ngIf="organization">
+  <v-header slot="header">
+    <span>{{ organization.name }}</span>
+    <v-icon class="ngv-header-button" type="edit" [headerButton]="true" slot="right" [routerLink]="['/thread/add']" *ngIf="organization.isJoined"></v-icon>
+  </v-header>
+  <tabbar slot="footer"></tabbar>
+
+  <div class="group-header ngv-bg-white">
+    <div class="group-header-left">
+      <v-image src="assets/images/group/default.png" width="80px" height="80px"></v-image>
+    </div>
+    <div class="group-header-center">
+      <div class="group-name">{{ organization.name }}</div>
+      <div class="group-desc">{{ organization.description || organization.name}}</div>
+      <div class="group-meta">
+        <span>人数: <span class="highlight">{{ organization.userCount }}</span></span>
+        <span>帖子: <span class="highlight">2024</span></span>
+      </div>
+    </div>
+    <div class="group-header-right">
+      <div class="group-buttons">
+        <div class="group-button" (click)="join()" *ngIf="!organization.isJoined">
+          <span>加入</span>
+        </div>
+        <div class="group-button" (click)="quit()" *ngIf="organization.isJoined">
+          <span>退出</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-body">
+    <div class="thread-list">
+      <div class="thread ngv-gutter ngv-bg-white">
+        <div class="thread-head">
+          <div class="thread-head-left">
+            <v-image src="http://wx.qlogo.cn/mmopen/ajNVdqHZLLD8gVicMQjLIuwlzkLXictLywcmkdGOkKWY4qnIxXtPZ8icJ1xQ9EUoHNeVu7Sia07srqCyMRtIpxKZ5g/0" width="35px" height="35px"></v-image>
+          </div>
+          <div class="thread-head-center">
+            <div class="thread-user-name">
+              曾荧
+            </div>
+            <div class="thread-time">4分钟前</div>
+          </div>
+          <div class="thread-head-right">
+            <div>
+              <v-icon type="good"></v-icon>
+              <span>20</span>
+              <v-icon type="bad"></v-icon>
+              <span>10</span>
+              <v-icon type="comment"></v-icon>
+              <span>100</span>
+            </div>
+          </div>
+        </div>
+        <div class="thread-body">
+          <div class="thread-title">防灾减灾日：你必须知道的“灾害防范”</div>
+          <div class="thread-desc">
+            暴雨将至，气象部门发布红色预警，你该如何防御，还是否需要送孩子上学？沙尘暴来袭，你又该如何应对？突如其来的大风，你是否意识到需要防范高空坠物和危险建筑物？记者在街头随机采访多名群众发现，面对形式多样的自然灾害，多数人仅掌握个别的防御知识，防灾减灾的意识不强，对防灾的行动指引知晓度也较低。
+
+            5月12日，我国迎来了第九个“防灾减灾日”，今年的主题是“减轻社区灾害风险，提升基层减灾能力”，凸显了做好防灾减灾工作，社区是基础、基层是关键的重要性和紧迫性。
+
+            “社区、基层可能遭遇的灾害形形色色，在防范灾害的过程中，从基层、社区入手加强公众的防灾意识，非常关键。现实中有不少人在台风、暴雨等灾害到来前存有侥幸心理，在防灾过程中仅靠主观经验做判断，这都是非常危险的。”广州市民政局救灾和慈善事业处处长陈忠文说。
+          </div>
+          <div class="thread-images">
+            <wechat-multiple-uploader [(serverIds)]="serverIds" (clickItem) = "clickItem($event)" [showTip]="false" [showAdd]="false"></wechat-multiple-uploader>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</v-page>
+

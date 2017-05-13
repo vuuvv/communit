@@ -1,0 +1,52 @@
+@line-height: 42px;
+
+.page-group-list {
+  .threads {
+    padding: 0 20px;
+  }
+  .thread {
+    height: @line-height;
+    font-size: 14px;
+
+    v-image {
+      line-height: @line-height;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    span {
+      line-height: @line-height;
+      vertical-align: middle;
+    }
+  }
+
+  .groups {
+    margin-top: 8px;
+    padding: 0 20px;
+    font-size: 14px;
+
+    .groups-hd {
+      height: @line-height;
+      line-height: @line-height;
+    }
+
+    .group {
+      display: flex;
+      width: 100%;
+      height: @line-height;
+      align-items: center;
+
+      v-image {
+        margin-right: 8px;
+      }
+
+      .group-title {
+        flex: 1;
+      }
+
+      .group-meta {
+        color: #999;
+      }
+    }
+  }
+}

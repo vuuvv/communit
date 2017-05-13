@@ -38,6 +38,10 @@ const appRoutes: Routes = [
     path: 'store',
     loadChildren: 'app/store/index#StoreModule',
   },
+  {
+    path: 'group',
+    loadChildren: 'app/group/index#GroupModule',
+  },
 ];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, { useHash: true, preloadingStrategy: PreloadAllModules });
 

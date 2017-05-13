@@ -10,6 +10,7 @@ import { SharedModule, AuthorizeGuard } from '../shared';
 import { PublishComponent } from './publish.component';
 import { ActionComponent } from './action.component';
 import { ActivityComponent } from './activity';
+import { QuestionComponent } from './question';
 
 const routes: Routes = [
   {
@@ -47,6 +48,7 @@ const routes: Routes = [
     ActionComponent,
     PublishComponent,
     ActivityComponent,
+    QuestionComponent,
   ]
 })
 export class PublishModule {
