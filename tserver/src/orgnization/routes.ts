@@ -5,7 +5,8 @@ import { router, get, post, all, success, Response, ResponseError, login, wechat
 import { Table, db, raw, first } from '../db';
 import { uuid, create, getJsonBody } from '../utils';
 import { getStore } from '../store';
-import { Product } from '../models';
+import { Product, Thread, ThreadComment, ThreadRank } from '../models';
+import { Wechat } from '../wechat';
 
 @router('/organization')
 export class OrganizationController {
@@ -47,6 +48,7 @@ export class OrganizationController {
   @get('/item/:id')
   @wechat
   async item(ctx) {
+    const organizationId = ctx.params.id;
     const sql = `
     select
       o.id,
@@ -56,7 +58,7 @@ export class OrganizationController {
     from t_organization as o
     where o.id = ?
     `;
-    let org = await first(sql, [ctx.params.id]);
+    let org = await first(sql, [organizationId]);
     if (!org) {
       throw new Error('无此社工机构');
     }
@@ -66,7 +68,17 @@ export class OrganizationController {
     join t_organuser as ou on wu.id=ou.subuserid
     join t_organization as o on ou.organizationId=o.id
     where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
-    `, [ctx.session.communityId, ctx.session.userId, ctx.params.id]));
+    `, [ctx.session.communityId, ctx.session.userId, organizationId]));
+
+    org.threads = await raw(`
+    select
+      t.*, wu.realname, wu.headimgurl ,
+      (select count(*) from t_thread_comment as tc where tc.threadId=t.id) as commentCount
+    from t_thread as t
+    join t_wechat_user as wu on t.communityId = wu.officialAccountId and t.userId = wu.userId
+    where t.organizationId = ?
+    order by t.lastCommentTime desc
+    `, [organizationId]);
 
     return success(org);
   }
@@ -175,6 +187,39 @@ export class OrganizationController {
       organizationId,
       subuserid: user.id
     }).delete();
+
+    return success();
+  }
+
+  @post('/:id/thread/add')
+  @login
+  async addThread(ctx) {
+    let model = await getJsonBody(ctx);
+    if (!model.title) {
+      throw new Error('请输入标题');
+    }
+    if (!model.content) {
+      throw new Error('请输入内容');
+    }
+
+    let org = await Table.Organization.where('id', ctx.params.id);
+    if (!org) {
+      throw new Error('无效的社工机构');
+    }
+
+    let entity = new Thread();
+    entity.organizationId = ctx.params.id;
+    entity.communityId = ctx.session.communityId;
+    entity.userId = ctx.session.userId;
+    entity.title = model.title;
+    entity.content = model.content;
+
+
+    let wechat = await Wechat.create(ctx.session.communityId);
+    let images = await wechat.savePhotos(model.serverIds);
+    entity.images = JSON.stringify(images);
+
+    await Table.Thread.insert(entity);
 
     return success();
   }

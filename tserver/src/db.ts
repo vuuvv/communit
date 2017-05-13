@@ -57,6 +57,9 @@ import {
   SociallyActivityUser, SociallyActivityUserTableName,
   Apicall, ApicallTableName,
   ServiceUser, ServiceUserTableName,
+  Thread, ThreadTableName,
+  ThreadRank, ThreadRankTableName,
+  ThreadComment, ThreadCommentTableName,
 } from './models';
 
 export interface Model<T> {
@@ -186,5 +189,17 @@ export class Table<T> {
 
   static get ServiceUser() {
     return new Table<ServiceUser>(ServiceUser, ServiceUserTableName).database;
+  }
+
+  static get Thread() {
+    return new Table<Thread>(Thread, ThreadTableName).database;
+  }
+
+  static get ThreadComment() {
+    return new Table<ThreadComment>(ThreadComment, ThreadCommentTableName).database;
+  }
+
+  static get ThreadRank() {
+    return new Table<ThreadRank>(ThreadRank, ThreadRankTableName).database;
   }
 }

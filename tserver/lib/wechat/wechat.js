@@ -401,6 +401,22 @@ class Wechat {
         ctx.session.wechatUserId = wechatUser.id;
         return wechatUser;
     }
+    async savePhotos(serverIds) {
+        if (!serverIds || !serverIds.length) {
+            return [];
+        }
+        let ret = [];
+        for (let i = 0; i < serverIds.length; i++) {
+            let serverId = serverIds[i];
+            if (serverId.indexOf('/') === -1) {
+                ret.push(await this.saveMedia(serverId));
+            }
+            else {
+                ret.push(serverId);
+            }
+        }
+        return ret;
+    }
     async createMenu(menu) {
         let token = await this.getToken();
         let ret = await request({

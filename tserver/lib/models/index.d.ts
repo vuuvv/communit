@@ -26,3 +26,6 @@ export * from './socially_activity';
 export * from './socially_activity_user';
 export * from './api';
 export * from './service_user';
+export * from './thread';
+export * from './thread_rank';
+export * from './thread_comment';

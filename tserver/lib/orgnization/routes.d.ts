@@ -7,4 +7,5 @@ export declare class OrganizationController {
     joined(ctx: any): Promise<Response>;
     join(ctx: any): Promise<Response>;
     quit(ctx: any): Promise<Response>;
+    addThread(ctx: any): Promise<Response>;
 }

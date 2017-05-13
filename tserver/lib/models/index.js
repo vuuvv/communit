@@ -30,3 +30,6 @@ __export(require("./socially_activity"));
 __export(require("./socially_activity_user"));
 __export(require("./api"));
 __export(require("./service_user"));
+__export(require("./thread"));
+__export(require("./thread_rank"));
+__export(require("./thread_comment"));

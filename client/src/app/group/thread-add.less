@@ -1,0 +1,68 @@
+.page-thread-add {
+  .ngv-page-content {
+    background: #fff;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 0;
+  }
+
+  .text-field-input {
+    appearance: none;
+    outline: none;
+    border: none;
+    background: none;
+    border-radius: 0 0 0 0;
+    box-shadow: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 32px;
+    font-style: inherit;
+    font-variant: inherit;
+    font-weight: inherit;
+    font-stretch: inherit;
+    font-size: inherit;
+    color: rgba(0,0,0,.87);
+    font-family: inherit;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  textarea.text-field-input {
+    resize: vertical;
+    line-height: 1.5;
+    position: relative;
+    height: 100%;
+    resize: none;
+  }
+
+  .thread-title {
+    height: 50px;
+
+    .text-field-input {
+      height: 100%;
+      padding: 0 12px;
+    }
+  }
+
+  .thread-content {
+    flex: 1;
+
+    &>div {
+      height: 100%;
+    }
+
+    textarea {
+      padding: 12px 12px;
+    }
+  }
+
+  .thread-images {
+    padding-top: 12px;
+  }
+}

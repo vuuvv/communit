@@ -1,12 +1,14 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { NgvModule } from '../../components';
 import { SharedModule } from '../shared';
 
 import { GroupListComponent } from './group-list';
 import { GroupComponent } from './group';
+import { ThreadAddComponent } from './thread-add';
 
 const routes: Routes = [
   {
@@ -22,6 +24,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: GroupComponent,
       },
+      {
+        path: ':id/thread/add',
+        pathMatch: 'full',
+        component: ThreadAddComponent,
+      },
     ],
   },
 ];
@@ -29,6 +36,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule.forChild(routes),
     SharedModule,
     NgvModule,
@@ -36,6 +44,7 @@ const routes: Routes = [
   declarations: [
     GroupListComponent,
     GroupComponent,
+    ThreadAddComponent,
   ]
 })
 export class GroupModule {

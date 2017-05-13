@@ -5,7 +5,7 @@ import { router, get, post, all, success, Response, ResponseError, login, wechat
 import { Table, db, raw, first } from '../db';
 import { create } from '../utils';
 import { getStore } from '../store';
-import { getProductModel, savePhotos } from './product';
+import { getProductModel } from './product';
 import { Wechat } from '../wechat';
 import { Product } from '../models';
 
@@ -143,7 +143,7 @@ export class ProductController {
     let product = create(Product, model);
 
     let wechat = await Wechat.create(ctx.session.communityId);
-    let images = await savePhotos(model.serverIds, wechat);
+    let images = await wechat.savePhotos(model.serverIds);
     product.images = JSON.stringify(images);
 
     product.storeId = store.id;
@@ -174,7 +174,7 @@ export class ProductController {
     }
 
     let wechat = await Wechat.create(ctx.session.communityId);
-    let images = await savePhotos(model.serverIds, wechat);
+    let images = await wechat.savePhotos(model.serverIds);
     product.images = JSON.stringify(images);
 
 

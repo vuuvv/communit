@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 const routes_1 = require("../routes");
 const db_1 = require("../db");
 const utils_1 = require("../utils");
+const models_1 = require("../models");
+const wechat_1 = require("../wechat");
 let OrganizationController = class OrganizationController {
     async type(ctx) {
         let organization = await db_1.Table.Organization.where('id', ctx.params.id).first();
@@ -42,6 +44,7 @@ let OrganizationController = class OrganizationController {
         return routes_1.success(ret);
     }
     async item(ctx) {
+        const organizationId = ctx.params.id;
         const sql = `
     select
       o.id,
@@ -51,7 +54,7 @@ let OrganizationController = class OrganizationController {
     from t_organization as o
     where o.id = ?
     `;
-        let org = await db_1.first(sql, [ctx.params.id]);
+        let org = await db_1.first(sql, [organizationId]);
         if (!org) {
             throw new Error('无此社工机构');
         }
@@ -60,7 +63,16 @@ let OrganizationController = class OrganizationController {
     join t_organuser as ou on wu.id=ou.subuserid
     join t_organization as o on ou.organizationId=o.id
     where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
-    `, [ctx.session.communityId, ctx.session.userId, ctx.params.id]));
+    `, [ctx.session.communityId, ctx.session.userId, organizationId]));
+        org.threads = await db_1.raw(`
+    select
+      t.*, wu.realname, wu.headimgurl ,
+      (select count(*) from t_thread_comment as tc where tc.threadId=t.id) as commentCount
+    from t_thread as t
+    join t_wechat_user as wu on t.communityId = wu.officialAccountId and t.userId = wu.userId
+    where t.organizationId = ?
+    order by t.lastCommentTime desc
+    `, [organizationId]);
         return routes_1.success(org);
     }
     async users(ctx) {
@@ -146,6 +158,30 @@ let OrganizationController = class OrganizationController {
         }).delete();
         return routes_1.success();
     }
+    async addThread(ctx) {
+        let model = await utils_1.getJsonBody(ctx);
+        if (!model.title) {
+            throw new Error('请输入标题');
+        }
+        if (!model.content) {
+            throw new Error('请输入内容');
+        }
+        let org = await db_1.Table.Organization.where('id', ctx.params.id);
+        if (!org) {
+            throw new Error('无效的社工机构');
+        }
+        let entity = new models_1.Thread();
+        entity.organizationId = ctx.params.id;
+        entity.communityId = ctx.session.communityId;
+        entity.userId = ctx.session.userId;
+        entity.title = model.title;
+        entity.content = model.content;
+        let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
+        let images = await wechat.savePhotos(model.serverIds);
+        entity.images = JSON.stringify(images);
+        await db_1.Table.Thread.insert(entity);
+        return routes_1.success();
+    }
 };
 __decorate([
     routes_1.get('/children/:id'),
@@ -196,6 +232,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "quit", null);
+__decorate([
+    routes_1.post('/:id/thread/add'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "addThread", null);
 OrganizationController = __decorate([
     routes_1.router('/organization')
 ], OrganizationController);

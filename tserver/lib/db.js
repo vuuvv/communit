@@ -118,5 +118,14 @@ class Table {
     static get ServiceUser() {
         return new Table(models_1.ServiceUser, models_1.ServiceUserTableName).database;
     }
+    static get Thread() {
+        return new Table(models_1.Thread, models_1.ThreadTableName).database;
+    }
+    static get ThreadComment() {
+        return new Table(models_1.ThreadComment, models_1.ThreadCommentTableName).database;
+    }
+    static get ThreadRank() {
+        return new Table(models_1.ThreadRank, models_1.ThreadRankTableName).database;
+    }
 }
 exports.Table = Table;

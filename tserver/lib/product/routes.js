@@ -121,7 +121,7 @@ let ProductController = class ProductController {
         let model = await product_1.getProductModel(ctx);
         let product = utils_1.create(models_1.Product, model);
         let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
-        let images = await product_1.savePhotos(model.serverIds, wechat);
+        let images = await wechat.savePhotos(model.serverIds);
         product.images = JSON.stringify(images);
         product.storeId = store.id;
         await db_1.Table.Product.insert(product);
@@ -141,7 +141,7 @@ let ProductController = class ProductController {
             throw new routes_1.ResponseError('不可编辑其他店铺的商品');
         }
         let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
-        let images = await product_1.savePhotos(model.serverIds, wechat);
+        let images = await wechat.savePhotos(model.serverIds);
         product.images = JSON.stringify(images);
         await db_1.Table.Product.where('id', model.id).update({
             categoryId: model.categoryId,

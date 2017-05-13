@@ -37,6 +37,9 @@ export class GroupComponent implements OnInit {
     }).subscribe((value: any) => {
       this.overlayService.hideToast();
       this.organization = value;
+      this.organization.threads.forEach((v) => {
+        v.images = JSON.parse(v.images);
+      });
     });
   }
 
