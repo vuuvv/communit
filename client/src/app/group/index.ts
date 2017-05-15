@@ -9,6 +9,7 @@ import { SharedModule } from '../shared';
 import { GroupListComponent } from './group-list';
 import { GroupComponent } from './group';
 import { ThreadAddComponent } from './thread-add';
+import { ThreadComponent } from './thread';
 
 const routes: Routes = [
   {
@@ -29,6 +30,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ThreadAddComponent,
       },
+      {
+        path: 'thread/item/:id',
+        pathMatch: 'full',
+        component: ThreadComponent,
+      },
     ],
   },
 ];
@@ -45,6 +51,7 @@ const routes: Routes = [
     GroupListComponent,
     GroupComponent,
     ThreadAddComponent,
+    ThreadComponent,
   ]
 })
 export class GroupModule {

@@ -32,7 +32,7 @@
   <div class="group-body" *ngIf="organization.threads && organization.threads.length">
     <div class="thread-list">
       <div class="thread ngv-gutter ngv-bg-white" *ngFor="let t of organization.threads">
-        <div class="thread-head">
+        <div class="thread-head" [routerLink]="'/group/thread/item/' + t.id">
           <div class="thread-head-left">
             <v-image [src]="t.headimgurl" width="35px" height="35px"></v-image>
           </div>
@@ -40,26 +40,26 @@
             <div class="thread-user-name">
               {{ t.realname }}
             </div>
-            <div class="thread-time">4分钟前</div>
+            <div class="thread-time">{{ t.createdTime | time: 'minite' }}</div>
           </div>
           <div class="thread-head-right">
             <div>
               <v-icon type="good"></v-icon>
-              <span>{{ t.good }}</span>
+              <span>{{ t.goodCount }}</span>
               <v-icon type="bad"></v-icon>
-              <span>{{ t.bad }}</span>
+              <span>{{ t.badCount }}</span>
               <v-icon type="comment"></v-icon>
               <span>{{ t.commentCount }}</span>
             </div>
           </div>
         </div>
         <div class="thread-body">
-          <div class="thread-title">{{ t.title}}</div>
-          <div class="thread-desc">
+          <div class="thread-title" [routerLink]="'/group/thread/item/' + t.id">{{ t.title}}</div>
+          <div class="thread-desc" [routerLink]="'/group/thread/item/' + t.id">
             {{ t.content }}
           </div>
           <div class="thread-images" *ngIf="t.images && t.images.length">
-            <wechat-multiple-uploader [(serverIds)]="t.images" (clickItem) = "clickItem($event)" [showTip]="false" [showAdd]="false"></wechat-multiple-uploader>
+            <wechat-multiple-uploader [(serverIds)]="t.images" (clickItem) = "clickItem($event, t.images)" [showTip]="false" [showAdd]="false"></wechat-multiple-uploader>
           </div>
         </div>
       </div>

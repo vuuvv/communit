@@ -11,13 +11,6 @@ import { OverlayService, DialogService } from '../../components';
 })
 export class GroupComponent implements OnInit {
   organization: any;
-  serverIds = [
-    'http://img1.gtimg.com/gongyi/pics/hv1/62/194/2119/137837507.jpg',
-    'http://img1.gtimg.com/gongyi/pics/hv1/93/106/2209/143667348.jpg',
-    'http://img1.gtimg.com/gongyi/pics/hv1/29/71/2209/143658359.jpg',
-    'http://img1.gtimg.com/gongyi/pics/hv1/244/11/2208/143578249.jpg'
-  ];
-
   uploader: any;
   index = 1;
 
@@ -43,10 +36,10 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  clickItem(values) {
+  clickItem(values, images) {
     this.uploader = values[0];
     this.index = values[1];
-    this.wechatService.previewImage(this.serverIds, this.index || 0);
+    this.wechatService.previewImage(images, this.index || 0);
   }
 
   join() {

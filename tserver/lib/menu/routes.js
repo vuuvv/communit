@@ -45,7 +45,7 @@ let MenuController = class MenuController {
       from weixin_bank_menu as m1
       where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
       order by m1.seq
-      `, [ctx.session.communityId]);
+      `, [ctx.session.communityId], trx);
         });
         let current = all.find((v) => v.id === id);
         return routes_1.success({

@@ -10,6 +10,7 @@ import { OverlayService } from '../../components';
 })
 export class GroupListComponent implements OnInit {
   organizations: any[] = [];
+  threads: any[] = [];
 
   constructor(
     private http: Http,
@@ -21,7 +22,8 @@ export class GroupListComponent implements OnInit {
     this.overlayService.loading();
     this.http.get('/organization/home').subscribe((value: any) => {
       this.overlayService.hideToast();
-      this.organizations = value;
+      this.organizations = value.organizations;
+      this.threads = value.threads;
       this.organizations.forEach((v) => {
         v.children = JSON.parse(v.children);
       });

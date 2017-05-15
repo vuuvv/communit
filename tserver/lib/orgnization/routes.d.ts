@@ -8,4 +8,9 @@ export declare class OrganizationController {
     join(ctx: any): Promise<Response>;
     quit(ctx: any): Promise<Response>;
     addThread(ctx: any): Promise<Response>;
+    getThread(ctx: any): Promise<Response>;
+    rank(threadId: string, type: number, communityId: string, userId: string): Promise<number>;
+    good(ctx: any): Promise<Response>;
+    bad(ctx: any): Promise<Response>;
+    addComment(ctx: any): Promise<Response>;
 }

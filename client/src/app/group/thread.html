@@ -1,0 +1,68 @@
+<v-page class="page-thread" *ngIf="thread">
+  <v-header slot="header" [backText]="thread.organizationname">
+    <span></span>
+  </v-header>
+
+  <div class="thread">
+    <div class="thread-header ngv-bg-white">
+      <div class="thread-header-left">
+        <v-image [src]="thread.headimgurl" width="36px" height="36px" size="cover"></v-image>
+      </div>
+      <div class="thread-header-center">
+        <div class="thread-user">{{ thread.realname }}</div>
+        <div class="thread-time">{{ thread.createdAt | time: 'minite' }}</div>
+      </div>
+      <div class="thread-header-right">
+        <div>
+          <v-icon type="good"></v-icon>
+          <span>{{ thread.goodCount }}</span>
+          <v-icon type="bad"></v-icon>
+          <span>{{ thread.badCount }}</span>
+          <v-icon type="comment"></v-icon>
+          <span>{{ thread.commentCount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="thread-body ngv-bg-white">
+      <div class="thread-title">{{ thread.title }}</div>
+      <div class="thread-content">{{ thread.content }}</div>
+      <div class="thread-images" *ngIf="thread.images && thread.images.length">
+        <img [src]="img" *ngFor="let img of thread.images"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="comment-list">
+    <div class="comment ngv-gutter ngv-bg-white" *ngFor="let c of thread.comments">
+      <div class="comment-header">
+        <div class="comment-header-left">
+          <v-image [src]="c.headimgurl"></v-image>
+        </div>
+        <div class="comment-header-right">
+          <div class="comment-user">{{ c.realname }}</div>
+          <div class="comment-time">{{ c.createdAt | time: 'minite' }}</div>
+        </div>
+      </div>
+      <pre class="comment-body">{{ c.content }}</pre>
+    </div>
+  </div>
+
+  <div class="thread-input" slot="footer">
+    <div class="thread-act" (click)="good()">
+      <v-icon type="good2" *ngIf="thread.rankType !== 1"></v-icon>
+      <v-icon type="good1" *ngIf="thread.rankType === 1"></v-icon>
+    </div>
+    <div class="flipy thread-act" (click)="bad()">
+      <v-icon type="good2" *ngIf="thread.rankType !== -1"></v-icon>
+      <v-icon type="good1" *ngIf="thread.rankType === -1"></v-icon>
+    </div>
+    <div class="thread-textarea">
+      <textarea rows="1" [(ngModel)]="comment" (change)="resize($event)" (cut)="delayResize($event)" (paste)="delayResize($event)" (drop)="delayResize($event)" (keydown)="delayResize($event)"></textarea>
+    </div>
+    <div>
+      <div class="thread-send-btn" (click)="addComment()">发送</div>
+    </div>
+  </div>
+</v-page>
+

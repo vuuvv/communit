@@ -25,22 +25,35 @@ let OrganizationController = class OrganizationController {
         });
     }
     async home(ctx) {
-        let ret = await db_1.raw(`
-    select
-      id, organizationname, (
-        select
-          concat(
-            '[',
-            group_concat(json_object('id', id, 'organizationname', organizationname, 'image', image_href)),
-            ']'
-          )
-        from t_organization as o2 where o2.parentId=o1.id
-        order by o2.seq
-      ) as children
-    from t_organization as o1
-    where o1.accountid = ? and (o1.parentId = '' or o1.parentId is null)
-    order by o1.seq
-    `, [ctx.session.communityId]);
+        let ret = {};
+        await db_1.db.transaction(async (trx) => {
+            await db_1.raw('SET SESSION group_concat_max_len = 1000000', [], trx);
+            ret.organizations = await db_1.raw(`
+      select
+        id, organizationname, (
+          select
+            concat(
+              '[',
+              group_concat(
+                json_object(
+                  'id', id,
+                  'organizationname', organizationname,
+                  'image', image_href,
+                  'threads', (select count(*) from t_thread as t where t.organizationId=o2.id),
+                  'members', (select count(*) from t_organuser as t where t.organizationId=o2.id)
+                )
+              ),
+              ']'
+            )
+          from t_organization as o2 where o2.parentId=o1.id
+          order by o2.seq
+        ) as children
+      from t_organization as o1
+      where o1.accountid = ? and (o1.parentId = '' or o1.parentId is null)
+      order by o1.seq
+      `, [ctx.session.communityId], trx);
+        });
+        ret.threads = await db_1.Table.Thread.where('communityId', ctx.session.communityId).orderBy('lastCommentTime').limit(3);
         return routes_1.success(ret);
     }
     async item(ctx) {
@@ -58,15 +71,22 @@ let OrganizationController = class OrganizationController {
         if (!org) {
             throw new Error('无此社工机构');
         }
-        org.isJoined = !!(await db_1.first(`
-    select * from t_wechat_user as wu
-    join t_organuser as ou on wu.id=ou.subuserid
-    join t_organization as o on ou.organizationId=o.id
-    where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
-    `, [ctx.session.communityId, ctx.session.userId, organizationId]));
+        if (ctx.session.userId) {
+            org.isJoined = !!(await db_1.first(`
+      select * from t_wechat_user as wu
+      join t_organuser as ou on wu.id=ou.subuserid
+      join t_organization as o on ou.organizationId=o.id
+      where wu.officialAccountId = ? and wu.userId = ? and o.id = ?
+      `, [ctx.session.communityId, ctx.session.userId, organizationId]));
+        }
+        else {
+            org.isJoined = false;
+        }
         org.threads = await db_1.raw(`
     select
       t.*, wu.realname, wu.headimgurl ,
+      (select count(*) from t_thread_rank as tr1 where tr1.threadId=t.id and tr1.rank=1) as goodCount,
+      (select count(*) from t_thread_rank as tr2 where tr2.threadId=t.id and tr2.rank=-1) as badCount,
       (select count(*) from t_thread_comment as tc where tc.threadId=t.id) as commentCount
     from t_thread as t
     join t_wechat_user as wu on t.communityId = wu.officialAccountId and t.userId = wu.userId
@@ -182,6 +202,85 @@ let OrganizationController = class OrganizationController {
         await db_1.Table.Thread.insert(entity);
         return routes_1.success();
     }
+    async getThread(ctx) {
+        let threadId = ctx.params.id;
+        let ret = await db_1.first(`
+    select
+      t.*, wu.realname, wu.headimgurl, o.organizationname, tr.rank as rankType,
+      (select count(*) from t_thread_rank as tr1 where tr1.threadId=t.id and tr1.rank=1) as goodCount,
+      (select count(*) from t_thread_rank as tr2 where tr2.threadId=t.id and tr2.rank=-1) as badCount,
+      (select count(*) from t_thread_comment as tc where tc.threadId=t.id) as commentCount
+    from t_thread as t
+    join t_wechat_user as wu on t.communityId = wu.officialAccountId and t.userId = wu.userId
+    join t_organization as o on o.id = t.organizationId
+    left join t_thread_rank as tr on tr.threadId = t.id and tr.communityId = ? and tr.userId = ?
+    where t.id = ?
+    `, [ctx.session.communityId, ctx.session.userId || null, threadId]);
+        ret.comments = await db_1.raw(`
+    select tc.*, wu.realname, wu.headimgurl
+    from t_thread_comment as tc
+    join t_wechat_user as wu on tc.communityId=wu.officialAccountId and tc.userId=wu.userId
+    where tc.threadId = ?
+    order by tc.createdAt desc
+    `, [threadId]);
+        return routes_1.success(ret);
+    }
+    async rank(threadId, type, communityId, userId) {
+        let thread = await db_1.Table.Thread.where('id', threadId).first();
+        if (!thread) {
+            throw new Error('无效的主题贴Id');
+        }
+        await db_1.db.transaction(async (trx) => {
+            let rank = await db_1.Table.ThreadRank.transacting(trx).where({
+                threadId,
+                communityId,
+                userId,
+            }).first();
+            if (rank) {
+                if (rank.rank === type) {
+                    await db_1.Table.ThreadRank.transacting(trx).where('id', rank.id).delete();
+                    type = 0;
+                }
+                else {
+                    await db_1.Table.ThreadRank.transacting(trx).where('id', rank.id).update({
+                        rank: type,
+                    });
+                }
+            }
+            else {
+                await db_1.Table.ThreadRank.transacting(trx).insert({
+                    id: utils_1.uuid(),
+                    threadId,
+                    communityId,
+                    userId,
+                    rank: type,
+                });
+            }
+        });
+        return type;
+    }
+    async good(ctx) {
+        let type = await this.rank(ctx.params.id, 1, ctx.session.communityId, ctx.session.userId);
+        return routes_1.success(type);
+    }
+    async bad(ctx) {
+        let type = await this.rank(ctx.params.id, -1, ctx.session.communityId, ctx.session.userId);
+        return routes_1.success(type);
+    }
+    async addComment(ctx) {
+        let model = await utils_1.getJsonBody(ctx);
+        await db_1.Table.ThreadComment.insert({
+            id: utils_1.uuid(),
+            threadId: ctx.params.id,
+            communityId: ctx.session.communityId,
+            userId: ctx.session.userId,
+            content: model.content,
+        });
+        await db_1.Table.Thread.where('id', ctx.params.id).update({
+            lastCommentTime: new Date(),
+        });
+        return routes_1.success();
+    }
 };
 __decorate([
     routes_1.get('/children/:id'),
@@ -239,6 +338,33 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "addThread", null);
+__decorate([
+    routes_1.get('/thread/item/:id'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "getThread", null);
+__decorate([
+    routes_1.post('/thread/item/:id/good'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "good", null);
+__decorate([
+    routes_1.post('/thread/item/:id/bad'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "bad", null);
+__decorate([
+    routes_1.post('/thread/item/:id/comment/add'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "addComment", null);
 OrganizationController = __decorate([
     routes_1.router('/organization')
 ], OrganizationController);
