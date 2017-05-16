@@ -39,8 +39,13 @@ let ServiceController = class ServiceController {
         // `, [ctx.session.communityId]);
         return routes_1.success(ret);
     }
+    /**
+     * online=1     代表线上问答
+     * online=0     代表非线上回答
+     * online=其他   所有
+     */
     async types(ctx) {
-        let ret = await db_1.raw(`
+        let sql = `
     select
       id as \`key\`, name as \`value\`, (
         select
@@ -53,9 +58,18 @@ let ServiceController = class ServiceController {
         order by m2.seq
       ) as children
     from weixin_bank_menu as m1
-    where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
+    where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null) and
+    <% if(params.online === '1') { %>
+      m1.ifonline = 1
+    <% } else if(params.online === '0') { %>
+      m1.ifonline = 0
+    <% } else { %>
+      1 = 1
+    <% } %>
     order by m1.seq
-    `, [ctx.session.communityId]);
+    `;
+        sql = ejs.render(sql, ctx);
+        let ret = await db_1.raw(sql, [ctx.session.communityId]);
         return routes_1.success(ret);
     }
     async list(ctx) {

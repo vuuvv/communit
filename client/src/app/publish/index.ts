@@ -31,6 +31,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: PublishComponent,
       },
+      {
+        path: 'question',
+        pathMatch: 'full',
+        component: QuestionComponent,
+      },
     ],
   },
 ];

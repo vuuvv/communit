@@ -9,6 +9,6 @@
   <tabbar slot="footer"></tabbar>
 
   <v-group gutter="0">
-    <v-cell [isLink]="true" [routerLink]="['/publish/action/' + c.id]" *ngFor="let c of categories;">{{ c.label }}</v-cell>
+    <v-cell [isLink]="true" [routerLink]="c.url" *ngFor="let c of categories;">{{ c.label }}</v-cell>
   </v-group>
 </v-page>

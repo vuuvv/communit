@@ -1,0 +1,31 @@
+<v-page class="page-publish-question">
+  <v-header slot="header" [showBack]="false">
+    <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
+    <span>提问</span>
+    <div class="ngv-header-button" slot="right">提交</div>
+  </v-header>
+  <form>
+    <v-group gutter="0">
+      <v-cell class="weui-cell_select weui-cell_select-after">
+        <select class="weui-select" name="mainTypeId" [(ngModel)]="question.mainTypeId" (change)="changeTypes()">
+          <option value="">选择大类</option>
+          <option [value]="t.key" *ngFor="let t of types">{{ t.value }}</option>
+        </select>
+      </v-cell>
+      <v-cell class="weui-cell_select weui-cell_select-after">
+        <select class="weui-select" name="typeId" [(ngModel)]="question.typeId">
+          <option value="">选择小类</option>
+          <option [value]="t.key" *ngFor="let t of subTypes">{{ t.value }}</option>
+        </select>
+      </v-cell>
+      <v-cell class="question-title">
+        <input class="weui-input" placeholder="悬赏积分" name="points" [(ngModel)]="question.points" type="number">
+      </v-cell>
+      <v-cell class="question-content">
+        <textarea class="weui-textarea" placeholder="你的问题" rows="1" [(ngModel)]="question.title" name="title"></textarea>
+      </v-cell>
+      <div class="question-images">
+      </div>
+    </v-group>
+  </form>
+</v-page>
