@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { NgvModule } from '../../components';
 
@@ -12,6 +13,7 @@ import { SHARE_PIPES } from './pipes';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     NgvModule
   ],
   declarations: [ SHARED_COMPONENTS, SHARE_PIPES ],

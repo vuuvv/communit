@@ -1,7 +1,7 @@
 <v-page class="page-question">
   <v-header slot="header">问答</v-header>
 
-  <div class="answer-btn">
+  <div class="answer-btn" [routerLink]="'/bank/answer/' + question?.id">
     <v-icon type="edit"></v-icon>
   </div>
 

@@ -226,7 +226,7 @@ export class OrganizationController {
       throw new Error('请输入内容');
     }
 
-    let org = await Table.Organization.where('id', ctx.params.id);
+    let org = await Table.Organization.where('id', ctx.params.id).first().select('id');
     if (!org) {
       throw new Error('无效的社工机构');
     }
@@ -281,6 +281,8 @@ export class OrganizationController {
     if (!thread) {
       throw new Error('无效的主题贴');
     }
+
+    console.log(thread);
 
     let user = await first(`
     select * from t_organuser as ou
@@ -348,7 +350,7 @@ export class OrganizationController {
     let userId = ctx.session.userId;
 
     let model = await getJsonBody(ctx);
-    let thread = await Table.Thread.where('id', threadId);
+    let thread = await Table.Thread.where('id', threadId).first();
 
     await this.checkThreadAndUser(communityId, userId, thread);
 

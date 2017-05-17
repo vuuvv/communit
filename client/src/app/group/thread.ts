@@ -11,7 +11,6 @@ import { OverlayService, DialogService } from '../../components';
 })
 export class ThreadComponent implements OnInit {
   thread: any;
-  comment = '';
   uploader: any;
   index = 1;
 
@@ -73,14 +72,14 @@ export class ThreadComponent implements OnInit {
     });
   }
 
-  addComment() {
-    if (!this.comment) {
+  addComment(comment) {
+    if (!comment) {
       this.dialogService.alert('请填写评论内容');
       return;
     }
 
     this.overlayService.loading();
-    this.http.json(`/organization/thread/item/${this.thread.id}/comment/add`, {content: this.comment}).subscribe((v) => {
+    this.http.json(`/organization/thread/item/${this.thread.id}/comment/add`, {content: comment}).subscribe((v) => {
       this.overlayService.hideToast();
       this.http.get(`/organization/thread/item/${this.thread.id}`).subscribe((value: any) => {
         this.thread.comments = value.comments;

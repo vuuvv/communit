@@ -11,6 +11,7 @@ import { OverlayService, DialogService } from '../../components';
   encapsulation: ViewEncapsulation.None,
 })
 export class AnswerComponent implements OnInit {
+  title = '你的回答';
   answer: any;
 
   constructor(
@@ -23,5 +24,8 @@ export class AnswerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+  }
+
+  addAnswer(content) {
   }
 }

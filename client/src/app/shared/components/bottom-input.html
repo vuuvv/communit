@@ -1,0 +1,8 @@
+  <ng-content select="[slot=left]"></ng-content>
+  <div class="bottom-input-textarea">
+    <textarea rows="1" [(ngModel)]="value" (change)="resize($event)" (cut)="delayResize($event)" (paste)="delayResize($event)" (drop)="delayResize($event)" (keydown)="delayResize($event)"></textarea>
+  </div>
+  <ng-content select="[slot=right]"></ng-content>
+  <div>
+    <div class="bottom-input-send-btn" (click)="do()">发送</div>
+  </div>

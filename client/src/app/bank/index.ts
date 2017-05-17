@@ -19,6 +19,7 @@ import { OrganizationComponent } from './organization';
 import { OrganizationDetailComponent } from './organization-detail';
 import { BankChildComponent } from './bank-child';
 import { QuestionComponent } from './question';
+import { AnswerComponent } from './answer';
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
         path: 'question/:id',
         pathMatch: 'full',
         component: QuestionComponent,
+      },
+      {
+        path: 'answer/:id',
+        pathMatch: 'full',
+        component: AnswerComponent,
       },
       {
         path: 'service/:id',
@@ -110,6 +116,7 @@ const routes: Routes = [
     ServiceJoinComponent,
     BankChildComponent,
     QuestionComponent,
+    AnswerComponent,
   ]
 })
 export class BankModule {

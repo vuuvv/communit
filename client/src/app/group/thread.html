@@ -48,21 +48,15 @@
     </div>
   </div>
 
-  <div class="thread-input" slot="footer">
-    <div class="thread-act" (click)="good()">
-      <v-icon type="good2" *ngIf="thread.rankType !== 1"></v-icon>
-      <v-icon type="good1" *ngIf="thread.rankType === 1"></v-icon>
-    </div>
-    <div class="flipy thread-act" (click)="bad()">
-      <v-icon type="good2" *ngIf="thread.rankType !== -1"></v-icon>
-      <v-icon type="good1" *ngIf="thread.rankType === -1"></v-icon>
-    </div>
-    <div class="thread-textarea">
-      <textarea rows="1" [(ngModel)]="comment" (change)="resize($event)" (cut)="delayResize($event)" (paste)="delayResize($event)" (drop)="delayResize($event)" (keydown)="delayResize($event)"></textarea>
-    </div>
-    <div>
-      <div class="thread-send-btn" (click)="addComment()">发送</div>
-    </div>
-  </div>
+  <bottom-input slot="footer" (submit)="addComment($event)">
+      <div class="bottom-input-act" (click)="good()" slot="left">
+        <v-icon type="good2" *ngIf="thread.rankType !== 1"></v-icon>
+        <v-icon type="good1" *ngIf="thread.rankType === 1"></v-icon>
+      </div>
+      <div class="flipy bottom-input-act" (click)="bad()" slot="left">
+        <v-icon type="good2" *ngIf="thread.rankType !== -1"></v-icon>
+        <v-icon type="good1" *ngIf="thread.rankType === -1"></v-icon>
+      </div>
+  </bottom-input>
 </v-page>
 

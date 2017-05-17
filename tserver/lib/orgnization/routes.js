@@ -188,7 +188,7 @@ let OrganizationController = class OrganizationController {
         if (!model.content) {
             throw new Error('请输入内容');
         }
-        let org = await db_1.Table.Organization.where('id', ctx.params.id);
+        let org = await db_1.Table.Organization.where('id', ctx.params.id).first().select('id');
         if (!org) {
             throw new Error('无效的社工机构');
         }
@@ -232,6 +232,7 @@ let OrganizationController = class OrganizationController {
         if (!thread) {
             throw new Error('无效的主题贴');
         }
+        console.log(thread);
         let user = await db_1.first(`
     select * from t_organuser as ou
     join t_wechat_user as wu on ou.subuserid = wu.id
@@ -287,7 +288,7 @@ let OrganizationController = class OrganizationController {
         let communityId = ctx.session.communityId;
         let userId = ctx.session.userId;
         let model = await utils_1.getJsonBody(ctx);
-        let thread = await db_1.Table.Thread.where('id', threadId);
+        let thread = await db_1.Table.Thread.where('id', threadId).first();
         await this.checkThreadAndUser(communityId, userId, thread);
         await db_1.Table.ThreadComment.insert({
             id: utils_1.uuid(),
