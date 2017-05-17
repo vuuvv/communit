@@ -215,6 +215,9 @@ export class OrganizationController {
   @post('/:id/thread/add')
   @login
   async addThread(ctx) {
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+
     let model = await getJsonBody(ctx);
     if (!model.title) {
       throw new Error('请输入标题');
@@ -228,15 +231,17 @@ export class OrganizationController {
       throw new Error('无效的社工机构');
     }
 
+    await this.checkThreadAndUser(communityId, userId, {organizationId: org.id});
+
     let entity = new Thread();
     entity.organizationId = ctx.params.id;
-    entity.communityId = ctx.session.communityId;
-    entity.userId = ctx.session.userId;
+    entity.communityId = communityId;
+    entity.userId = userId;
     entity.title = model.title;
     entity.content = model.content;
 
 
-    let wechat = await Wechat.create(ctx.session.communityId);
+    let wechat = await Wechat.create(communityId);
     let images = await wechat.savePhotos(model.serverIds);
     entity.images = JSON.stringify(images);
 
@@ -272,11 +277,25 @@ export class OrganizationController {
     return success(ret);
   }
 
+  async checkThreadAndUser(communityId, userId, thread) {
+    if (!thread) {
+      throw new Error('无效的主题贴');
+    }
+
+    let user = await first(`
+    select * from t_organuser as ou
+    join t_wechat_user as wu on ou.subuserid = wu.id
+    where wu.officialAccountId = ? and wu.userId = ? and ou.organizationId = ?
+    `, [communityId, userId, thread.organizationId]);
+    if (!user) {
+      throw new Error('请先加入该社工机构');
+    }
+    return !!user;
+  }
+
   async rank(threadId: string, type: number, communityId: string, userId: string) {
     let thread = await Table.Thread.where('id', threadId).first();
-    if (!thread) {
-      throw new Error('无效的主题贴Id');
-    }
+    await this.checkThreadAndUser(communityId, userId, thread);
 
     await db.transaction(async (trx) => {
       let rank = await Table.ThreadRank.transacting(trx).where({
@@ -324,10 +343,18 @@ export class OrganizationController {
   @post('/thread/item/:id/comment/add')
   @login
   async addComment(ctx) {
+    let threadId = ctx.params.id;
+    let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
+
     let model = await getJsonBody(ctx);
+    let thread = await Table.Thread.where('id', threadId);
+
+    await this.checkThreadAndUser(communityId, userId, thread);
+
     await Table.ThreadComment.insert({
       id: uuid(),
-      threadId: ctx.params.id,
+      threadId,
       communityId: ctx.session.communityId,
       userId: ctx.session.userId,
       content: model.content,

@@ -1,10 +1,11 @@
 @import "./weui/base/mixin/setOnepx.less";
 
 @border-color: #e5e5e5;
+@border-color-dark: #c5c5c5;
 
 .ngv-1px-t {
   position: relative;
-  &:after {
+  &:before {
     .setTopLine(@border-color);
   }
 }
@@ -18,7 +19,7 @@
 
 .ngv-1px-l {
   position: relative;
-  &:after {
+  &:before {
     .setLeftLine(@border-color);
   }
 }
@@ -106,6 +107,120 @@
     .setAllLine(@border-color);
   }
 }
+
+.ngv-1pxd-t {
+  position: relative;
+  &:before {
+    .setTopLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-b {
+  position: relative;
+  &:after {
+    .setBottomLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-l {
+  position: relative;
+  &:before {
+    .setLeftLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-r {
+  position: relative;
+  &:after {
+    .setRightLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-lt {
+  position: relative;
+  &:after {
+    .setLTLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-lr {
+  position: relative;
+  &:after {
+    .setLRLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-lb {
+  position: relative;
+  &:after {
+    .setLBLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-tr {
+  position: relative;
+  &:after {
+    .setTRLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-tb {
+  position: relative;
+  &:before {
+    .setTopLine(@border-color-dark);
+  }
+
+  &:after {
+    .setBottomLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-rb {
+  position: relative;
+  &:after {
+    .setRBLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-ltr {
+  position: relative;
+  &:after {
+    .setLTRLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-ltb {
+  position: relative;
+  &:after {
+    .setLTBLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-lrb {
+  position: relative;
+  &:after {
+    .setLRBLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-trb {
+  position: relative;
+  &:before {
+    .setTopLine(@border-color-dark);
+  }
+
+  &:after {
+    .setRBLine(@border-color-dark);
+  }
+}
+
+.ngv-1pxd-all {
+  position: relative;
+  &:after {
+    .setAllLine(@border-color-dark);
+  }
+}
+
 
 /*
 .ngv-1px-t {

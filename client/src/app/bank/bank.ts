@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Observable } from '../utils';
 
@@ -23,6 +23,9 @@ const collapseButton = {
   encapsulation: ViewEncapsulation.None,
 })
 export class BankComponent implements OnInit {
+  tabs = ['问答', '求助', '服务'];
+  ids = ['question', 'help', 'service'];
+  type = 0;
   icons: any[] = null;
   articles: any[];
   services: any[] = [];
@@ -32,16 +35,19 @@ export class BankComponent implements OnInit {
   constructor(
     private http: Http,
     private router: Router,
+    private route: ActivatedRoute,
     private overlayService: OverlayService,
   ) {}
 
   ngOnInit() {
-    this.overlayService.loading();
-    Observable.forkJoin(
-      this.http.get('/menu/bank'),
-      this.http.get('/service/search'),
-      this.http.get('/articles/home'),
-    ).subscribe((values: any) => {
+    this.route.params.concatMap((params: Params) => {
+      this.overlayService.loading();
+      return Observable.forkJoin(
+        this.http.get('/menu/bank'),
+        this.http.get('/service/search'),
+        this.http.get('/articles/home'),
+      );
+    }).subscribe((values: any) => {
       this.overlayService.hideToast();
       this.icons = values[0];
       this.services = values[1].map((s) => {

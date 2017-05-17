@@ -1,19 +1,26 @@
 <v-page class="page-bank">
-  <v-header [showBack]="false" slot="header">
-    <span>众邻</span>
-    <span style="font-size: 14px">...好邻里·轻松自己</span>
-    <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
-  </v-header>
+  <div slot="header">
+    <v-header [showBack]="false">
+      <span>众邻</span>
+      <span style="font-size: 14px">...好邻里·轻松自己</span>
+      <v-icon class="ngv-header-button" type="plus" [headerButton]="true" slot="right" [routerLink]="['/publish']"></v-icon>
+    </v-header>
+
+    <v-tab class="ngv-1pxd-b">
+      <v-tab-item *ngFor="let tab of tabs; let i = index" [routerLink]="'/bank/home/' + i" routerLinkActive="ngv-tab-selected">{{ tab }}</v-tab-item>
+    </v-tab>
+  </div>
   <tabbar slot="footer"></tabbar>
 
-  <div class="quickentry-nav ngv-1px-b qe" *ngIf="icons">
+  <div class="ngv-gutter"></div>
+  <div class="quickentry-nav ngv-1px-b ngv-1pxd-t qe" *ngIf="icons">
     <quickentry *ngFor="let chunk of shownIcons | chunk: 5; let i = index">
       <quickentry-item [icon]="icon.image | fixurl" (click)="goto(icon)" *ngFor="let icon of chunk | slice: 0:5; let i = index">
       {{ icon.name }}
       </quickentry-item>
     </quickentry>
   </div>
-  <div class="news" *ngIf="articles">
+  <div class="news ngv-1pxd-b" *ngIf="articles">
     <div class="news-item">
       <span class="title ngv-1px-r">头条</span>
       <span class="subject">
@@ -29,9 +36,10 @@
   </div>
 
   <empty-page *ngIf="!services || !services.length">暂无该类服务</empty-page>
+
   <div class="service-list">
-    <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
-    </service-list-item>
+    <question-list-item class="ngv-1pxd-tb" [question]="s" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
+    </question-list-item>
   </div>
 </v-page>
 <!--

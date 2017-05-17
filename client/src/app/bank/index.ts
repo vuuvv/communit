@@ -18,6 +18,7 @@ import { WorkerAddComponent } from './worker-add';
 import { OrganizationComponent } from './organization';
 import { OrganizationDetailComponent } from './organization-detail';
 import { BankChildComponent } from './bank-child';
+import { QuestionComponent } from './question';
 
 const routes: Routes = [
   {
@@ -26,12 +27,22 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
+        redirectTo: '/bank/home/0',
+      },
+      {
+        path: 'home/:id',
+        pathMatch: 'full',
         component: BankComponent,
       },
       {
         path: 'child/:id',
         pathMatch: 'full',
         component: BankChildComponent,
+      },
+      {
+        path: 'question/:id',
+        pathMatch: 'full',
+        component: QuestionComponent,
       },
       {
         path: 'service/:id',
@@ -98,6 +109,7 @@ const routes: Routes = [
     OrganizationDetailComponent,
     ServiceJoinComponent,
     BankChildComponent,
+    QuestionComponent,
   ]
 })
 export class BankModule {

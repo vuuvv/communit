@@ -179,6 +179,8 @@ let OrganizationController = class OrganizationController {
         return routes_1.success();
     }
     async addThread(ctx) {
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
         let model = await utils_1.getJsonBody(ctx);
         if (!model.title) {
             throw new Error('请输入标题');
@@ -190,13 +192,14 @@ let OrganizationController = class OrganizationController {
         if (!org) {
             throw new Error('无效的社工机构');
         }
+        await this.checkThreadAndUser(communityId, userId, { organizationId: org.id });
         let entity = new models_1.Thread();
         entity.organizationId = ctx.params.id;
-        entity.communityId = ctx.session.communityId;
-        entity.userId = ctx.session.userId;
+        entity.communityId = communityId;
+        entity.userId = userId;
         entity.title = model.title;
         entity.content = model.content;
-        let wechat = await wechat_1.Wechat.create(ctx.session.communityId);
+        let wechat = await wechat_1.Wechat.create(communityId);
         let images = await wechat.savePhotos(model.serverIds);
         entity.images = JSON.stringify(images);
         await db_1.Table.Thread.insert(entity);
@@ -225,11 +228,23 @@ let OrganizationController = class OrganizationController {
     `, [threadId]);
         return routes_1.success(ret);
     }
+    async checkThreadAndUser(communityId, userId, thread) {
+        if (!thread) {
+            throw new Error('无效的主题贴');
+        }
+        let user = await db_1.first(`
+    select * from t_organuser as ou
+    join t_wechat_user as wu on ou.subuserid = wu.id
+    where wu.officialAccountId = ? and wu.userId = ? and ou.organizationId = ?
+    `, [communityId, userId, thread.organizationId]);
+        if (!user) {
+            throw new Error('请先加入该社工机构');
+        }
+        return !!user;
+    }
     async rank(threadId, type, communityId, userId) {
         let thread = await db_1.Table.Thread.where('id', threadId).first();
-        if (!thread) {
-            throw new Error('无效的主题贴Id');
-        }
+        await this.checkThreadAndUser(communityId, userId, thread);
         await db_1.db.transaction(async (trx) => {
             let rank = await db_1.Table.ThreadRank.transacting(trx).where({
                 threadId,
@@ -268,10 +283,15 @@ let OrganizationController = class OrganizationController {
         return routes_1.success(type);
     }
     async addComment(ctx) {
+        let threadId = ctx.params.id;
+        let communityId = ctx.session.communityId;
+        let userId = ctx.session.userId;
         let model = await utils_1.getJsonBody(ctx);
+        let thread = await db_1.Table.Thread.where('id', threadId);
+        await this.checkThreadAndUser(communityId, userId, thread);
         await db_1.Table.ThreadComment.insert({
             id: utils_1.uuid(),
-            threadId: ctx.params.id,
+            threadId,
             communityId: ctx.session.communityId,
             userId: ctx.session.userId,
             content: model.content,
