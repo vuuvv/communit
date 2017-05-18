@@ -431,6 +431,7 @@ export class ServiceController {
   @wechat
   async getQuestion(ctx) {
     const ret = await getQuestion(ctx.params.id);
+    ret.currentUserId = ctx.session.userId;
     return success(ret);
   }
 

@@ -80,6 +80,12 @@ export class AnswerComponent implements OnInit {
     return this.userId && this.answer && this.userId === this.answer.userId;
   }
 
+  get canAnswer() {
+    return this.userId && this.question && (
+      this.userId === this.question.userId || !this.answer || this.answer.userId === this.userId
+    );
+  }
+
   get title() {
     if (!this.isAnswer && this.answer) {
       return `来自${this.answer.realname}的回答`;

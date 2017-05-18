@@ -337,6 +337,7 @@ let ServiceController = class ServiceController {
     }
     async getQuestion(ctx) {
         const ret = await service_1.getQuestion(ctx.params.id);
+        ret.currentUserId = ctx.session.userId;
         return routes_1.success(ret);
     }
     async addQuestion(ctx) {

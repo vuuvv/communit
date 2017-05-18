@@ -4,7 +4,7 @@
     <div class="ngv-header-button" slot="right" *ngIf="isOwner">采纳</div>
   </v-header>
 
-  <bottom-input #bottomInput slot="footer" (submit)="addAnswer($event, bottomInput)" *ngIf="userId"></bottom-input>
+  <bottom-input #bottomInput slot="footer" (submit)="addAnswer($event, bottomInput)" *ngIf="canAnswer"></bottom-input>
 
   <div class="answer-row" [class.answer-you]="!isMe(a.userId)" [class.answer-me]="isMe(a.userId)" *ngFor="let a of answers">
     <v-image [src]="a.headimgurl" *ngIf="!isMe(a.userId)"></v-image>

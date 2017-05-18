@@ -29,4 +29,8 @@ export class QuestionComponent implements OnInit {
       this.question = question;
     });
   }
+
+  get canAnswer() {
+    return this.question && this.question.currentUserId && this.question.userId !== this.question.currentUserId;
+  }
 }
