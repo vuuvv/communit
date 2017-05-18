@@ -15,6 +15,8 @@ class OrderType {
 OrderType.Product = 'product';
 OrderType.Service = 'service';
 OrderType.Activity = 'activity';
+OrderType.Answer = 'answer';
+OrderType.Help = 'help';
 exports.OrderType = OrderType;
 class OrderStatus {
 }

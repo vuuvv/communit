@@ -1,3 +1,4 @@
+import { Order, Question } from '../models';
 export declare class AccountType {
     static Normal: string;
     static Buy: string;
@@ -36,3 +37,4 @@ export declare function PayCommunity(trx: any, communityId: any, points: any): P
 export declare function PayActivity(trx: any, activityUserId: any, points: any): Promise<string>;
 export declare function RefundActivityUser(trx: any, activityUserId: string): Promise<string>;
 export declare function ChangeActivityUser(trx: any, activityUserId: string, points: any): Promise<string>;
+export declare function PayAnswer(trx: any, question: Question): Promise<Order>;

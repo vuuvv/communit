@@ -95,6 +95,9 @@ let UserController = class UserController {
     `, [ctx.session.communityId, ctx.session.userId]);
         return routes_1.success(workers);
     }
+    async userId(ctx) {
+        return routes_1.success(ctx.session.userId);
+    }
     async hello() {
         return 'hello';
     }
@@ -189,6 +192,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "workers", null);
+__decorate([
+    routes_1.get('/id'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "userId", null);
 __decorate([
     routes_1.get('/test'),
     __metadata("design:type", Function),

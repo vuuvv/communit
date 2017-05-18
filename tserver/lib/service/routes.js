@@ -14,6 +14,17 @@ const db_1 = require("../db");
 const utils_1 = require("../utils");
 const models_1 = require("../models");
 const account_1 = require("../account");
+const service_1 = require("./service");
+const questionRules = [
+    { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+    { typeId: { strategy: ['required'], error: '请选择小类' } },
+    { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+    { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+    { title: { strategy: ['required'], error: '请填写内容' } },
+];
+const answerRules = [
+    { content: { strategy: ['required'], error: '请填写内容' } },
+];
 let ServiceController = class ServiceController {
     async categories(ctx) {
         let ret = await db_1.Table.ServiceCategory.orderBy('sort');
@@ -21,22 +32,6 @@ let ServiceController = class ServiceController {
     }
     async category(ctx) {
         let ret = await db_1.Table.ServiceCategory.where('id', ctx.params.id).first();
-        // let ret: any[] = await raw(`
-        // select
-        //   id as key, name as value, (
-        //     select
-        //       concat(
-        //         '[',
-        //         group_concat(json_object('key', id, 'value', name)),
-        //         ']'
-        //       )
-        //     from weixin_bank_menu as m2 where m2.parentMenuId=m1.id
-        //     order by m2.seq
-        //   ) as children
-        // from weixin_bank_menu as m1
-        // where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
-        // order by m1.seq
-        // `, [ctx.session.communityId]);
         return routes_1.success(ret);
     }
     /**
@@ -336,6 +331,100 @@ let ServiceController = class ServiceController {
         });
         return routes_1.success();
     }
+    async searchQuestion(ctx) {
+        const ret = await service_1.searchQuestion(ctx.query, ctx.session.communityId);
+        return routes_1.success(ret);
+    }
+    async getQuestion(ctx) {
+        const ret = await service_1.getQuestion(ctx.params.id);
+        return routes_1.success(ret);
+    }
+    async addQuestion(ctx) {
+        const model = await utils_1.getJsonBody(ctx);
+        utils_1.validate(model, questionRules);
+        let q = utils_1.create(models_1.Question, model);
+        q.communityId = ctx.session.communityId;
+        q.userId = ctx.session.userId;
+        await db_1.db.transaction(async (trx) => {
+            const order = await account_1.PayAnswer(trx, q);
+            q.orderId = order.id;
+            await db_1.Table.Question.transacting(trx).insert(q);
+        });
+        return routes_1.success();
+    }
+    async getAnswer(ctx) {
+        let userId = ctx.query.userId || ctx.session.userId;
+        let answerId = ctx.query.answerId;
+        let questionId = ctx.params.id;
+        let answer = null;
+        if (!answerId && !userId) {
+            throw new routes_1.ResponseError('请先登录系统', '10004');
+        }
+        let question = await db_1.first(`
+      select a.*, wu.realname from t_question as a
+      join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+      where a.id=:questionId
+      `, { questionId });
+        if (!question) {
+            throw new Error('无效的问题');
+        }
+        if (answerId) {
+            answer = await db_1.first(`
+      select a.*, wu.realname from t_answer as a
+      join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+      where a.id=:answerId
+      `, { answerId });
+        }
+        let answers = await service_1.getAnswer(questionId, userId, ctx.query.answerId);
+        return routes_1.success({
+            userId: ctx.session.userId,
+            answers,
+            answer,
+            question,
+        });
+    }
+    async addAnswer(ctx) {
+        let model = await utils_1.getJsonBody(ctx);
+        utils_1.validate(model, answerRules);
+        const questionId = ctx.params.id;
+        const communityId = ctx.session.communityId;
+        const userId = ctx.session.userId;
+        const answerId = model.answerId;
+        delete model.answerId;
+        let question = await db_1.Table.Question.where('id', questionId).first();
+        if (!question) {
+            throw new Error('无效的问题');
+        }
+        let answer = null;
+        if (answerId) {
+            answer = await db_1.Table.Answer.where('id', answerId).first();
+            if (!answer) {
+                throw new Error('无效的回答');
+            }
+        }
+        else {
+            answer = await db_1.Table.Answer.where({ questionId, communityId, userId }).first();
+            if (!answer) {
+                if (question.userId === userId) {
+                    throw new Error('不能回答自己的问题');
+                }
+                answer = new models_1.Answer();
+                answer.communityId = communityId;
+                answer.userId = userId;
+                answer.questionId = questionId;
+                await db_1.Table.Answer.insert(answer);
+            }
+        }
+        if ([answer.userId, question.userId].indexOf(userId) === -1) {
+            throw new Error('你不能参与此对话');
+        }
+        let session = utils_1.create(models_1.AnswerSession, model);
+        session.communityId = communityId;
+        session.userId = userId;
+        session.AnswerId = answer.id;
+        await db_1.Table.AnswerSession.insert(session);
+        return routes_1.success();
+    }
 };
 __decorate([
     routes_1.get('/categories'),
@@ -428,6 +517,41 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "accept", null);
+__decorate([
+    routes_1.get('/question/search'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "searchQuestion", null);
+__decorate([
+    routes_1.get('/question/item/:id'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "getQuestion", null);
+__decorate([
+    routes_1.post('/question/add'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "addQuestion", null);
+__decorate([
+    routes_1.get('/question/:id/answer'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "getAnswer", null);
+__decorate([
+    routes_1.post('/question/:id/answer/add'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "addAnswer", null);
 ServiceController = __decorate([
     routes_1.router('/service')
 ], ServiceController);

@@ -60,6 +60,9 @@ import {
   Thread, ThreadTableName,
   ThreadRank, ThreadRankTableName,
   ThreadComment, ThreadCommentTableName,
+  Question, QuestionTableName,
+  Answer, AnswerTableName,
+  AnswerSession, AnswerSessionTableName,
 } from './models';
 
 export interface Model<T> {
@@ -201,5 +204,17 @@ export class Table<T> {
 
   static get ThreadRank() {
     return new Table<ThreadRank>(ThreadRank, ThreadRankTableName).database;
+  }
+
+  static get Question() {
+    return new Table<Question>(Question, QuestionTableName).database;
+  }
+
+  static get Answer() {
+    return new Table<Answer>(Answer, AnswerTableName).database;
+  }
+
+  static get AnswerSession() {
+    return new Table<AnswerSession>(AnswerSession, AnswerSessionTableName).database;
   }
 }

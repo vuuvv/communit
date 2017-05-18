@@ -8,6 +8,7 @@ export declare class UserController {
     organizations(ctx: any): Promise<Response>;
     biotype(ctx: any): Promise<Response>;
     workers(ctx: any): Promise<Response>;
+    userId(ctx: any): Promise<Response>;
     hello(): Promise<string>;
     addAccount(ctx: any): Promise<Response>;
     deductAccount(): Promise<Response>;

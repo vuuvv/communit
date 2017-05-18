@@ -5,7 +5,7 @@ import { uuid } from '../utils';
 import {
    Account, AccountDetail, Transaction, TransactionDetail, Order,
    OrderDetail, OrderType, OrderStatus, SociallyActivityUserStatus,
-   SociallyActivityUser,
+   SociallyActivityUser, Question,
 } from '../models';
 
 async function getWechatUser(officialAccountId, userId) {
@@ -198,6 +198,7 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
     .where('remain', '>', 0)
     .orderBy('expiresIn');
 
+  console.log(details);
   if (!details || !details.length || _.sumBy(details, v => v.remain) < points) {
     throw new Error('余额不足');
   }
@@ -241,7 +242,7 @@ export async function deductPoints(trx, communityId, userId, transactionTypeId, 
     let v = detailMap[key];
     if (v[1] === 0) {
       // 账户无需更新
-      return;
+      return tid;
     }
     let account = v[0];
     await Table.Account.transacting(trx).where('id', account.id).update('balance', account.balance + v[1]);
@@ -431,4 +432,30 @@ export async function ChangeActivityUser(trx, activityUserId: string, points) {
     }
 
     return await PayActivity(trx, activityUserId, points);
+}
+
+export async function PayAnswer(trx, question: Question) {
+    let order = new Order();
+    order.type = OrderType.Answer;
+    order.communityId = question.communityId;
+    order.buyerId = question.userId;
+    order.status = OrderStatus.Payed;
+    order.amount = question.points;
+    order.orderTime = order.payTime = new Date();
+
+    let detail = new OrderDetail();
+    detail.orderId = order.id;
+    detail.type = OrderType.Answer;
+    detail.productId = question.id;
+    detail.data = JSON.stringify(question);
+    detail.points = question.points;
+
+    order.buyerTradeTransactionId = await deductPoints(
+      trx, question.communityId, order.buyerId, TransactionType.PayAnswer, order.amount, order.id
+    );
+
+    await Table.Order.transacting(trx).insert(order);
+    await Table.OrderDetail.transacting(trx).insert(detail);
+
+    return order;
 }

@@ -46,7 +46,7 @@ const routes: Routes = [
         component: QuestionComponent,
       },
       {
-        path: 'answer/:id',
+        path: 'question/:id/answer',
         pathMatch: 'full',
         component: AnswerComponent,
       },

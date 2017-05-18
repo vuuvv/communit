@@ -5,6 +5,8 @@ export class OrderType {
   static Product = 'product';
   static Service = 'service';
   static Activity = 'activity';
+  static Answer = 'answer';
+  static Help = 'help';
 }
 
 export class OrderStatus {

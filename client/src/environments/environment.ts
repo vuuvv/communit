@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  serverUrl: 'http://weixin.vuuvv.com'
+  serverUrl: 'http://192.168.1.5:8383'
 };

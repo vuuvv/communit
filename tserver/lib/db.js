@@ -127,5 +127,14 @@ class Table {
     static get ThreadRank() {
         return new Table(models_1.ThreadRank, models_1.ThreadRankTableName).database;
     }
+    static get Question() {
+        return new Table(models_1.Question, models_1.QuestionTableName).database;
+    }
+    static get Answer() {
+        return new Table(models_1.Answer, models_1.AnswerTableName).database;
+    }
+    static get AnswerSession() {
+        return new Table(models_1.AnswerSession, models_1.AnswerSessionTableName).database;
+    }
 }
 exports.Table = Table;

@@ -1,23 +1,23 @@
-<div class="question-body" [routerLink]="'/bank/question/1'">
+<div class="question-body" [routerLink]="'/bank/question/' + question.id">
   <div class="question-title">
     <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-    <span class="question-points">20</span>
-    <span>重庆市长寿区，项目配套费，人防异地庆市长寿区，项目配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，，人防异地庆市长寿区，项目配套费，人防异地地建设费，民工工资保证金费用分别</span>
+    <span class="question-points">{{ question.points }}</span>
+    <span>{{question.title}}</span>
   </div>
   <div class="question-meta ngv-1px-b">
     <v-icon type="tag"></v-icon>
-    <span class="question-type ngv-1px-r">商业 工资 重庆</span>
-    <span class="question-time">2017-05-16 10:11</span>
+    <span class="question-type ngv-1px-r">{{ question.mainType }}－{{ question.type }}</span>
+    <span class="question-time">{{ question.createdAt | time: 'minite' }}</span>
   </div>
 </div>
 <div class="question-bottom">
   <div class="question-user">
-    <v-image src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0" [block]="false"></v-image>
-    <span>虚小萌</span>
+    <v-image [src]="question.headimgurl" [block]="false"></v-image>
+    <span>{{ question.realname }}</span>
   </div>
   <div class="question-answer">
-    <div class="question-answers ngv-1px-r">2人回答</div>
-    <div class="question-answer-action">
+    <div class="question-answers ngv-1px-r">{{ question.answerCount }}人回答</div>
+    <div class="question-answer-action" [class.disable]="isDisable" (click)="answer()">
       <v-icon type="edit"></v-icon>
       <span>回答</span>
     </div>

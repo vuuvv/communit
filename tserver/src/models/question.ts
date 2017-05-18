@@ -3,6 +3,18 @@ import { property } from '../utils';
 
 export class Question extends BaseModel {
   /**
+   * 社区id
+   */
+  @property()
+  communityId: string;
+
+  /**
+   * 用户Id
+   */
+  @property()
+  userId: string;
+
+  /**
    * 大类
    */
   @property()
@@ -32,4 +44,23 @@ export class Question extends BaseModel {
   @property()
   points: number;
 
+  /**
+   * 已悬赏积分
+   */
+  @property()
+  payedPoints: number;
+
+  /**
+   * 订单Id
+   */
+  @property()
+  orderId: string;
+
+  /**
+   * 状态
+   */
+  @property()
+  status: string;
 }
+
+export const QuestionTableName = 't_question';

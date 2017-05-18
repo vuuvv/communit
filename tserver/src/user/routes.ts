@@ -123,6 +123,12 @@ export class UserController {
     return success(workers);
   }
 
+  @get('/id')
+  @wechat
+  async userId(ctx) {
+    return success(ctx.session.userId);
+  }
+
   @get('/test')
   async hello() {
     return 'hello';

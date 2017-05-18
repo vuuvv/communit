@@ -5,6 +5,7 @@ function __export(m) {
 __export(require("./property"));
 __export(require("./http"));
 __export(require("./uuid"));
+__export(require("./validators"));
 const crypto = require("crypto");
 function signature(secret, plan) {
     let h = crypto.createHmac('sha1', secret);

@@ -56,8 +56,8 @@ export class Overlay implements OnInit {
   actionsheet: boolean = false;
 
   showToast: boolean = false;
-  toastText: string = "";
-  toastIcon: string = "";
+  toastText: string = '';
+  toastIcon: string = '';
 
   constructor(private overlayService: OverlayService) {
   }

@@ -27,7 +27,7 @@ export class AuthorizeService {
   }
 
   private doLogin(user: any): any {
-    let redirect = this.redirectUrl ? this.redirectUrl : '/';
+    const redirect = this.redirectUrl ? this.redirectUrl : '/';
     this.router.navigateByUrl(redirect);
     return user;
   }

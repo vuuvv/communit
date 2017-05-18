@@ -29,3 +29,6 @@ export * from './service_user';
 export * from './thread';
 export * from './thread_rank';
 export * from './thread_comment';
+export * from './question';
+export * from './answer';
+export * from './answer_session';

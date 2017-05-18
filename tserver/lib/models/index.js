@@ -33,3 +33,6 @@ __export(require("./service_user"));
 __export(require("./thread"));
 __export(require("./thread_rank"));
 __export(require("./thread_comment"));
+__export(require("./question"));
+__export(require("./answer"));
+__export(require("./answer_session"));

@@ -3,6 +3,18 @@ import { property } from '../utils';
 
 export class Answer extends BaseModel {
   /**
+   * 社区id
+   */
+  @property()
+  communityId: string;
+
+  /**
+   * 用户Id
+   */
+  @property()
+  userId: string;
+
+  /**
    * 问题Id
    */
   @property()
@@ -19,4 +31,12 @@ export class Answer extends BaseModel {
    */
   @property()
   points: string;
+
+  /**
+   * 订单Id
+   */
+  @property()
+  orderId: string;
 }
+
+export const AnswerTableName = 't_answer';

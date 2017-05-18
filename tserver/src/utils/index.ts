@@ -1,6 +1,7 @@
 export * from './property';
 export * from './http';
 export * from './uuid';
+export * from './validators';
 
 import * as crypto from 'crypto';
 

@@ -2,7 +2,7 @@
   <v-header slot="header" [showBack]="false">
     <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
     <span>提问</span>
-    <div class="ngv-header-button" slot="right">提交</div>
+    <div class="ngv-header-button" slot="right" (click)="submit()">提交</div>
   </v-header>
   <form>
     <v-group gutter="0">
@@ -19,7 +19,7 @@
         </select>
       </v-cell>
       <v-cell class="question-title">
-        <input class="weui-input" placeholder="悬赏积分" name="points" [(ngModel)]="question.points" type="number">
+        <input class="weui-input" placeholder="悬赏积分, 您还有{{points}}积分" name="points" [(ngModel)]="question.points" type="number">
       </v-cell>
       <v-cell class="question-content">
         <textarea class="weui-textarea" placeholder="你的问题" rows="1" [(ngModel)]="question.title" name="title"></textarea>

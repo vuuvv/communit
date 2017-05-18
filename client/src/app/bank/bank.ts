@@ -31,6 +31,7 @@ export class BankComponent implements OnInit {
   services: any[] = [];
   shownIcons = [];
   isShowAll = false;
+  userId: string;
 
   constructor(
     private http: Http,
@@ -44,8 +45,9 @@ export class BankComponent implements OnInit {
       this.overlayService.loading();
       return Observable.forkJoin(
         this.http.get('/menu/bank'),
-        this.http.get('/service/search'),
+        this.http.get(`/service/${this.ids[params['id']]}/search`),
         this.http.get('/articles/home'),
+        this.http.get('/user/id'),
       );
     }).subscribe((values: any) => {
       this.overlayService.hideToast();
@@ -57,6 +59,7 @@ export class BankComponent implements OnInit {
       this.isShowAll = false;
       this.shownIcons = this.getShowIcons();
       this.articles = values[2];
+      this.userId = values[3];
     });
   }
 

@@ -41,4 +41,7 @@ export declare class Table<T> {
     static readonly Thread: knex.QueryBuilder;
     static readonly ThreadComment: knex.QueryBuilder;
     static readonly ThreadRank: knex.QueryBuilder;
+    static readonly Question: knex.QueryBuilder;
+    static readonly Answer: knex.QueryBuilder;
+    static readonly AnswerSession: knex.QueryBuilder;
 }

@@ -25,4 +25,8 @@ export class BottomInputComponent {
   do() {
     this.submit.emit(this.value);
   }
+
+  clear() {
+    this.value = '';
+  }
 }

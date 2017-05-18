@@ -3,6 +3,8 @@ export declare class OrderType {
     static Product: string;
     static Service: string;
     static Activity: string;
+    static Answer: string;
+    static Help: string;
 }
 export declare class OrderStatus {
     static Payed: string;

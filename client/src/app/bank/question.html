@@ -1,73 +1,41 @@
-<v-page class="page-question">
-  <v-header slot="header">问答</v-header>
+<v-page class="page-question" *ngIf="question">
+  <v-header slot="header">来自<span>{{ question.realname }}</span>的提问</v-header>
 
-  <div class="answer-btn" [routerLink]="'/bank/answer/' + question?.id">
+  <div class="answer-btn" [routerLink]="'/bank/question/' + question.id + '/answer'">
     <v-icon type="edit"></v-icon>
   </div>
 
   <div class="question">
-    <div class="question-from">
-      来自<span>虚小萌</span>的提问
-    </div>
     <div class="question-title">
       <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
       <span class="question-points">20</span>
-      <span>
-        重庆市长寿区，项目配套费，人防异地庆市长寿区，项目配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，配套费，人防异地庆市长寿区，项目配套费，，人防异地庆市长寿区，项目配套费，人防异地地建设费，民工工资保证金费
-      </span>
+      <span>{{ question.title }}</span>
     </div>
     <div class="question-info">
-      <div class="question-answers">5人回答</div>
-      <div class="question-time">2017-05-16 10:11</div>
+      <div class="question-answers">{{ question.answerCount }}人回答</div>
+      <div class="question-time">{{ question.createdAt | time: 'minite' }}</div>
     </div>
   </div>
   <div class="question-types ngv-1px-t">
     <v-icon type="tag"></v-icon>
-    <span>职业教育 英语 教育</span>
+    <span>{{ question.mainType }}－{{ question.type }}</span>
   </div>
 
   <div class="gutter"></div>
 
   <div class="comment-list">
-    <div class="comment ngv-1px-b">
+    <div class="comment ngv-1px-b" *ngFor="let a of question.answers" [routerLink]="['/bank/question/' + question.id + '/answer', {answerId: a.id}]">
       <div class="comment-header">
         <div class="comment-header-left">
-          <v-image src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0"></v-image>
+          <v-image [src]="a.headimgurl"></v-image>
         </div>
         <div class="comment-header-right">
-          <div class="comment-user">虚小萌</div>
-          <div class="comment-time">2017-05-16 10:11</div>
+          <div class="comment-user">{{ a.realname }}</div>
+          <div class="comment-time">{{ a.createdAt | time: 'minite' }}</div>
         </div>
       </div>
-      <pre class="comment-body">还有很多值得留</pre>
-    </div>
-    <div class="comment ngv-1px-b">
-      <div class="comment-header">
-        <div class="comment-header-left">
-          <v-image src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0"></v-image>
-        </div>
-        <div class="comment-header-right">
-          <div class="comment-user">虚小萌</div>
-          <div class="comment-time">2017-05-16 10:11</div>
-        </div>
-      </div>
-      <pre class="comment-body">
-        还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好
-      </pre>
-    </div>
-    <div class="comment ngv-1px-b">
-      <div class="comment-header">
-        <div class="comment-header-left">
-          <v-image src="http://wx.qlogo.cn/mmopen/BgrOlQUqueaLpJ4zshKZTNkcplYhk2IURX7TmjjzfibSg0Bs9a8IickPLC5IpiavaahHJXdHVLWw2LcyZshxXb46NaLADEvKna3/0"></v-image>
-        </div>
-        <div class="comment-header-right">
-          <div class="comment-user">虚小萌</div>
-          <div class="comment-time">2017-05-16 10:11</div>
-        </div>
-      </div>
-      <pre class="comment-body">
-        还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好还有很多值得留恋的礼物，好好保存好
-      </pre>
+      <pre class="comment-body">{{ a.answerContent }}</pre>
+      <div class="comment-meta">{{ a.answerCount }}对话</div>
     </div>
   </div>
 </v-page>

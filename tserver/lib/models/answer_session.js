@@ -10,31 +10,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
-class Answer extends base_model_1.BaseModel {
+class AnswerSession extends base_model_1.BaseModel {
 }
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Answer.prototype, "communityId", void 0);
+], AnswerSession.prototype, "communityId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Answer.prototype, "userId", void 0);
+], AnswerSession.prototype, "userId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Answer.prototype, "questionId", void 0);
+], AnswerSession.prototype, "AnswerId", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Answer.prototype, "content", void 0);
+], AnswerSession.prototype, "content", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], Answer.prototype, "points", void 0);
-__decorate([
-    utils_1.property(),
-    __metadata("design:type", String)
-], Answer.prototype, "orderId", void 0);
-exports.Answer = Answer;
-exports.AnswerTableName = 't_answer';
+], AnswerSession.prototype, "points", void 0);
+exports.AnswerSession = AnswerSession;
+exports.AnswerSessionTableName = 't_answer_session';

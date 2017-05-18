@@ -166,6 +166,7 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points,
         .where('userId', userId)
         .where('remain', '>', 0)
         .orderBy('expiresIn');
+    console.log(details);
     if (!details || !details.length || _.sumBy(details, v => v.remain) < points) {
         throw new Error('余额不足');
     }
@@ -202,7 +203,7 @@ async function deductPoints(trx, communityId, userId, transactionTypeId, points,
         let v = detailMap[key];
         if (v[1] === 0) {
             // 账户无需更新
-            return;
+            return tid;
         }
         let account = v[0];
         await db_1.Table.Account.transacting(trx).where('id', account.id).update('balance', account.balance + v[1]);
@@ -352,3 +353,23 @@ async function ChangeActivityUser(trx, activityUserId, points) {
     return await PayActivity(trx, activityUserId, points);
 }
 exports.ChangeActivityUser = ChangeActivityUser;
+async function PayAnswer(trx, question) {
+    let order = new models_1.Order();
+    order.type = models_1.OrderType.Answer;
+    order.communityId = question.communityId;
+    order.buyerId = question.userId;
+    order.status = models_1.OrderStatus.Payed;
+    order.amount = question.points;
+    order.orderTime = order.payTime = new Date();
+    let detail = new models_1.OrderDetail();
+    detail.orderId = order.id;
+    detail.type = models_1.OrderType.Answer;
+    detail.productId = question.id;
+    detail.data = JSON.stringify(question);
+    detail.points = question.points;
+    order.buyerTradeTransactionId = await deductPoints(trx, question.communityId, order.buyerId, TransactionType.PayAnswer, order.amount, order.id);
+    await db_1.Table.Order.transacting(trx).insert(order);
+    await db_1.Table.OrderDetail.transacting(trx).insert(detail);
+    return order;
+}
+exports.PayAnswer = PayAnswer;

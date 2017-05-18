@@ -3,9 +3,23 @@ import * as ejs from 'ejs';
 
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
-import { create, getJsonBody } from '../utils';
-import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories } from '../models';
-import { refundOrder, deductPoints, TransactionType } from '../account';
+import { create, getJsonBody, validate, FieldRule } from '../utils';
+import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories, Question, Answer, AnswerSession } from '../models';
+import { refundOrder, deductPoints, TransactionType, PayAnswer } from '../account';
+
+import { searchQuestion, getQuestion, getAnswer } from './service';
+
+const questionRules: FieldRule[] = [
+  { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+  { typeId: { strategy: ['required'], error: '请选择小类' } },
+  { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+  { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+  { title: { strategy: ['required'], error: '请填写内容' } },
+];
+
+const answerRules: FieldRule[] = [
+  { content: { strategy: ['required'], error: '请填写内容' } },
+];
 
 @router('/service')
 export class ServiceController {
@@ -20,22 +34,6 @@ export class ServiceController {
   @wechat
   async category(ctx) {
    let ret = await Table.ServiceCategory.where('id', ctx.params.id).first();
-    // let ret: any[] = await raw(`
-    // select
-    //   id as key, name as value, (
-    //     select
-    //       concat(
-    //         '[',
-    //         group_concat(json_object('key', id, 'value', name)),
-    //         ']'
-    //       )
-    //     from weixin_bank_menu as m2 where m2.parentMenuId=m1.id
-    //     order by m2.seq
-    //   ) as children
-    // from weixin_bank_menu as m1
-    // where m1.accountid = ? and (m1.parentMenuId = '' or m1.parentMenuId is null)
-    // order by m1.seq
-    // `, [ctx.session.communityId]);
     return success(ret);
   }
 
@@ -418,6 +416,126 @@ export class ServiceController {
       }
 
     });
+
+    return success();
+  }
+
+  @get('/question/search')
+  @wechat
+  async searchQuestion(ctx) {
+    const ret = await searchQuestion(ctx.query, ctx.session.communityId);
+    return success(ret);
+  }
+
+  @get('/question/item/:id')
+  @wechat
+  async getQuestion(ctx) {
+    const ret = await getQuestion(ctx.params.id);
+    return success(ret);
+  }
+
+
+  @post('/question/add')
+  @login
+  async addQuestion(ctx) {
+    const model = await getJsonBody(ctx);
+    validate(model, questionRules);
+
+    let q = create(Question, model);
+    q.communityId = ctx.session.communityId;
+    q.userId = ctx.session.userId;
+
+    await db.transaction(async (trx) => {
+      const order = await PayAnswer(trx, q);
+      q.orderId = order.id;
+      await Table.Question.transacting(trx).insert(q);
+    });
+
+    return success();
+  }
+
+  @get('/question/:id/answer')
+  @wechat
+  async getAnswer(ctx) {
+    let userId = ctx.query.userId || ctx.session.userId;
+    let answerId = ctx.query.answerId;
+    let questionId = ctx.params.id;
+    let answer = null;
+
+    if (!answerId && !userId) {
+      throw new ResponseError('请先登录系统', '10004');
+    }
+    let question = await first(`
+      select a.*, wu.realname from t_question as a
+      join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+      where a.id=:questionId
+      `, { questionId });
+    if (!question) {
+      throw new Error('无效的问题');
+    }
+
+    if (answerId) {
+      answer = await first(`
+      select a.*, wu.realname from t_answer as a
+      join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+      where a.id=:answerId
+      `, { answerId });
+    }
+    let answers = await getAnswer(questionId, userId, ctx.query.answerId);
+    return success({
+      userId: ctx.session.userId,
+      answers,
+      answer,
+      question,
+    });
+  }
+
+  @post('/question/:id/answer/add')
+  @login
+  async addAnswer(ctx) {
+    let model = await getJsonBody(ctx);
+    validate(model, answerRules);
+
+    const questionId = ctx.params.id;
+    const communityId = ctx.session.communityId;
+    const userId = ctx.session.userId;
+    const answerId = model.answerId;
+    delete model.answerId;
+
+    let question: Question = await Table.Question.where('id', questionId).first();
+    if (!question) {
+      throw new Error('无效的问题');
+    }
+
+    let answer: Answer = null;
+    if (answerId) {
+      answer = await Table.Answer.where('id', answerId).first();
+      if (!answer) {
+        throw new Error('无效的回答');
+      }
+    } else {
+      answer = await Table.Answer.where({questionId, communityId, userId}).first();
+      if (!answer) {
+        if (question.userId === userId) {
+          throw new Error('不能回答自己的问题');
+        }
+        answer = new Answer();
+        answer.communityId = communityId;
+        answer.userId = userId;
+        answer.questionId = questionId;
+        await Table.Answer.insert(answer);
+      }
+    }
+
+    if ([answer.userId, question.userId].indexOf(userId) === -1) {
+      throw new Error('你不能参与此对话');
+    }
+
+    let session  = create(AnswerSession, model);
+    session.communityId = communityId;
+    session.userId = userId;
+    session.AnswerId = answer.id;
+    await Table.AnswerSession.insert(session);
 
     return success();
   }

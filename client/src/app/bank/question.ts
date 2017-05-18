@@ -23,5 +23,10 @@ export class QuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.route.params.concatMap((params: Params) => {
+      return this.http.get(`/service/question/item/${params['id']}`);
+    }).subscribe((question) => {
+      this.question = question;
+    });
   }
 }

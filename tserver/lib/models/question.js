@@ -15,6 +15,14 @@ class Question extends base_model_1.BaseModel {
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Question.prototype, "communityId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Question.prototype, "userId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Question.prototype, "mainTypeId", void 0);
 __decorate([
     utils_1.property(),
@@ -32,4 +40,17 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", Number)
 ], Question.prototype, "points", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Number)
+], Question.prototype, "payedPoints", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Question.prototype, "orderId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], Question.prototype, "status", void 0);
 exports.Question = Question;
+exports.QuestionTableName = 't_question';
