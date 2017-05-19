@@ -599,8 +599,8 @@ export async function confirmAnswerSession(trx, sessionId, currentUserId) {
   });
 
   await Table.Question.where('id', question.id).transacting(trx).update({
-    latestAnswerTime: new Date();
-  })
+    latestAnswerTime: new Date(),
+  });
 
   let newSession = new AnswerSession();
   newSession.communityId = answer.communityId;

@@ -489,7 +489,7 @@ async function confirmAnswerSession(trx, sessionId, currentUserId) {
         points: points,
     });
     await db_1.Table.Question.where('id', question.id).transacting(trx).update({
-        latestAnswerTime: new Date()
+        latestAnswerTime: new Date(),
     });
     let newSession = new models_1.AnswerSession();
     newSession.communityId = answer.communityId;
