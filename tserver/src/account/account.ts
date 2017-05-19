@@ -5,7 +5,7 @@ import { uuid } from '../utils';
 import {
    Account, AccountDetail, Transaction, TransactionDetail, Order,
    OrderDetail, OrderType, OrderStatus, SociallyActivityUserStatus,
-   SociallyActivityUser, Question, Answer
+   SociallyActivityUser, Question, Answer, AnswerSession,
 } from '../models';
 
 async function getWechatUser(officialAccountId, userId) {
@@ -38,6 +38,18 @@ export class TransactionType {
 const reverseTransactionTypes = {};
 reverseTransactionTypes[TransactionType.PayActivity] = TransactionType.RefundPayActivity;
 reverseTransactionTypes[TransactionType.GetActivity] = TransactionType.RefundGetActivity;
+
+export async function getUserBalance(communityId, userId) {
+  if (!userId) {
+    return 0;
+  }
+  let balance = 0;
+  let account = await Table.Account.where({communityId, userId}).sum('balance as balance').first();
+  if (account && account.balance) {
+    balance = account.balance || 0;
+  }
+  return balance;
+}
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
   let td = new TransactionDetail();
@@ -460,13 +472,16 @@ export async function PayAnswer(trx, question: Question) {
     return order;
 }
 
-export async function getAnswerPay(trx, answerId, points) {
+export async function getAnswerPay(trx, answerId, points, currentUserId) {
   let answer: Answer = await Table.Answer.where('id', answerId).first();
   if (!answer) {
     throw new Error('无效的回答');
   }
 
   const question: Question = await Table.Question.transacting(trx).forUpdate().where('id', answer.questionId).first();
+  if (question.userId !== currentUserId) {
+    throw new Error('只有题主才能进行悬赏');
+  }
   const remain = question.points - question.payedPoints;
   if (points > remain) {
     throw new Error('悬赏积分已超额, 不可操作');
@@ -512,7 +527,84 @@ export async function getAnswerPay(trx, answerId, points) {
 
   if (done) {
     await Table.Order.transacting(trx).where('id', order.id).update({
-      status: 'done'
+      status: 'done',
+      orderTradeTime: new Date(),
     });
   }
+}
+
+export async function confirmAnswerSession(trx, sessionId, currentUserId) {
+  let session: AnswerSession = await Table.AnswerSession.where('id', sessionId).first();
+  if (!session) {
+    throw new Error('无效的对话');
+  }
+  if (session.userId === currentUserId) {
+    throw new Error('不可确认自己的出价');
+  }
+  let answer: Answer = await Table.Answer.transacting(trx).forUpdate().where('id', session.answerId).first();
+  if (answer.orderId) {
+    throw new Error('该项目已完成交易， 不可再交易');
+  }
+  let question = await Table.Question.transacting(trx).where('id', answer.questionId).first();
+
+  let points = session.points;
+
+  let sellerId, buyerId, orderType, buyerTransactionType, sellerTransactionType;
+
+  if (question.category === 'help') {
+    sellerId = answer.userId;
+    buyerId = question.userId;
+    orderType = OrderType.Help;
+    buyerTransactionType = TransactionType.PayHelper;
+    sellerTransactionType = TransactionType.GetHelper;
+  } else if (question.category === 'service') {
+    sellerId = question.userId;
+    buyerId = answer.userId;
+    orderType = OrderType.Service;
+    buyerTransactionType = TransactionType.PayAnswer;
+    sellerTransactionType = TransactionType.GetAnswer;
+  } else {
+    throw new Error('不可确认此类交易');
+  }
+
+  let order = new Order();
+  order.type = orderType;
+  order.communityId = question.communityId;
+  order.buyerId = buyerId;
+  order.sellerId = sellerId;
+  order.status = OrderStatus.Done;
+  order.amount = points;
+  order.orderTime = order.payTime = order.tradeTime = new Date();
+
+  let detail = new OrderDetail();
+  detail.orderId = order.id;
+  detail.type = orderType;
+  detail.productId = answer.id;
+  detail.data = JSON.stringify(answer);
+  detail.points = points;
+
+  order.buyerTradeTransactionId = await deductPoints(
+    trx, order.communityId, buyerId, buyerTransactionType, points, order.id);
+  order.sellerTradeTransactionId = await addPoints(
+    trx, order.communityId, sellerId, AccountType.Normal, sellerTransactionType, points, undefined, order.id);
+
+  await Table.Order.transacting(trx).insert(order);
+  await Table.OrderDetail.transacting(trx).insert(detail);
+
+  await Table.Answer.where('id', answer.id).transacting(trx).update({
+    orderId: order.id,
+    status: 'done',
+    points: points,
+  });
+
+  let newSession = new AnswerSession();
+  newSession.communityId = answer.communityId;
+  newSession.userId = answer.userId;
+  newSession.answerId = answer.id;
+  newSession.type = 'confirm';
+  newSession.points = points;
+  newSession.content = points.toString();
+  await Table.AnswerSession.transacting(trx).insert(newSession);
+
+  return order;
 }

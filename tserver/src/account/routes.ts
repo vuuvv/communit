@@ -2,7 +2,7 @@ import { router, get, post, success, Response, ResponseError, login, wechat } fr
 import { Table, first, raw, db } from '../db';
 import { create, getJsonBody } from '../utils';
 import { Account } from '../models';
-import { AccountType, TransactionType } from '../account';
+import { AccountType, TransactionType, getUserBalance } from '../account';
 
 function sum(array, fn) {
   let ret = 0;
@@ -33,11 +33,8 @@ export class AccountController {
     if (!userId) {
       return success(0);
     }
-    let balance = await Table.Account.where({communityId, userId}).sum('balance as balance').first();
-    if (!balance || !balance.balance) {
-      return success(0);
-    }
-    return success(balance.balance);
+    let balance = await getUserBalance(communityId, userId);
+    return success(balance);
   }
 
   @get('/summary')

@@ -25,6 +25,7 @@ export declare class ServiceController {
     addQuestion(ctx: any): Promise<Response>;
     getAnswerQuestion(ctx: any): Promise<Response>;
     getAnswerPay(ctx: any): Promise<Response>;
+    confirmAnswerSession(ctx: any): Promise<Response>;
     getAnswer(ctx: any): Promise<Response>;
     addAnswer(ctx: any): Promise<Response>;
 }

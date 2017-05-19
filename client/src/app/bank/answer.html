@@ -4,10 +4,12 @@
     <div class="ngv-header-button" slot="right" *ngIf="canPay" [routerLink]="'/bank/confirm/answer/' + answerId">采纳</div>
   </v-header>
 
-  <bottom-input #bottomInput slot="footer" (submit)="addAnswer($event, bottomInput)" *ngIf="canAnswer"></bottom-input>
+  <bottom-input #bottomInput slot="footer" (submit)="addAnswer($event, bottomInput)" *ngIf="canAnswer">
+    <div class="bottom-input-send-btn" slot="left" *ngIf="canBid" [routerLink]="'/bank/question/' + question.id + '/answer/bid'">出价</div>
+  </bottom-input>
 
-  <div class="answer-row" [class.answer-you]="!isMe(a.userId)" [class.answer-me]="isMe(a.userId)" *ngFor="let a of answers">
-    <v-image [src]="a.headimgurl" *ngIf="!isMe(a.userId)"></v-image>
-    <p>{{ a.content }}</p>
+  <div class="answer-row" [class.answer-you]="!isMe(a)" [class.answer-me]="isMe(a)" [class.answer-price]="isPrice(a)" [class.answer-confirm]="isConfirm(a)" *ngFor="let a of answers">
+    <v-image [src]="a.headimgurl" *ngIf="!isMe(a)"></v-image>
+    <p (click)="confirm(a)">{{ content(a) }}</p>
   </div>
 </v-page>

@@ -17,3 +17,7 @@ export function checkSignature(secret: string, plan: string, target: string) {
   }
   return signature(secret, plan) === target.toUpperCase();
 }
+
+export function isInteger(value) {
+  return !isNaN(value) && parseInt(Number(value) + '', 10) == value && !isNaN(parseInt(value, 10));
+}

@@ -19,6 +19,7 @@ export declare class TransactionType {
     static RefundPayActivity: string;
     static RefundGetActivity: string;
 }
+export declare function getUserBalance(communityId: any, userId: any): Promise<number>;
 export declare function reverseTransaction(trx: any, transactionId: string): Promise<any>;
 /**
  * 增加积分
@@ -38,4 +39,5 @@ export declare function PayActivity(trx: any, activityUserId: any, points: any):
 export declare function RefundActivityUser(trx: any, activityUserId: string): Promise<string>;
 export declare function ChangeActivityUser(trx: any, activityUserId: string, points: any): Promise<string>;
 export declare function PayAnswer(trx: any, question: Question): Promise<Order>;
-export declare function getAnswerPay(trx: any, answerId: any, points: any): Promise<void>;
+export declare function getAnswerPay(trx: any, answerId: any, points: any, currentUserId: any): Promise<void>;
+export declare function confirmAnswerSession(trx: any, sessionId: any, currentUserId: any): Promise<Order>;

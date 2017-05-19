@@ -20,3 +20,7 @@ function checkSignature(secret, plan, target) {
     return signature(secret, plan) === target.toUpperCase();
 }
 exports.checkSignature = checkSignature;
+function isInteger(value) {
+    return !isNaN(value) && parseInt(Number(value) + '', 10) == value && !isNaN(parseInt(value, 10));
+}
+exports.isInteger = isInteger;

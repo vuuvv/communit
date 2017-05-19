@@ -45,7 +45,7 @@ export class BankComponent implements OnInit {
       this.overlayService.loading();
       return Observable.forkJoin(
         this.http.get('/menu/bank'),
-        this.http.get(`/service/${this.ids[params['id']]}/search`),
+        this.http.get(`/service/question/search`, {category: this.ids[params['id']]}),
         this.http.get('/articles/home'),
         this.http.get('/user/id'),
       );

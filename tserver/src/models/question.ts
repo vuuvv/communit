@@ -15,6 +15,12 @@ export class Question extends BaseModel {
   userId: string;
 
   /**
+   * 分类, question 问答, help 求助, service 服务
+   */
+  @property()
+  category: string;
+
+  /**
    * 大类
    */
   @property()

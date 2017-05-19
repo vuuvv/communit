@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+const _ = require("lodash");
 const ejs = require("ejs");
 const routes_1 = require("../routes");
 const db_1 = require("../db");
@@ -15,6 +16,25 @@ const utils_1 = require("../utils");
 const models_1 = require("../models");
 const account_1 = require("../account");
 const service_1 = require("./service");
+const rules = {
+    question: [
+        { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+        { typeId: { strategy: ['required'], error: '请选择小类' } },
+        { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+        { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+        { title: { strategy: ['required'], error: '请填写内容' } },
+    ],
+    help: [
+        { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+        { typeId: { strategy: ['required'], error: '请选择小类' } },
+        { title: { strategy: ['required'], error: '请填写求助内容' } },
+    ],
+    service: [
+        { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+        { typeId: { strategy: ['required'], error: '请选择小类' } },
+        { title: { strategy: ['required'], error: '请填写提供服务的内容' } },
+    ]
+};
 const questionRules = [
     { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
     { typeId: { strategy: ['required'], error: '请选择小类' } },
@@ -28,6 +48,11 @@ const answerRules = [
 const payAnswerRules = [
     { points: { strategy: ['required'], error: '请填写悬赏积分' } },
     { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+];
+const helpRules = [
+    { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+    { typeId: { strategy: ['required'], error: '请选择小类' } },
+    { title: { strategy: ['required'], error: '请填写求助内容' } },
 ];
 let ServiceController = class ServiceController {
     async categories(ctx) {
@@ -351,16 +376,27 @@ let ServiceController = class ServiceController {
         return routes_1.success(ret);
     }
     async addQuestion(ctx) {
+        const type = ctx.params.type;
         const model = await utils_1.getJsonBody(ctx);
-        utils_1.validate(model, questionRules);
+        let r = rules[type];
+        if (!r) {
+            throw new Error('无效的服务种类');
+        }
+        utils_1.validate(model, r);
         let q = utils_1.create(models_1.Question, model);
         q.communityId = ctx.session.communityId;
         q.userId = ctx.session.userId;
-        await db_1.db.transaction(async (trx) => {
-            const order = await account_1.PayAnswer(trx, q);
-            q.orderId = order.id;
-            await db_1.Table.Question.transacting(trx).insert(q);
-        });
+        q.category = type;
+        if (type === 'question') {
+            await db_1.db.transaction(async (trx) => {
+                const order = await account_1.PayAnswer(trx, q);
+                q.orderId = order.id;
+                await db_1.Table.Question.transacting(trx).insert(q);
+            });
+        }
+        else {
+            await db_1.Table.Question.insert(q);
+        }
         return routes_1.success();
     }
     async getAnswerQuestion(ctx) {
@@ -373,14 +409,28 @@ let ServiceController = class ServiceController {
         if (!answer) {
             throw new Error('无效的回答');
         }
-        answer.question = await db_1.Table.Question.where('id', answer.questionId).first();
-        return routes_1.success(answer);
+        let question = await db_1.Table.Question.where('id', answer.questionId).first();
+        let userId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let balance = await account_1.getUserBalance(communityId, userId);
+        return routes_1.success({
+            answer,
+            question,
+            balance,
+            currentUserId: ctx.session.userId,
+        });
     }
     async getAnswerPay(ctx) {
         const model = await utils_1.getJsonBody(ctx);
         utils_1.validate(model, payAnswerRules);
         await db_1.db.transaction(async (trx) => {
-            await account_1.getAnswerPay(trx, ctx.params.id, model.points);
+            await account_1.getAnswerPay(trx, ctx.params.id, model.points, ctx.session.userId);
+        });
+        return routes_1.success();
+    }
+    async confirmAnswerSession(ctx) {
+        await db_1.db.transaction(async (trx) => {
+            await account_1.confirmAnswerSession(trx, ctx.params.id, ctx.session.userId);
         });
         return routes_1.success();
     }
@@ -407,12 +457,32 @@ let ServiceController = class ServiceController {
       where a.id=:answerId
       `, { answerId });
         }
-        let answers = await service_1.getAnswer(questionId, userId, ctx.query.answerId);
+        else {
+            if (question.category === 'question') {
+                answer = await db_1.first(`
+        select a.*, wu.realname from t_answer as a
+        join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+        where a.questionId=:questionId and a.userId=:userId
+        `, { questionId, userId });
+            }
+            else if (['help', 'service'].indexOf(question.category) !== -1) {
+                answer = await db_1.first(`
+        select a.*, wu.realname from t_answer as a
+        join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+        where a.questionId=:questionId and a.userId=:userId and a.orderId is null
+        `, { questionId, userId });
+            }
+        }
+        let answers = await service_1.getAnswer(questionId, userId, question.category, answer);
+        let currentUserId = ctx.session.userId;
+        let communityId = ctx.session.communityId;
+        let balance = await account_1.getUserBalance(communityId, currentUserId);
         return routes_1.success({
-            userId: ctx.session.userId,
+            userId: currentUserId,
             answers,
             answer,
             question,
+            balance,
         });
     }
     async addAnswer(ctx) {
@@ -423,6 +493,17 @@ let ServiceController = class ServiceController {
         const userId = ctx.session.userId;
         const answerId = model.answerId;
         delete model.answerId;
+        const type = model.type || 'text';
+        delete model.type;
+        if (type === 'price') {
+            if (!utils_1.isInteger(model.content)) {
+                throw new Error('出价的积分需为整数');
+            }
+            model.points = +model.content;
+            if (model.points <= 0) {
+                throw new Error('出价至少1个积分');
+            }
+        }
         let question = await db_1.Table.Question.where('id', questionId).first();
         if (!question) {
             throw new Error('无效的问题');
@@ -433,10 +514,15 @@ let ServiceController = class ServiceController {
             if (!answer) {
                 throw new Error('无效的回答');
             }
+            // 对指定回答出价，但是该回答已经完成交易的情况，报错
+            if (type === 'price' && answer.orderId) {
+                throw new Error('不可进行出价操作');
+            }
         }
         else {
-            answer = await db_1.Table.Answer.where({ questionId, communityId, userId }).first();
-            if (!answer) {
+            let answers = await db_1.Table.Answer.where({ questionId, communityId, userId });
+            // 如果没有回答，或者所有的回答都已经交易了，就新增一个
+            if (answers.length === 0 || _.every(answers, (v) => v.orderId)) {
                 if (question.userId === userId) {
                     throw new Error('不能回答自己的问题');
                 }
@@ -453,9 +539,13 @@ let ServiceController = class ServiceController {
         let session = utils_1.create(models_1.AnswerSession, model);
         session.communityId = communityId;
         session.userId = userId;
-        session.AnswerId = answer.id;
+        session.answerId = answer.id;
+        session.type = type;
         await db_1.Table.AnswerSession.insert(session);
-        return routes_1.success();
+        await db_1.Table.Answer.where('id', answer.id).update({
+            latestAnswerTime: new Date()
+        });
+        return routes_1.success(answer);
     }
 };
 __decorate([
@@ -578,7 +668,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "getQuestion", null);
 __decorate([
-    routes_1.post('/question/add'),
+    routes_1.post('/:type/add'),
     routes_1.login,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -598,6 +688,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "getAnswerPay", null);
+__decorate([
+    routes_1.post('/answer/session/:id/confirm'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "confirmAnswerSession", null);
 __decorate([
     routes_1.get('/question/:id/answer'),
     routes_1.wechat,

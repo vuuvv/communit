@@ -3,7 +3,7 @@ import * as ejs from 'ejs';
 import { Table, db, raw, first } from '../db';
 
 export async function searchQuestion(query, communityId, start = 0, length = 20) {
-  const sql = `
+  let sql = `
 SELECT
 	q.*, wbm1. NAME AS mainType,
 	wbm2. NAME AS type,
@@ -15,11 +15,21 @@ FROM
 JOIN weixin_bank_menu AS wbm1 ON wbm1.id = q.mainTypeId
 JOIN weixin_bank_menu AS wbm2 ON wbm2.id = q.typeId
 JOIN t_wechat_user AS wu ON wu.officialAccountId = q.communityId AND wu.userId = q.userId
-WHERE q.communityId = :communityId
+WHERE
+  q.communityId = :communityId and
+  <% if (query.category) { %>
+  category = :category
+  <% } else { %>
+  1=1
+  <% } %>
 ORDER BY q.createdAt desc
   `;
 
-  return await raw(sql, {communityId});
+  sql = ejs.render(sql, {query});
+
+  query = Object.assign({}, query, {communityId});
+
+  return await raw(sql, query);
 }
 
 async function getQuestionById(questionId) {
@@ -71,6 +81,7 @@ SELECT
 	wu.headimgurl,
 	(SELECT count(*) FROM t_answer_session AS a1 WHERE a1.answerId = a.id) AS answerCount,
 	(SELECT content FROM t_answer_session AS a2 WHERE a2.answerId = a.id ORDER BY a2.createdAt ASC LIMIT 1) AS answerContent
+	(SELECT type FROM t_answer_session AS a2 WHERE a2.answerId = a.id ORDER BY a2.createdAt ASC LIMIT 1) AS answerType
 FROM
 	t_answer AS a
 JOIN t_wechat_user AS wu ON wu.officialAccountId = a.communityId AND wu.userId = a.userId
@@ -82,7 +93,8 @@ WHERE a.questionId = :questionId
   return question;
 }
 
-export async function getAnswer(questionId: string, userId: string, answerId = null) {
+export async function getAnswer(questionId: string, userId: string, category: string, answer = null) {
+  const answerId = answer ? answer.id : null;
   let sql = `
   SELECT * from
 (
@@ -111,12 +123,19 @@ export async function getAnswer(questionId: string, userId: string, answerId = n
   <% } else { %>
   JOIN t_answer AS a on ans.answerId=a.id
   JOIN t_question AS q on a.questionId=q.id
-  WHERE q.id=:questionId and ans.userId=:userId
+  WHERE q.id=:questionId and a.userId=:userId and
+    <% if(['help', 'service'].indexOf(category) !== -1) { %>
+      a.orderId is null
+    <% } else { %>
+      1=1
+    <% } %>
   <% } %>
 ) as m
 order by m.createdAt;
   `;
 
-  sql = ejs.render(sql, {answerId});
+  // help 和 service 类型的answer，如果用question和userId查询，answer必须没有进行交易
+
+  sql = ejs.render(sql, {answerId, category});
   return await raw(sql, {questionId, userId, answerId});
 }

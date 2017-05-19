@@ -33,4 +33,15 @@ export class QuestionComponent implements OnInit {
   get canAnswer() {
     return this.question && this.question.currentUserId && this.question.userId !== this.question.currentUserId;
   }
+
+  answerContent(a) {
+    switch (a.type) {
+      case 'price':
+        return `出价：${a.points}积分`;
+      case 'confirm':
+        return `确认交易：${a.points}积分`;
+      default:
+        return a.content;
+    }
+  }
 }

@@ -35,11 +35,8 @@ let AccountController = class AccountController {
         if (!userId) {
             return routes_1.success(0);
         }
-        let balance = await db_1.Table.Account.where({ communityId, userId }).sum('balance as balance').first();
-        if (!balance || !balance.balance) {
-            return routes_1.success(0);
-        }
-        return routes_1.success(balance.balance);
+        let balance = await account_1.getUserBalance(communityId, userId);
+        return routes_1.success(balance);
     }
     async summary(ctx) {
         let communityId = ctx.session.communityId;

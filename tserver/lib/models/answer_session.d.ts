@@ -11,12 +11,13 @@ export declare class AnswerSession extends BaseModel {
     /**
      * 回答Id
      */
-    AnswerId: string;
+    answerId: string;
     /**
      * 回答类型
      * 'text': 文本类型
      * 'price': 出价类型, 可进行确认操作
      */
+    type: string;
     /**
      * 对于text类型, 回答内容
      */
@@ -24,6 +25,6 @@ export declare class AnswerSession extends BaseModel {
     /**
      * 对于price类型, 定价积分
      */
-    points: string;
+    points: number;
 }
 export declare const AnswerSessionTableName = "t_answer_session";

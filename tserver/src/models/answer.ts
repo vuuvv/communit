@@ -42,6 +42,12 @@ export class Answer extends BaseModel {
    */
   @property()
   orderId: string;
+
+  /**
+   * 最后一条answer_session插入的时间
+   */
+  @property()
+  latestAnswerTime: Date;
 }
 
 export const AnswerTableName = 't_answer';

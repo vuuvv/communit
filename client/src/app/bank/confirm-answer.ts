@@ -17,6 +17,7 @@ const rules: FieldRule[] = [
 })
 export class ConfirmAnswerComponent implements OnInit {
   answer;
+  question;
   points;
 
   constructor(
@@ -35,8 +36,9 @@ export class ConfirmAnswerComponent implements OnInit {
       return this.http.get(`/service/answer/${params['id']}`)
     }).subscribe((v: any) => {
       this.overlayService.hideToast();
-      this.answer = v;
-      this.points = this.answer.question.points - this.answer.question.payedPoints;
+      this.answer = v.answer;
+      this.question = v.question;
+      this.points = this.question.points - this.question.payedPoints;
     });
   }
 

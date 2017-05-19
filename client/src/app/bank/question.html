@@ -7,8 +7,18 @@
 
   <div class="question">
     <div class="question-title">
-      <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-      <span class="question-points">{{ question.points }}</span>
+      <ng-container [ngSwitch]="question.category">
+        <ng-container *ngSwitchCase="'question'">
+          <v-icon type="question"></v-icon>
+          <span class="question-points">{{ question.points }}积分</span>
+        </ng-container>
+        <ng-container *ngSwitchCase="'help'">
+          <v-icon type="help"></v-icon>
+        </ng-container>
+        <ng-container *ngSwitchCase="'service'">
+          <v-icon type="service"></v-icon>
+        </ng-container>
+      </ng-container>
       <span>{{ question.title }}</span>
     </div>
     <div class="question-info">

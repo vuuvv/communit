@@ -28,5 +28,9 @@ export declare class Answer extends BaseModel {
      * 订单Id
      */
     orderId: string;
+    /**
+     * 最后一条answer_session插入的时间
+     */
+    latestAnswerTime: Date;
 }
 export declare const AnswerTableName = "t_answer";

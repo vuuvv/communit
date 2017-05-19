@@ -23,6 +23,10 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
+], Question.prototype, "category", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
 ], Question.prototype, "mainTypeId", void 0);
 __decorate([
     utils_1.property(),

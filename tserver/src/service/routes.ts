@@ -3,11 +3,31 @@ import * as ejs from 'ejs';
 
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
-import { create, getJsonBody, validate, FieldRule } from '../utils';
+import { create, getJsonBody, validate, FieldRule, isInteger } from '../utils';
 import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories, Question, Answer, AnswerSession } from '../models';
-import { refundOrder, deductPoints, TransactionType, PayAnswer, getAnswerPay } from '../account';
+import { refundOrder, deductPoints, TransactionType, PayAnswer, getAnswerPay, getUserBalance, confirmAnswerSession } from '../account';
 
 import { searchQuestion, getQuestion, getAnswer } from './service';
+
+const rules = {
+  question: [
+    { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+    { typeId: { strategy: ['required'], error: '请选择小类' } },
+    { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+    { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+    { title: { strategy: ['required'], error: '请填写内容' } },
+  ],
+  help: [
+    { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+    { typeId: { strategy: ['required'], error: '请选择小类' } },
+    { title: { strategy: ['required'], error: '请填写求助内容' } },
+  ],
+  service: [
+    { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+    { typeId: { strategy: ['required'], error: '请选择小类' } },
+    { title: { strategy: ['required'], error: '请填写提供服务的内容' } },
+  ]
+};
 
 const questionRules: FieldRule[] = [
   { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
@@ -24,6 +44,12 @@ const answerRules: FieldRule[] = [
 const payAnswerRules: FieldRule[] = [
   { points: { strategy: ['required'], error: '请填写悬赏积分' } },
   { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+];
+
+const helpRules: FieldRule[] = [
+  { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
+  { typeId: { strategy: ['required'], error: '请选择小类' } },
+  { title: { strategy: ['required'], error: '请填写求助内容' } },
 ];
 
 @router('/service')
@@ -452,22 +478,31 @@ export class ServiceController {
     return success(ret);
   }
 
-
-  @post('/question/add')
+  @post('/:type/add')
   @login
   async addQuestion(ctx) {
+    const type = ctx.params.type;
     const model = await getJsonBody(ctx);
-    validate(model, questionRules);
+    let r = rules[type];
+    if (!r) {
+      throw new Error('无效的服务种类');
+    }
+    validate(model, r);
 
     let q = create(Question, model);
     q.communityId = ctx.session.communityId;
     q.userId = ctx.session.userId;
+    q.category = type;
 
-    await db.transaction(async (trx) => {
-      const order = await PayAnswer(trx, q);
-      q.orderId = order.id;
-      await Table.Question.transacting(trx).insert(q);
-    });
+    if (type === 'question') {
+      await db.transaction(async (trx) => {
+        const order = await PayAnswer(trx, q);
+        q.orderId = order.id;
+        await Table.Question.transacting(trx).insert(q);
+      });
+    } else {
+      await Table.Question.insert(q);
+    }
 
     return success();
   }
@@ -484,8 +519,18 @@ export class ServiceController {
     if (!answer) {
       throw new Error('无效的回答');
     }
-    answer.question = await Table.Question.where('id', answer.questionId).first();
-    return success(answer);
+    let question = await Table.Question.where('id', answer.questionId).first();
+
+    let userId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+    let balance = await getUserBalance(communityId, userId);
+
+    return success({
+      answer,
+      question,
+      balance,
+      currentUserId: ctx.session.userId,
+    });
   }
 
   @post('/answer/:id/pay')
@@ -495,7 +540,16 @@ export class ServiceController {
     validate(model, payAnswerRules);
 
     await db.transaction(async (trx) => {
-      await getAnswerPay(trx, ctx.params.id, model.points);
+      await getAnswerPay(trx, ctx.params.id, model.points, ctx.session.userId);
+    });
+    return success();
+  }
+
+  @post('/answer/session/:id/confirm')
+  @login
+  async confirmAnswerSession(ctx) {
+    await db.transaction(async (trx) => {
+      await confirmAnswerSession(trx, ctx.params.id, ctx.session.userId);
     });
     return success();
   }
@@ -526,13 +580,33 @@ export class ServiceController {
       join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
       where a.id=:answerId
       `, { answerId });
+    } else {
+      if (question.category === 'question') {
+        answer = await first(`
+        select a.*, wu.realname from t_answer as a
+        join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+        where a.questionId=:questionId and a.userId=:userId
+        `, {questionId, userId});
+      } else if (['help', 'service'].indexOf(question.category) !== -1) {
+        answer = await first(`
+        select a.*, wu.realname from t_answer as a
+        join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+        where a.questionId=:questionId and a.userId=:userId and a.orderId is null
+        `, {questionId, userId});
+      }
     }
-    let answers = await getAnswer(questionId, userId, ctx.query.answerId);
+    let answers = await getAnswer(questionId, userId, question.category, answer);
+
+    let currentUserId = ctx.session.userId;
+    let communityId = ctx.session.communityId;
+    let balance = await getUserBalance(communityId, currentUserId);
+
     return success({
-      userId: ctx.session.userId,
+      userId: currentUserId,
       answers,
       answer,
       question,
+      balance,
     });
   }
 
@@ -547,6 +621,18 @@ export class ServiceController {
     const userId = ctx.session.userId;
     const answerId = model.answerId;
     delete model.answerId;
+    const type = model.type || 'text';
+    delete model.type;
+
+    if (type === 'price') {
+      if (!isInteger(model.content)){
+        throw new Error('出价的积分需为整数');
+      }
+      model.points = +model.content;
+      if (model.points <= 0) {
+        throw new Error('出价至少1个积分');
+      }
+    }
 
     let question: Question = await Table.Question.where('id', questionId).first();
     if (!question) {
@@ -559,9 +645,14 @@ export class ServiceController {
       if (!answer) {
         throw new Error('无效的回答');
       }
+      // 对指定回答出价，但是该回答已经完成交易的情况，报错
+      if (type === 'price' && answer.orderId) {
+        throw new Error('不可进行出价操作');
+      }
     } else {
-      answer = await Table.Answer.where({questionId, communityId, userId}).first();
-      if (!answer) {
+      let answers: any[] = await Table.Answer.where({questionId, communityId, userId});
+      // 如果没有回答，或者所有的回答都已经交易了，就新增一个
+      if (answers.length === 0 || _.every(answers, (v) => v.orderId)) {
         if (question.userId === userId) {
           throw new Error('不能回答自己的问题');
         }
@@ -580,9 +671,14 @@ export class ServiceController {
     let session  = create(AnswerSession, model);
     session.communityId = communityId;
     session.userId = userId;
-    session.AnswerId = answer.id;
+    session.answerId = answer.id;
+    session.type = type;
     await Table.AnswerSession.insert(session);
 
-    return success();
+    await Table.Answer.where('id', answer.id).update({
+      latestAnswerTime: new Date()
+    });
+
+    return success(answer);
   }
 }

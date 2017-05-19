@@ -36,5 +36,9 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], Answer.prototype, "orderId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Date)
+], Answer.prototype, "latestAnswerTime", void 0);
 exports.Answer = Answer;
 exports.AnswerTableName = 't_answer';

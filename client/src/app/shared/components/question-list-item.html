@@ -1,7 +1,17 @@
 <div class="question-body" [routerLink]="'/bank/question/' + question.id">
   <div class="question-title">
-    <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-    <span class="question-points">{{ question.points }}</span>
+    <ng-container [ngSwitch]="question.category">
+      <ng-container *ngSwitchCase="'question'">
+        <v-icon type="question"></v-icon>
+        <span class="question-points">{{ question.points }}积分</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'help'">
+        <v-icon type="help"></v-icon>
+      </ng-container>
+      <ng-container *ngSwitchCase="'service'">
+        <v-icon type="service"></v-icon>
+      </ng-container>
+    </ng-container>
     <span>{{question.title}}</span>
   </div>
   <div class="question-meta ngv-1px-b">
@@ -19,7 +29,7 @@
     <div class="question-answers ngv-1px-r">{{ question.answerCount }}人回答</div>
     <div class="question-answer-action" [class.disable]="isDisable" (click)="answer()">
       <v-icon type="edit"></v-icon>
-      <span>回答</span>
+      <span>{{ question.category === 'question' ? '回答' : '询问' }}</span>
     </div>
   </div>
 </div>

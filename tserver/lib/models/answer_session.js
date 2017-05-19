@@ -23,14 +23,18 @@ __decorate([
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
-], AnswerSession.prototype, "AnswerId", void 0);
+], AnswerSession.prototype, "answerId", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", String)
+], AnswerSession.prototype, "type", void 0);
 __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], AnswerSession.prototype, "content", void 0);
 __decorate([
     utils_1.property(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], AnswerSession.prototype, "points", void 0);
 exports.AnswerSession = AnswerSession;
 exports.AnswerSessionTableName = 't_answer_session';

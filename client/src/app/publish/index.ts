@@ -11,6 +11,8 @@ import { PublishComponent } from './publish.component';
 import { ActionComponent } from './action.component';
 import { ActivityComponent } from './activity';
 import { QuestionComponent } from './question';
+import { HelpComponent } from './help';
+import { ServiceComponent } from './service';
 
 const routes: Routes = [
   {
@@ -36,6 +38,16 @@ const routes: Routes = [
         pathMatch: 'full',
         component: QuestionComponent,
       },
+      {
+        path: 'help',
+        pathMatch: 'full',
+        component: HelpComponent,
+      },
+      {
+        path: 'service',
+        pathMatch: 'full',
+        component: ServiceComponent,
+      },
     ],
   },
 ];
@@ -54,6 +66,8 @@ const routes: Routes = [
     PublishComponent,
     ActivityComponent,
     QuestionComponent,
+    HelpComponent,
+    ServiceComponent,
   ]
 })
 export class PublishModule {

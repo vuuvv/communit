@@ -11,6 +11,12 @@ const rules: FieldRule[] = [
   { content: { strategy: ['required'], error: '请填写发送内容' } },
 ];
 
+const categories = {
+  question: '问答',
+  help: '求助',
+  service: '服务'
+};
+
 @Component({
   templateUrl: './answer.html',
   styleUrls: ['./answer.less'],
@@ -107,17 +113,77 @@ export class AnswerComponent implements OnInit {
     );
   }
 
+  get canBid() {
+    return (this.question.category === 'service' || this.question.category === 'help') && (!this.answer || !this.answer.orderId);
+  }
+
   get title() {
+    if (!this.question) {
+      return '';
+    }
+
     if (!this.isAnswer && this.answer) {
-      return `来自${this.answer.realname}的回答`;
-    } else if (this.question) {
-      return `来自${this.question.realname}的提问`;
+      switch (this.question.category) {
+        case 'question':
+          return `来自${this.answer.realname}的回答`;
+        case 'help':
+          return `来自${this.answer.realname}的询问`;
+        case 'service':
+          return `来自${this.answer.realname}的询问`;
+
+      }
+    }
+
+    switch (this.question.category) {
+      case 'question':
+        return `来自${this.question.realname}的提问`;
+      case 'help':
+        return `来自${this.question.realname}的求助`;
+      case 'service':
+        return `${this.question.realname}提供的服务`;
     }
 
     return '';
   }
 
-  isMe(userId: string) {
-    return this.userId === userId;
+  isMe(a) {
+    return this.userId === a.userId;
+  }
+
+  isPrice(a) {
+    return a.type === 'price';
+  }
+
+  isConfirm(a) {
+    return a.type === 'confirm';
+  }
+
+  content(a) {
+    switch(a.type) {
+      case 'price':
+        return `出价: ${a.points}积分。
+如果同意这个价格，请点击本对话进行确认！
+`;
+      case 'confirm':
+        return `交易确认: ${a.points}积分。
+本次交易结束！
+`;
+      default:
+        return a.content;
+    }
+  }
+
+  confirm(a) {
+    if (!this.isPrice(a) || this.isMe(a) || this.answer.orderId) {
+      return;
+    }
+
+    if ([this.question.userId, this.answer.userId].indexOf(this.userId) !== -1) {
+      this.dialogService.confirm(`确认同意对方的${a.points}个积分的出价`, '确认出价').ok((comp) => {
+        comp.close();
+        this.http.post(`/service/answer/session/${a.id}/confirm`).concatMap(() => this.getAnswer()).subscribe(() => {
+        });
+      });
+    }
   }
 }

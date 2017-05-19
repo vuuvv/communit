@@ -18,13 +18,15 @@ export class AnswerSession extends BaseModel {
    * 回答Id
    */
   @property()
-  AnswerId: string;
+  answerId: string;
 
   /**
    * 回答类型
    * 'text': 文本类型
    * 'price': 出价类型, 可进行确认操作
    */
+  @property()
+  type: string;
 
   /**
    * 对于text类型, 回答内容
@@ -37,7 +39,7 @@ export class AnswerSession extends BaseModel {
    * 对于price类型, 定价积分
    */
   @property()
-  points: string;
+  points: number;
 }
 
 export const AnswerSessionTableName = 't_answer_session';
