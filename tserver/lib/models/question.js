@@ -56,5 +56,9 @@ __decorate([
     utils_1.property(),
     __metadata("design:type", String)
 ], Question.prototype, "status", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Date)
+], Question.prototype, "latestAnswerTime", void 0);
 exports.Question = Question;
 exports.QuestionTableName = 't_question';

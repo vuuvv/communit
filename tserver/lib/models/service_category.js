@@ -12,8 +12,9 @@ const base_model_1 = require("./base_model");
 const utils_1 = require("../utils");
 class ServiceCategories {
 }
-ServiceCategories.Custom = '33ef69e8e2cc4cf3a9f12c36b560ee73';
-ServiceCategories.Help = '8c4075759d914b1395b8b06bc1b5d19f';
+ServiceCategories.Service = 'service';
+ServiceCategories.Help = 'help';
+ServiceCategories.Question = 'question';
 exports.ServiceCategories = ServiceCategories;
 class ServiceCategory extends base_model_1.BaseModel {
 }

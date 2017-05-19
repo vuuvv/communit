@@ -33,6 +33,8 @@ export class BankChildComponent implements OnInit {
   sort: string;
   category: string;
 
+  userId: string;
+
   constructor(
     private http: Http,
     private route: ActivatedRoute,
@@ -47,6 +49,7 @@ export class BankChildComponent implements OnInit {
       return Observable.forkJoin(
         this.http.get(`/menu/bank/${id}/children`),
         this.http.get('/service/search', {typeId: id}),
+        this.http.get('/user/id'),
       );
     }).subscribe((values: any) => {
       this.overlayService.hideToast();
@@ -59,10 +62,9 @@ export class BankChildComponent implements OnInit {
       this.children = this.menu.children = JSON.parse(this.menu.children);
       this.isShowAll = false;
       this.shownChildren = this.getShowIcons();
-      this.services = values[1].map((s) => {
-        s.data = JSON.parse(s.content);
-        return s;
-      });
+
+      this.services = values[1];
+      this.userId = values[2];
 
       this.selectMain(this.menu);
 

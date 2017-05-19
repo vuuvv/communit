@@ -123,7 +123,7 @@ export class QrcodeController {
       case ServiceCategories.Help:
         action = QrcodeAction.OrderHelp;
         break;
-      case ServiceCategories.Custom:
+      case ServiceCategories.Service:
         action = QrcodeAction.OrderCustom;
         break;
     }

@@ -113,7 +113,7 @@ let ServiceController = class ServiceController {
     join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
     where s.communityId = ? and s.userId = ? and s.categoryId = ?
     `;
-        let ret = await db_1.raw(sql, [communityId, userId, models_1.ServiceCategories.Custom]);
+        let ret = await db_1.raw(sql, [communityId, userId, models_1.ServiceCategories.Service]);
         return routes_1.success(ret);
     }
     async listHelp(ctx) {
@@ -145,14 +145,17 @@ let ServiceController = class ServiceController {
             types.push(ctx.query.typeId);
         }
         let sql = `
-      select s.*, c.name as categoryName, t.image_href as typeIcon, t1.name as childTypeName, wu.realname as userName from t_service as s
-      join t_service_category as c on s.categoryId = c.id
+      select
+        s.*, t.name as mainType, t1.name as type, wu.realname, wu.headimgurl,
+        (SELECT count(*) FROM t_answer AS a WHERE a.questionId = s.id) AS answerCount
+      from t_question as s
+      join t_service_category as c on s.category = c.id
       join weixin_bank_menu as t on s.mainTypeId = t.id
       join weixin_bank_menu as t1 on s.typeId = t1.id
       join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
       where
-        s.communityId = :communityId and s.status = 'normal' and
-        <% if (query.categoryId) { %> s.categoryId = :categoryId <% } else { %> 1 = 1 <% } %> and
+        s.communityId = :communityId and s.status in ('online', 'done') and
+        <% if (query.categoryId) { %> s.category = :categoryId <% } else { %> 1 = 1 <% } %> and
         <% if (query.typeId) { %> s.typeId in (:types)  <% } else { %> 1 = 1 <% } %>
       <% if(query.sort === 'points') { %>
       order by s.points asc
@@ -337,8 +340,8 @@ let ServiceController = class ServiceController {
                 let order = new models_1.Order();
                 order.type = models_1.OrderType.Service;
                 order.communityId = service.communityId;
-                order.sellerId = service.categoryId === models_1.ServiceCategories.Custom ? service.userId : user.userId;
-                order.buyerId = service.categoryId === models_1.ServiceCategories.Custom ? user.userId : service.userId;
+                order.sellerId = service.categoryId === models_1.ServiceCategories.Service ? service.userId : user.userId;
+                order.buyerId = service.categoryId === models_1.ServiceCategories.Service ? user.userId : service.userId;
                 order.status = models_1.OrderStatus.Payed;
                 order.amount = user.points;
                 order.orderTime = order.payTime = new Date();
@@ -543,6 +546,9 @@ let ServiceController = class ServiceController {
         session.type = type;
         await db_1.Table.AnswerSession.insert(session);
         await db_1.Table.Answer.where('id', answer.id).update({
+            latestAnswerTime: new Date()
+        });
+        await db_1.Table.Question.where('id', question.id).update({
             latestAnswerTime: new Date()
         });
         return routes_1.success(answer);

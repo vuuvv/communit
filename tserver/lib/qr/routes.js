@@ -103,7 +103,7 @@ let QrcodeController = class QrcodeController {
             case models_1.ServiceCategories.Help:
                 action = models_1.QrcodeAction.OrderHelp;
                 break;
-            case models_1.ServiceCategories.Custom:
+            case models_1.ServiceCategories.Service:
                 action = models_1.QrcodeAction.OrderCustom;
                 break;
         }

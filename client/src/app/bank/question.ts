@@ -35,13 +35,31 @@ export class QuestionComponent implements OnInit {
   }
 
   answerContent(a) {
-    switch (a.type) {
+    switch (a.answerType) {
       case 'price':
-        return `出价：${a.points}积分`;
+        return `出价：${a.answerContent}积分`;
       case 'confirm':
-        return `确认交易：${a.points}积分`;
+        return `确认交易：${a.answerContent}积分`;
       default:
-        return a.content;
+        return a.answerContent;
+    }
+  }
+
+  isQuestionOwner(a) {
+    return this.question && this.question.currentUserId === this.question.userId;
+  }
+
+  isAnswerOwnser(a) {
+    return this.question && this.question.currentUserId === a.userId;
+  }
+
+  needHide(a) {
+    return this.question.category !== 'question' && !this.isQuestionOwner(a) && !this.isAnswerOwnser(a);
+  }
+
+  gotoAnswer(a) {
+    if (!this.needHide(a)) {
+      this.router.navigate(['/bank/question/' + this.question.id + '/answer', {answerId: a.id}])
     }
   }
 }

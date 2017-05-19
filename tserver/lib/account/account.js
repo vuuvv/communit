@@ -412,6 +412,7 @@ async function getAnswerPay(trx, answerId, points, currentUserId) {
     await addPoints(trx, answer.communityId, answer.userId, AccountType.Normal, TransactionType.GetAnswer, points, undefined, order.id);
     let data = {
         payedPoints: question.payedPoints + points,
+        latestAnswerTime: new Date(),
     };
     let done = data.payedPoints === question.points;
     if (done) {
@@ -486,6 +487,9 @@ async function confirmAnswerSession(trx, sessionId, currentUserId) {
         orderId: order.id,
         status: 'done',
         points: points,
+    });
+    await db_1.Table.Question.where('id', question.id).transacting(trx).update({
+        latestAnswerTime: new Date()
     });
     let newSession = new models_1.AnswerSession();
     newSession.communityId = answer.communityId;

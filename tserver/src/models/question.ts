@@ -67,6 +67,9 @@ export class Question extends BaseModel {
    */
   @property()
   status: string;
+
+  @property()
+  latestAnswerTime: Date;
 }
 
 export const QuestionTableName = 't_question';

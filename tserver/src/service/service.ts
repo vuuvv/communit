@@ -80,7 +80,7 @@ SELECT
 	wu.realname,
 	wu.headimgurl,
 	(SELECT count(*) FROM t_answer_session AS a1 WHERE a1.answerId = a.id) AS answerCount,
-	(SELECT content FROM t_answer_session AS a2 WHERE a2.answerId = a.id ORDER BY a2.createdAt ASC LIMIT 1) AS answerContent
+	(SELECT content FROM t_answer_session AS a2 WHERE a2.answerId = a.id ORDER BY a2.createdAt ASC LIMIT 1) AS answerContent,
 	(SELECT type FROM t_answer_session AS a2 WHERE a2.answerId = a.id ORDER BY a2.createdAt ASC LIMIT 1) AS answerType
 FROM
 	t_answer AS a

@@ -508,6 +508,7 @@ export async function getAnswerPay(trx, answerId, points, currentUserId) {
 
   let data: any = {
     payedPoints: question.payedPoints + points,
+    latestAnswerTime: new Date(),
   };
 
   let done = data.payedPoints === question.points;
@@ -596,6 +597,10 @@ export async function confirmAnswerSession(trx, sessionId, currentUserId) {
     status: 'done',
     points: points,
   });
+
+  await Table.Question.where('id', question.id).transacting(trx).update({
+    latestAnswerTime: new Date();
+  })
 
   let newSession = new AnswerSession();
   newSession.communityId = answer.communityId;

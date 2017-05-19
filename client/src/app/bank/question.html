@@ -34,7 +34,7 @@
   <div class="gutter"></div>
 
   <div class="comment-list">
-    <div class="comment ngv-1px-b" *ngFor="let a of question.answers" [routerLink]="['/bank/question/' + question.id + '/answer', {answerId: a.id}]">
+    <div class="comment ngv-1px-b" *ngFor="let a of question.answers" (click)="gotoAnswer(a)">
       <div class="comment-header">
         <div class="comment-header-left">
           <v-image [src]="a.headimgurl"></v-image>
@@ -43,12 +43,25 @@
           <div class="comment-user">{{ a.realname }}</div>
           <div class="comment-time">{{ a.createdAt | time: 'minite' }}</div>
         </div>
-        <div class="comment-header-right" *ngIf="a.points">
-          <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-          <span class="answer-points">{{ a.points }}</span>
-        </div>
+        <ng-container *ngIf="needHide(a); else showAll">
+          <div class="comment-header-right" *ngIf="a.points">
+            <span>已完成</span>
+          </div>
+          <div class="comment-header-right" *ngIf="!a.points">
+            <span>未完成</span>
+          </div>
+        </ng-container>
+        <ng-template #showAll>
+          <div class="comment-header-right" *ngIf="a.points">
+            <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
+            <span class="answer-points">{{ a.points }}</span>
+          </div>
+          <div class="comment-header-right" *ngIf="!a.points">
+            <span>未完成</span>
+          </div>
+        </ng-template>
       </div>
-      <pre class="comment-body">{{ a.answerContent }}</pre>
+      <pre class="comment-body" *ngIf="!needHide(a)">{{ answerContent(a) }}</pre>
       <div class="comment-meta">{{ a.answerCount }}次对话</div>
     </div>
   </div>

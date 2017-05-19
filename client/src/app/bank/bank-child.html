@@ -51,8 +51,8 @@
   </div>
 
   <div class="service-list">
-    <service-list-item [service]="s" class="ngv-1px-b" *ngFor="let s of services" [routerLink]="['/bank/service/' + s.id]">
-    </service-list-item>
+    <question-list-item class="ngv-1pxd-tb" [question]="s" [userId]="userId" *ngFor="let s of services">
+    </question-list-item>
   </div>
   <empty-page *ngIf="!services || !services.length">暂无该类服务</empty-page>
 
@@ -113,16 +113,22 @@
             <v-icon type="duigou" *ngIf="!category"></v-icon>
           </p>
         </li>
-        <li (click)="selectCategory('33ef69e8e2cc4cf3a9f12c36b560ee73')">
-          <p class="ngv-1px-b" [class.sort-list-active]="category === '33ef69e8e2cc4cf3a9f12c36b560ee73'">
-            <span>服务自选</span>
-            <v-icon type="duigou" *ngIf="category === '33ef69e8e2cc4cf3a9f12c36b560ee73'"></v-icon>
+        <li (click)="selectCategory('service')">
+          <p class="ngv-1px-b" [class.sort-list-active]="category === 'service'">
+            <span>服务</span>
+            <v-icon type="duigou" *ngIf="category === 'service'"></v-icon>
           </p>
         </li>
-        <li (click)="selectCategory('8c4075759d914b1395b8b06bc1b5d19f')">
-          <p class="ngv-1px-b" [class.sort-list-active]="category === '8c4075759d914b1395b8b06bc1b5d19f'">
-            <span>邻里互助</span>
-            <v-icon type="duigou" *ngIf="category === '8c4075759d914b1395b8b06bc1b5d19f'"></v-icon>
+        <li (click)="selectCategory('help')">
+          <p class="ngv-1px-b" [class.sort-list-active]="category === 'help'">
+            <span>求助</span>
+            <v-icon type="duigou" *ngIf="category === 'help'"></v-icon>
+          </p>
+        </li>
+        <li (click)="selectCategory('question')">
+          <p class="ngv-1px-b" [class.sort-list-active]="category === 'question'">
+            <span>问答</span>
+            <v-icon type="duigou" *ngIf="category === 'question'"></v-icon>
           </p>
         </li>
       </ul>

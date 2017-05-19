@@ -44,5 +44,6 @@ export declare class Question extends BaseModel {
      * 状态
      */
     status: string;
+    latestAnswerTime: Date;
 }
 export declare const QuestionTableName = "t_question";
