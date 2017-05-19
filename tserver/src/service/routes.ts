@@ -5,7 +5,7 @@ import { router, get, post, all, success, Response, ResponseError, login, wechat
 import { Table, db, raw, first } from '../db';
 import { create, getJsonBody, validate, FieldRule } from '../utils';
 import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories, Question, Answer, AnswerSession } from '../models';
-import { refundOrder, deductPoints, TransactionType, PayAnswer } from '../account';
+import { refundOrder, deductPoints, TransactionType, PayAnswer, getAnswerPay } from '../account';
 
 import { searchQuestion, getQuestion, getAnswer } from './service';
 
@@ -19,6 +19,11 @@ const questionRules: FieldRule[] = [
 
 const answerRules: FieldRule[] = [
   { content: { strategy: ['required'], error: '请填写内容' } },
+];
+
+const payAnswerRules: FieldRule[] = [
+  { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+  { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
 ];
 
 @router('/service')
@@ -420,6 +425,18 @@ export class ServiceController {
     return success();
   }
 
+  @get('/help/search')
+  @wechat
+  async searchHelp(ctx) {
+    return success([]);
+  }
+
+  @get('/service/search')
+  @wechat
+  async searchService(ctx) {
+    return success([]);
+  }
+
   @get('/question/search')
   @wechat
   async searchQuestion(ctx) {
@@ -452,6 +469,34 @@ export class ServiceController {
       await Table.Question.transacting(trx).insert(q);
     });
 
+    return success();
+  }
+
+  @get('/answer/:id')
+  @wechat
+  async getAnswerQuestion(ctx) {
+    const answerId = ctx.params.id;
+    let answer = await first(`
+    select a.*, wu.realname from t_answer as a
+    join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+    where a.id=:answerId
+    `, { answerId });
+    if (!answer) {
+      throw new Error('无效的回答');
+    }
+    answer.question = await Table.Question.where('id', answer.questionId).first();
+    return success(answer);
+  }
+
+  @post('/answer/:id/pay')
+  @login
+  async getAnswerPay(ctx) {
+    const model = await getJsonBody(ctx);
+    validate(model, payAnswerRules);
+
+    await db.transaction(async (trx) => {
+      await getAnswerPay(trx, ctx.params.id, model.points);
+    });
     return success();
   }
 

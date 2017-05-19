@@ -21,6 +21,10 @@ export declare class Answer extends BaseModel {
      */
     points: string;
     /**
+     * 状态
+     */
+    status: string;
+    /**
      * 订单Id
      */
     orderId: string;

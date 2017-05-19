@@ -25,6 +25,10 @@ const questionRules = [
 const answerRules = [
     { content: { strategy: ['required'], error: '请填写内容' } },
 ];
+const payAnswerRules = [
+    { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+    { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
+];
 let ServiceController = class ServiceController {
     async categories(ctx) {
         let ret = await db_1.Table.ServiceCategory.orderBy('sort');
@@ -331,6 +335,12 @@ let ServiceController = class ServiceController {
         });
         return routes_1.success();
     }
+    async searchHelp(ctx) {
+        return routes_1.success([]);
+    }
+    async searchService(ctx) {
+        return routes_1.success([]);
+    }
     async searchQuestion(ctx) {
         const ret = await service_1.searchQuestion(ctx.query, ctx.session.communityId);
         return routes_1.success(ret);
@@ -350,6 +360,27 @@ let ServiceController = class ServiceController {
             const order = await account_1.PayAnswer(trx, q);
             q.orderId = order.id;
             await db_1.Table.Question.transacting(trx).insert(q);
+        });
+        return routes_1.success();
+    }
+    async getAnswerQuestion(ctx) {
+        const answerId = ctx.params.id;
+        let answer = await db_1.first(`
+    select a.*, wu.realname from t_answer as a
+    join t_wechat_user as wu on wu.officialAccountId=a.communityId and wu.userId=a.userId
+    where a.id=:answerId
+    `, { answerId });
+        if (!answer) {
+            throw new Error('无效的回答');
+        }
+        answer.question = await db_1.Table.Question.where('id', answer.questionId).first();
+        return routes_1.success(answer);
+    }
+    async getAnswerPay(ctx) {
+        const model = await utils_1.getJsonBody(ctx);
+        utils_1.validate(model, payAnswerRules);
+        await db_1.db.transaction(async (trx) => {
+            await account_1.getAnswerPay(trx, ctx.params.id, model.points);
         });
         return routes_1.success();
     }
@@ -519,6 +550,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "accept", null);
 __decorate([
+    routes_1.get('/help/search'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "searchHelp", null);
+__decorate([
+    routes_1.get('/service/search'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "searchService", null);
+__decorate([
     routes_1.get('/question/search'),
     routes_1.wechat,
     __metadata("design:type", Function),
@@ -539,6 +584,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ServiceController.prototype, "addQuestion", null);
+__decorate([
+    routes_1.get('/answer/:id'),
+    routes_1.wechat,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "getAnswerQuestion", null);
+__decorate([
+    routes_1.post('/answer/:id/pay'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ServiceController.prototype, "getAnswerPay", null);
 __decorate([
     routes_1.get('/question/:id/answer'),
     routes_1.wechat,

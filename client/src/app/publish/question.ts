@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
+import { Observable } from '../utils';
+
 import { Http, AuthorizeService } from '../shared';
 import { validate, FieldRule } from '../utils';
 import { DialogService, OverlayService } from '../../components';
@@ -16,12 +18,13 @@ const rules: FieldRule[] = [
 
 @Component({
   templateUrl: './question.html',
-  styleUrls: ['question.less'],
+  styleUrls: ['./question.less'],
   encapsulation: ViewEncapsulation.None,
 })
 export class QuestionComponent implements OnInit {
   types: any[] = [];
   subTypes: any[] = [];
+  balance = 0;
   question: any = {
     mainTypeId: '',
     typeId: '',
@@ -36,19 +39,19 @@ export class QuestionComponent implements OnInit {
     private router: Router,
   ) {}
 
-  get points() {
-    return this.authorizeService.user.user.balance;
-  }
-
   ngOnInit() {
-    this.http.get('/service/types/1').subscribe((v: any) =>{
-      this.types = v.map((type) => {
+    Observable.forkJoin(
+      this.http.get('/service/types/1'),
+      this.http.get('/account/balance'),
+    ).subscribe((values: any) => {
+      this.types = values[0].map((type) => {
         return {
           key: type.key,
           value: type.value,
           children: JSON.parse(type.children),
         };
       });
+      this.balance = values[1];
     });
   }
 

@@ -8,7 +8,7 @@
   <div class="question">
     <div class="question-title">
       <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-      <span class="question-points">20</span>
+      <span class="question-points">{{ question.points }}</span>
       <span>{{ question.title }}</span>
     </div>
     <div class="question-info">
@@ -29,13 +29,17 @@
         <div class="comment-header-left">
           <v-image [src]="a.headimgurl"></v-image>
         </div>
-        <div class="comment-header-right">
+        <div class="comment-header-center">
           <div class="comment-user">{{ a.realname }}</div>
           <div class="comment-time">{{ a.createdAt | time: 'minite' }}</div>
         </div>
+        <div class="comment-header-right" *ngIf="a.points">
+          <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
+          <span class="answer-points">{{ a.points }}</span>
+        </div>
       </div>
       <pre class="comment-body">{{ a.answerContent }}</pre>
-      <div class="comment-meta">{{ a.answerCount }}对话</div>
+      <div class="comment-meta">{{ a.answerCount }}次对话</div>
     </div>
   </div>
 </v-page>

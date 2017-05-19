@@ -90,7 +90,7 @@ let OrganizationController = class OrganizationController {
       (select count(*) from t_thread_comment as tc where tc.threadId=t.id) as commentCount
     from t_thread as t
     join t_wechat_user as wu on t.communityId = wu.officialAccountId and t.userId = wu.userId
-    where t.organizationId = ? and t.status = 'normal'
+    where t.organizationId = ? and t.status = 'online'
     order by t.lastCommentTime desc
     `, [organizationId]);
         return routes_1.success(org);

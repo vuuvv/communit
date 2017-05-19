@@ -1,7 +1,7 @@
 <v-page class="page-answer">
   <v-header slot="header">
     <span>{{ title }}</span>
-    <div class="ngv-header-button" slot="right" *ngIf="isOwner">采纳</div>
+    <div class="ngv-header-button" slot="right" *ngIf="canPay" [routerLink]="'/bank/confirm/answer/' + answerId">采纳</div>
   </v-header>
 
   <bottom-input #bottomInput slot="footer" (submit)="addAnswer($event, bottomInput)" *ngIf="canAnswer"></bottom-input>

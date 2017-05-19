@@ -148,7 +148,7 @@ async function addPoints(trx, communityId, userId, accountTypeId, transactionTyp
             balance: account.balance
         });
     }
-    let t = await insertTransaction(trx, account, transactionTypeId, points, orderId);
+    let t = await insertTransaction(trx, account, transactionTypeId, points, undefined, orderId);
     await insertTransactionDetail(trx, accountDetail, points, t.id);
     return t.id;
 }
@@ -373,3 +373,46 @@ async function PayAnswer(trx, question) {
     return order;
 }
 exports.PayAnswer = PayAnswer;
+async function getAnswerPay(trx, answerId, points) {
+    let answer = await db_1.Table.Answer.where('id', answerId).first();
+    if (!answer) {
+        throw new Error('无效的回答');
+    }
+    const question = await db_1.Table.Question.transacting(trx).forUpdate().where('id', answer.questionId).first();
+    const remain = question.points - question.payedPoints;
+    if (points > remain) {
+        throw new Error('悬赏积分已超额, 不可操作');
+    }
+    answer = await db_1.Table.Answer.transacting(trx).forUpdate().where('id', answerId).first();
+    if (answer.orderId) {
+        throw new Error('该回答已经悬赏，不可再进行该操作');
+    }
+    const order = await db_1.Table.Order.transacting(trx).where('id', question.orderId).first();
+    let detail = new models_1.OrderDetail();
+    detail.orderId = order.id;
+    detail.type = models_1.OrderType.Answer;
+    detail.productId = answer.id;
+    detail.data = JSON.stringify(answer);
+    detail.points = points;
+    await addPoints(trx, answer.communityId, answer.userId, AccountType.Normal, TransactionType.GetAnswer, points, undefined, order.id);
+    let data = {
+        payedPoints: question.payedPoints + points,
+    };
+    let done = data.payedPoints === question.points;
+    if (done) {
+        data.status = 'done';
+    }
+    await db_1.Table.Question.transacting(trx).where('id', question.id).update(data);
+    data = {
+        orderId: order.id,
+        points: points,
+        status: 'done',
+    };
+    await db_1.Table.Answer.transacting(trx).where('id', answer.id).update(data);
+    if (done) {
+        await db_1.Table.Order.transacting(trx).where('id', order.id).update({
+            status: 'done'
+        });
+    }
+}
+exports.getAnswerPay = getAnswerPay;

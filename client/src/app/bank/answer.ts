@@ -4,7 +4,12 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Http, AuthorizeService, sumBy } from '../shared';
+import { validate, FieldRule } from '../utils';
 import { OverlayService, DialogService } from '../../components';
+
+const rules: FieldRule[] = [
+  { content: { strategy: ['required'], error: '请填写发送内容' } },
+];
 
 @Component({
   templateUrl: './answer.html',
@@ -57,7 +62,19 @@ export class AnswerComponent implements OnInit {
   }
 
   addAnswer(content, bottomInput) {
-    this.http.json(`/service/question/${this.questionId}/answer/add`, {content, answerId: this.answerId}).concatMap(() => {
+    const data = {
+      content,
+      answerId: this.answerId,
+    };
+
+    try {
+      validate(data, rules);
+    } catch (e) {
+      this.dialogService.alert(e.message);
+      return;
+    }
+
+    this.http.json(`/service/question/${this.questionId}/answer/add`, data).concatMap(() => {
       return this.getAnswer();
     }).subscribe((resp: any) => {
       this.scrollToBottom();
@@ -78,6 +95,10 @@ export class AnswerComponent implements OnInit {
 
   get isAnswer() {
     return this.userId && this.answer && this.userId === this.answer.userId;
+  }
+
+  get canPay() {
+    return this.isOwner && this.answer && !this.answer.orderId && this.question.points > this.question.payedPoints;
   }
 
   get canAnswer() {

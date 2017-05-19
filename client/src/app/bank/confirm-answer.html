@@ -1,0 +1,10 @@
+<v-page *ngIf="answer">
+  <v-header slot="header" [showBack]="false">
+    <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
+    <span>采纳{{ answer.realname }}的回答</span>
+    <div class="ngv-header-button" slot="right" (click)="submit()">确定</div>
+  </v-header>
+  <single-input [(text)]="points">
+    输入对该回答的悬赏积分，可悬赏积分: {{ answer.question.points - answer.question.payedPoints }}
+  </single-input>
+</v-page>

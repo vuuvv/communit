@@ -20,6 +20,7 @@ import { OrganizationDetailComponent } from './organization-detail';
 import { BankChildComponent } from './bank-child';
 import { QuestionComponent } from './question';
 import { AnswerComponent } from './answer';
+import { ConfirmAnswerComponent } from './confirm-answer';
 
 const routes: Routes = [
   {
@@ -49,6 +50,12 @@ const routes: Routes = [
         path: 'question/:id/answer',
         pathMatch: 'full',
         component: AnswerComponent,
+      },
+      {
+        path: 'confirm/answer/:id',
+        canActivate: [AuthorizeGuard],
+        pathMatch: 'full',
+        component: ConfirmAnswerComponent,
       },
       {
         path: 'service/:id',
@@ -117,6 +124,7 @@ const routes: Routes = [
     BankChildComponent,
     QuestionComponent,
     AnswerComponent,
+    ConfirmAnswerComponent,
   ]
 })
 export class BankModule {

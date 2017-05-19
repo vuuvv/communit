@@ -18,9 +18,13 @@ export declare class ServiceController {
     quit(ctx: any): Promise<Response>;
     reject(ctx: any): Promise<Response>;
     accept(ctx: any): Promise<Response>;
+    searchHelp(ctx: any): Promise<Response>;
+    searchService(ctx: any): Promise<Response>;
     searchQuestion(ctx: any): Promise<Response>;
     getQuestion(ctx: any): Promise<Response>;
     addQuestion(ctx: any): Promise<Response>;
+    getAnswerQuestion(ctx: any): Promise<Response>;
+    getAnswerPay(ctx: any): Promise<Response>;
     getAnswer(ctx: any): Promise<Response>;
     addAnswer(ctx: any): Promise<Response>;
 }

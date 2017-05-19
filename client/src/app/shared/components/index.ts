@@ -11,6 +11,7 @@ import { WechatMultipleUploaderComponent } from './wechat-multiple-uploader';
 import { ServiceDetailComponent } from './service-detail';
 import { QuestionListItemComponent } from './question-list-item';
 import { BottomInputComponent } from './bottom-input';
+import { SingleInputComponent } from './single-input';
 
 export const SHARED_COMPONENTS = [
   TabbarComponent,
@@ -27,6 +28,7 @@ export const SHARED_COMPONENTS = [
   ServiceDetailComponent,
   QuestionListItemComponent,
   BottomInputComponent,
+  SingleInputComponent,
 ];
 
 export * from './tabbar';
