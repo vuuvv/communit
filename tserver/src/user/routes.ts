@@ -1,9 +1,10 @@
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, first, raw } from '../db';
-import { create, successPage } from '../utils';
+import { create, successPage, getJsonBody } from '../utils';
 import { Config } from '../config';
 
 import { addPoints, deductPoints, reverseTransaction } from '../account';
+import { ProfileConstants } from './user';
 
 @router('/user')
 export class UserController {
@@ -61,7 +62,7 @@ export class UserController {
     let sql = `
     select
       wu.realname, wu.sex, wu.address, wu.area, wu.address, bu.username as phone, bt.name as biotope,
-      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, su.birth, su.political,
+      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, DATE_FORMAT(su.birth, '%Y-%m-%d') as birth, su.political,
       su.jianKuanZK, su.JianKangLB, su.fuWuXingJi, su.geRenTZ from t_wechat_user as wu
     join t_s_user as su on wu.userId=su.id
     join t_s_base_user as bu on su.id=bu.id
@@ -72,6 +73,59 @@ export class UserController {
     let ret = await first(sql, [ctx.session.communityId, ctx.session.userId]);
 
     return success(ret);
+  }
+
+  @post('/profile/update/text')
+  @login
+  async updateProfileTexxt(ctx) {
+    const communityId = ctx.session.communityId;
+    const userId = ctx.session.userId;
+    const fields = ['realname', 'zhiYeZiGe', 'biYeYuanXiao'];
+    const model = await getJsonBody(ctx);
+    if (fields.indexOf(model.key) === -1) {
+      throw new Error('不可更改');
+    }
+    if (!model.value) {
+      throw new Error('内容不可为空');
+    }
+
+    let data = {};
+    data[model.key] = model.value;
+
+    if (model.key === 'realname') {
+      await Table.WechatUser.where({officialAccountId: communityId, userId}).update(data);
+    } else {
+      await db('t_s_user').where({id: userId}).update(data);
+    }
+
+    return success();
+
+  }
+
+  @post('/profile/update/select')
+  @login
+  async updateProfile(ctx) {
+    const communityId = ctx.session.communityId;
+    const userId = ctx.session.userId;
+    const model = await getJsonBody(ctx);
+    if (!model.key || !model.value) {
+      throw new Error(`参数错误, key: ${model.key}, value: ${model.value}`);
+    }
+
+    let data = {};
+    data[model.key] = model.value;
+
+    if (model.key !== 'birth' && (!ProfileConstants[model.key] || !ProfileConstants[model.key][model.value])) {
+      throw new Error(`参数错误, key: ${model.key}, value: ${model.value}`);
+    }
+
+    if (model.key === 'sex') {
+      await Table.WechatUser.where({officialAccountId: communityId, userId}).update(data);
+    } else {
+      await db('t_s_user').where({id: userId}).update(data);
+    }
+
+    return success();
   }
 
   @get('/community')

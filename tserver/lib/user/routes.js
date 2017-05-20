@@ -10,8 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const routes_1 = require("../routes");
 const db_1 = require("../db");
+const utils_1 = require("../utils");
 const config_1 = require("../config");
 const account_1 = require("../account");
+const user_1 = require("./user");
 let UserController = class UserController {
     async carousel(ctx) {
         let communityId = ctx.session.communityId;
@@ -52,7 +54,7 @@ let UserController = class UserController {
         let sql = `
     select
       wu.realname, wu.sex, wu.address, wu.area, wu.address, bu.username as phone, bt.name as biotope,
-      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, su.birth, su.political,
+      su.wenHuaChengDu, su.zhiYeZiGe, su.biYeYuanXiao, su.shenFenZheng, DATE_FORMAT(su.birth, '%Y-%m-%d') as birth, su.political,
       su.jianKuanZK, su.JianKangLB, su.fuWuXingJi, su.geRenTZ from t_wechat_user as wu
     join t_s_user as su on wu.userId=su.id
     join t_s_base_user as bu on su.id=bu.id
@@ -61,6 +63,47 @@ let UserController = class UserController {
     `;
         let ret = await db_1.first(sql, [ctx.session.communityId, ctx.session.userId]);
         return routes_1.success(ret);
+    }
+    async updateProfileTexxt(ctx) {
+        const communityId = ctx.session.communityId;
+        const userId = ctx.session.userId;
+        const fields = ['realname', 'zhiYeZiGe', 'biYeYuanXiao'];
+        const model = await utils_1.getJsonBody(ctx);
+        if (fields.indexOf(model.key) === -1) {
+            throw new Error('不可更改');
+        }
+        if (!model.value) {
+            throw new Error('内容不可为空');
+        }
+        let data = {};
+        data[model.key] = model.value;
+        if (model.key === 'realname') {
+            await db_1.Table.WechatUser.where({ officialAccountId: communityId, userId }).update(data);
+        }
+        else {
+            await db_1.db('t_s_user').where({ id: userId }).update(data);
+        }
+        return routes_1.success();
+    }
+    async updateProfile(ctx) {
+        const communityId = ctx.session.communityId;
+        const userId = ctx.session.userId;
+        const model = await utils_1.getJsonBody(ctx);
+        if (!model.key || !model.value) {
+            throw new Error(`参数错误, key: ${model.key}, value: ${model.value}`);
+        }
+        let data = {};
+        data[model.key] = model.value;
+        if (model.key !== 'birth' && (!user_1.ProfileConstants[model.key] || !user_1.ProfileConstants[model.key][model.value])) {
+            throw new Error(`参数错误, key: ${model.key}, value: ${model.value}`);
+        }
+        if (model.key === 'sex') {
+            await db_1.Table.WechatUser.where({ officialAccountId: communityId, userId }).update(data);
+        }
+        else {
+            await db_1.db('t_s_user').where({ id: userId }).update(data);
+        }
+        return routes_1.success();
     }
     async community(ctx) {
         return routes_1.success(ctx.session.communityId);
@@ -164,6 +207,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "profile", null);
+__decorate([
+    routes_1.post('/profile/update/text'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateProfileTexxt", null);
+__decorate([
+    routes_1.post('/profile/update/select'),
+    routes_1.login,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateProfile", null);
 __decorate([
     routes_1.get('/community'),
     routes_1.wechat,

@@ -79,14 +79,14 @@ export class BidComponent implements OnInit {
         if (this.isAnswerer) {
           return `对求助者${this.question.realname}的出价`;
         } else if (this.isQuestioner) {
-          return `对询问者${this.answer.realname}的出价`;
+          return `对咨询者${this.answer.realname}的出价`;
         }
         break;
       case 'service':
         if (this.isAnswerer) {
           return `对${this.question.realname}服务的出价`;
         } else if (this.isQuestioner) {
-          return `对询问者${this.answer.realname}的出价`;
+          return `对咨询者${this.answer.realname}的出价`;
         }
         break;
     }

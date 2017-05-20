@@ -1,3 +1,16 @@
+<div class="question-bottom ngv-1px-b" (click)="gotoQuestion()" style="padding-top: 0; padding-bottom: 8px;">
+  <div class="question-user">
+    <v-image [src]="question.headimgurl" [block]="false"></v-image>
+    <span>{{ question.realname }}</span>
+  </div>
+  <div class="question-answer">
+    <div class="question-answers ngv-1px-r">{{ isConfirm ? '已完成' : '未完成'}}</div>
+    <div class="question-answer-action" (click)="isConfirm ? rank() : answer()" *ngIf="isConfirm && canRank">
+      <v-icon type="edit"></v-icon>
+      <span>{{ actionLabel }}</span>
+    </div>
+  </div>
+</div>
 <div class="question-body">
   <div class="question-title" (click)="gotoQuestion()">
     <ng-container [ngSwitch]="question.category">
@@ -20,26 +33,10 @@
     <span class="question-time">{{ question.createdAt | time: 'minite' }}</span>
   </div>
 </div>
-<div class="question-sessions" *ngIf="sessions; else noSessions">
+<div class="question-sessions">
   <div class="question-session" *ngFor="let s of sessions" (click)="gotoSession($event, s)">
-    <div class="question-session-user">{{ s.realname }}：</div>
+    <div class="question-session-user">{{ username(s) }}：</div>
     <div class="question-session-content">{{ content(s) }}</div>
     <div class="question-session-time">{{ s.updatedAt | time: 'minite' }}</div>
   </div>
 </div>
-
-<ng-template #noSessions>
-  <div class="question-bottom" (click)="gotoQuestion()">
-    <div class="question-user">
-      <v-image [src]="question.headimgurl" [block]="false"></v-image>
-      <span>{{ question.realname }}</span>
-    </div>
-    <div class="question-answer">
-      <div class="question-answers ngv-1px-r">{{ question.answerCount }}人回答</div>
-      <div class="question-answer-action" [class.disable]="isDisable" (click)="answer()">
-        <v-icon type="edit"></v-icon>
-        <span>{{ question.category === 'question' ? '回答' : '咨询' }}</span>
-      </div>
-    </div>
-  </div>
-</ng-template>

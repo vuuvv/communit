@@ -21,6 +21,7 @@ import { BankChildComponent } from './bank-child';
 import { QuestionComponent } from './question';
 import { AnswerComponent } from './answer';
 import { ConfirmAnswerComponent } from './confirm-answer';
+import { RankAnswerComponent } from './answer-rank';
 import { BidComponent } from './bid';
 
 const routes: Routes = [
@@ -57,6 +58,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         pathMatch: 'full',
         component: ConfirmAnswerComponent,
+      },
+      {
+        path: 'rank/answer/:id',
+        canActivate: [AuthorizeGuard],
+        pathMatch: 'full',
+        component: RankAnswerComponent,
       },
       {
         path: 'question/:id/answer/bid',
@@ -132,6 +139,7 @@ const routes: Routes = [
     QuestionComponent,
     AnswerComponent,
     ConfirmAnswerComponent,
+    RankAnswerComponent,
     BidComponent,
   ]
 })

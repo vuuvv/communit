@@ -1,4 +1,6 @@
 
-<v-icon type="wujiaoxingman" [color]="color"  *ngFor="let i of full | repeat"></v-icon>
-<v-icon type="wujiaoxingban" [color]="color" *ngIf="hasHalf"></v-icon>
-<v-icon type="wujiaoxingkong" [color]="color" *ngFor="let i of empty | repeat"></v-icon>
+<!--<v-icon type="wujiaoxingman" [color]="color"  *ngFor="let i of full | repeat" (click)="rank(i)"></v-icon>
+<v-icon type="wujiaoxingban" [color]="color" *ngIf="hasHalf" (click)="rank(2)"></v-icon>
+<v-icon type="wujiaoxingkong" [color]="color" *ngFor="let i of empty | repeat"></v-icon>-->
+
+<v-icon [type]="r" [color]="color" *ngFor="let r of arr; let i = index" (click)="rank(i + 1)"></v-icon>

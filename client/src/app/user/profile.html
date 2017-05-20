@@ -1,15 +1,21 @@
 <v-page class="page-profile">
   <v-header slot="header">
     <span>个人信息</span>
-    <div class="ngv-header-button" slot="right" [routerLink]="['/user/profile/edit']">编辑</div>
   </v-header>
   <tabbar slot="footer"></tabbar>
 
   <v-group gutter="0">
-    <v-cell [value]="profile.realname">姓名</v-cell>
-    <v-cell [value]="constants.SEX[profile.sex]">性别</v-cell>
+    <v-cell [value]="profile.realname" (click)="updateText('realname', profile.realname, '更改姓名')">姓名</v-cell>
+    <v-cell class="weui-cell_select weui-cell_select-after right" label="性别">
+      <select class="weui-select" name="organizationId" [ngModel]="profile.sex" (ngModelChange)="updateSelect($event, 'sex')">
+        <option value="">请选择</option>
+        <option *ngFor="let e of constants.SEX; let i = index" [value]="i">{{ e }}</option>
+      </select>
+    </v-cell>
     <v-cell [value]="profile.phone">手机号码</v-cell>
-    <v-cell [value]="profile.birth || '未填写'">出生日期</v-cell>
+    <v-cell class="right" label="出生日期">
+      <input class="weui-input" type="date" name="birth" [ngModel]="profile.birth" (ngModelChange)="updateSelect($event, 'birth')">
+    </v-cell>
   </v-group>
 
   <v-group>
@@ -18,10 +24,25 @@
   </v-group>
 
   <v-group>
-    <v-cell [value]="constants.POLITICAL[profile.political] || '未填写'">政治面貌</v-cell>
-    <v-cell [value]="constants.EDUCATION[profile.wenHuaChengDu] || '未填写'">文化程度</v-cell>
-    <v-cell [value]="constants.HEALTH[profile.jianKuanZK] || '未填写'">健康状况</v-cell>
-    <v-cell [value]="profile.zhiYeZiGe || '未填写'">职业资格</v-cell>
-    <v-cell [value]="profile.biYeYuanXiao || '未填写'">毕业院校及专业</v-cell>
+    <v-cell class="weui-cell_select weui-cell_select-after right" label="政治面貌">
+      <select class="weui-select" [ngModel]="profile.political" (ngModelChange)="updateSelect($event, 'political')">
+        <option value="">请选择</option>
+        <option *ngFor="let e of constants.POLITICAL; let i = index" [value]="i">{{ e }}</option>
+      </select>
+    </v-cell>
+    <v-cell class="weui-cell_select weui-cell_select-after right" label="文化程度">
+      <select class="weui-select" [ngModel]="profile.wenHuaChengDu" (ngModelChange)="updateSelect($event, 'wenHuaChengDu')">
+        <option value="">请选择</option>
+        <option *ngFor="let e of constants.EDUCATION; let i = index" [value]="i">{{ e }}</option>
+      </select>
+    </v-cell>
+    <v-cell class="weui-cell_select weui-cell_select-after right" label="健康状况">
+      <select class="weui-select" [ngModel]="profile.jianKuanZK" (ngModelChange)="updateSelect($event, 'jianKuanZK')">
+        <option value="">请选择</option>
+        <option *ngFor="let e of constants.HEALTH; let i = index" [value]="i">{{ e }}</option>
+      </select>
+    </v-cell>
+    <v-cell [value]="profile.zhiYeZiGe || '未填写'" (click)="updateText('zhiYeZiGe', profile.zhiYeZiGe, '职业资格')">职业资格</v-cell>
+    <v-cell [value]="profile.biYeYuanXiao || '未填写'" (click)="updateText('biYeYuanXiao', profile.biYeYuanXiao, '毕业院校及专业')">毕业院校及专业</v-cell>
   </v-group>
 </v-page>

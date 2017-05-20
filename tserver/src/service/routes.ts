@@ -162,6 +162,7 @@ export class ServiceController {
   @wechat
   async search(ctx) {
     let communityId = ctx.session.communityId;
+    let userId = ctx.session.userId;
 
     let types = [];
     if (ctx.query.typeId) {
@@ -170,9 +171,35 @@ export class ServiceController {
       types.push(ctx.query.typeId);
     }
 
+
     let sql = `
       select
         s.*, t.name as mainType, t1.name as type, wu.realname, wu.headimgurl,
+        <% if (query.needSessions) { %>
+        (
+          select
+            concat(
+              '[',
+              group_concat(
+                json_object(
+                  'id', ans.id,
+                  'answerId', ans.answerId,
+                  'content', ans.content,
+                  'type', ans.type,
+                  'realname', wu1.realname,
+                  'updatedAt', ans.updatedAt
+                )
+              ),
+              ']'
+            )
+          from t_answer_session as ans
+          join t_answer as a1 on ans.answerId = a1.id
+          join t_wechat_user as wu1 on wu1.officialAccountId = ans.communityId and wu1.userId = ans.userId
+          where a1.questionId = s.id
+          order by ans.updatedAt
+          limit 5
+        ) as sessions,
+        <% } %>
         (SELECT count(*) FROM t_answer AS a WHERE a.questionId = s.id) AS answerCount
       from t_question as s
       join t_service_category as c on s.category = c.id
@@ -181,21 +208,84 @@ export class ServiceController {
       join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
       where
         s.communityId = :communityId and s.status in ('online', 'done') and
+        <% if (query.isMine) { %> s.userId = :userId <% } else { %> 1 = 1 <% } %> and
         <% if (query.categoryId) { %> s.category = :categoryId <% } else { %> 1 = 1 <% } %> and
         <% if (query.typeId) { %> s.typeId in (:types)  <% } else { %> 1 = 1 <% } %>
       <% if(query.sort === 'points') { %>
       order by s.points asc
       <% } else { %>
-      order by s.updatedAt desc
+      order by s.latestAnswerTime desc
       <% } %>
     `;
 
     sql = ejs.render(sql, ctx);
 
-    let ret = await raw(sql, Object.assign({communityId: communityId, types}, ctx.query));
+    let ret;
+
+    await db.transaction(async (trx) => {
+      await raw('SET SESSION group_concat_max_len = 1000000', [], trx);
+      ret = await raw(sql, Object.assign({communityId, types, userId}, ctx.query), trx);
+    });
 
     return success(ret);
   }
+
+  @get('/search/my/answer')
+  @login
+  async searchAnswers(ctx) {
+    const communityId = ctx.session.communityId;
+    const userId = ctx.session.userId;
+
+    let sql = `
+      select
+        s.*, t.name as mainType, t1.name as type, wu.realname, wu.headimgurl, a.orderId, a.id as answerId, a.userId as answerUserId,
+        (
+          select
+            concat(
+              '[',
+              group_concat(
+                json_object(
+                  'id', ans.id,
+                  'userId', ans.userId,
+                  'answerId', ans.answerId,
+                  'content', ans.content,
+                  'type', ans.type,
+                  'realname', wu1.realname,
+                  'updatedAt', ans.updatedAt
+                )
+              ),
+              ']'
+            )
+          from t_answer_session as ans
+          join t_wechat_user as wu1 on wu1.officialAccountId = ans.communityId and wu1.userId = ans.userId
+          where ans.answerId = a.id
+          order by ans.updatedAt
+          limit 5
+        ) as sessions
+      from t_question as s
+      join t_answer as a on s.id = a.questionId
+      join t_service_category as c on s.category = c.id
+      join weixin_bank_menu as t on s.mainTypeId = t.id
+      join weixin_bank_menu as t1 on s.typeId = t1.id
+      join t_wechat_user as wu on wu.officialAccountId = s.communityId and wu.userId = s.userId
+      where
+        s.communityId = :communityId and a.userId = :userId and
+        <% if (query.categoryId) { %> s.category = :categoryId <% } else { %> 1 = 1 <% } %>
+      order by a.latestAnswerTime desc
+    `;
+
+    sql = ejs.render(sql, ctx);
+
+    let ret;
+
+    await db.transaction(async (trx) => {
+      await raw('SET SESSION group_concat_max_len = 1000000', [], trx);
+      ret = await raw(sql, Object.assign({communityId, userId}, ctx.query), trx);
+    });
+
+    return success(ret);
+  }
+
 
   @get('/item/:id')
   @wechat

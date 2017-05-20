@@ -1,0 +1,12 @@
+<v-page class="page-rank-answer" *ngIf="answer">
+  <v-header slot="header" [showBack]="false">
+    <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
+    <span>评价{{ answer.realname }}的回答</span>
+    <div class="ngv-header-button" slot="right" (click)="submit()">确定</div>
+  </v-header>
+  <single-input [(text)]="content">
+    请输入你对{{ answer.realname }}的评价
+  </single-input>
+
+  <v-rank [(points)]="rank" color="#ffa52f"></v-rank>
+</v-page>

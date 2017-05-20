@@ -31,7 +31,8 @@ export class OrganizationController {
       await raw('SET SESSION group_concat_max_len = 1000000', [], trx);
       ret.organizations = await raw(`
       select
-        id, organizationname, (
+        id, organizationname,
+        (
           select
             concat(
               '[',

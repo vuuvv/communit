@@ -30,7 +30,8 @@ let OrganizationController = class OrganizationController {
             await db_1.raw('SET SESSION group_concat_max_len = 1000000', [], trx);
             ret.organizations = await db_1.raw(`
       select
-        id, organizationname, (
+        id, organizationname,
+        (
           select
             concat(
               '[',

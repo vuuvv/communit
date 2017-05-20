@@ -1,7 +1,7 @@
 @import "../../../styles/weui/base/mixin/setOnepx.less";
 @import '../../../styles/weui/base/mixin/text.less';
 
-question-list-item {
+question-list-item, answer-list-item {
   display: block;
   position: relative;
   padding: 12px 8px 10px;
@@ -90,5 +90,31 @@ question-list-item {
         color: #c9c9c9;
       }
     }
+  }
+
+  .question-sessions {
+    padding-top: 8px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .question-session {
+    padding-left: 8px;
+    &>div {
+      display: inline;
+    }
+  }
+
+  .question-session-user {
+    color: #517cbb;
+  }
+
+  .question-session-content {
+    padding-right: 8px;
+  }
+
+  .question-session-time {
+    color: #b8bcbf;
+    font-size: 12px;
   }
 }

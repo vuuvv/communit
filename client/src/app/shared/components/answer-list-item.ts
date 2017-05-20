@@ -2,12 +2,12 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'question-list-item',
-  templateUrl: './question-list-item.html',
+  selector: 'answer-list-item',
+  templateUrl: './answer-list-item.html',
   styleUrls: ['./question-list-item.less'],
   encapsulation: ViewEncapsulation.None,
 })
-export class QuestionListItemComponent {
+export class AnswerListItemComponent {
   @Input() question: any;
   @Input() userId: string;
 
@@ -39,6 +39,34 @@ export class QuestionListItemComponent {
     }
   }
 
+  rank() {
+    this.router.navigate([`/bank/rank/answer/${this.question.answerId}`]);
+  }
+
+  canRank() {
+    if (this.question) {
+      return false;
+    }
+    if (this.question.category === 'help') {
+      return this.question.userId === this.userId;
+    } else if (this.question.category === 'service') {
+      return this.question.answerUserId === this.userId;
+    }
+
+    return false;
+  }
+
+  get isConfirm() {
+    return this.question && this.question.orderId;
+  }
+
+  get actionLabel() {
+    if (this.isConfirm) {
+      return '评价';
+    }
+    return this.question.category === 'question' ? '回答' : '咨询';
+  }
+
   content(a) {
     switch (a.type) {
       case 'price':
@@ -48,6 +76,10 @@ export class QuestionListItemComponent {
       default:
         return a.content;
     }
+  }
+
+  username(s) {
+    return s.userId === this.userId ? '我' : s.realname;
   }
 
   gotoSession(ev, s) {

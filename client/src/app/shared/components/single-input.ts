@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewEncapsulation, ViewChild, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'single-input',

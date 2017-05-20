@@ -9,6 +9,7 @@ import * as constants from '../constants';
 
 @Component({
   templateUrl: './profile.html',
+  styleUrls: ['./profile.less'],
   encapsulation: ViewEncapsulation.None,
 })
 export class ProfileComponent implements OnInit {
@@ -27,6 +28,21 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.http.get('/user/profile').subscribe((v: any) => {
       this.profile = v;
+      Object.keys(this.profile).forEach((key) => {
+        const value = this.profile[key];
+        if (value == null) {
+          this.profile[key] = '';
+        }
+      });
     });
+  }
+
+  updateSelect(value, key) {
+    this.profile[key] = value;
+    this.http.json('/user/profile/update/select', {key, value}).subscribe(() => null);
+  }
+
+  updateText(field, value, title, meta = '') {
+    this.router.navigate(['/user/profile/update/text', {field, value, title, meta}]);
   }
 }

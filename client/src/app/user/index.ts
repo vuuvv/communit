@@ -19,7 +19,8 @@ import { ServiceComponent } from './service';
 import { ServiceUsersComponent } from './service-users';
 import { HelpComponent } from './help';
 import { ProfileComponent } from './profile';
-import { ProfileFormComponent } from './profile-form';
+import { ProfileUpdateTextComponent } from './profile-update-text';
+import { QuestionComponent } from './question';
 
 const routes: Routes = [
   {
@@ -96,11 +97,17 @@ const routes: Routes = [
         component: ProfileComponent,
       },
       {
-        path: 'profile/edit',
+        path: 'profile/update/text',
         pathMatch: 'full',
         canActivate: [AuthorizeGuard],
-        component: ProfileFormComponent,
-      }
+        component: ProfileUpdateTextComponent,
+      },
+      {
+        path: 'service/:category/:type',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: QuestionComponent,
+      },
     ],
   },
 ];
@@ -127,7 +134,8 @@ const routes: Routes = [
     ServiceComponent,
     HelpComponent,
     ProfileComponent,
-    ProfileFormComponent,
+    ProfileUpdateTextComponent,
+    QuestionComponent,
   ]
 })
 export class UserModule {

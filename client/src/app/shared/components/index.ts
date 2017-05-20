@@ -10,6 +10,7 @@ import { WechatUploaderComponent } from './wechat-uploader';
 import { WechatMultipleUploaderComponent } from './wechat-multiple-uploader';
 import { ServiceDetailComponent } from './service-detail';
 import { QuestionListItemComponent } from './question-list-item';
+import { AnswerListItemComponent } from './answer-list-item';
 import { BottomInputComponent } from './bottom-input';
 import { SingleInputComponent } from './single-input';
 
@@ -29,6 +30,7 @@ export const SHARED_COMPONENTS = [
   QuestionListItemComponent,
   BottomInputComponent,
   SingleInputComponent,
+  AnswerListItemComponent,
 ];
 
 export * from './tabbar';

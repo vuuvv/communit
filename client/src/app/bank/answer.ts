@@ -127,9 +127,9 @@ export class AnswerComponent implements OnInit {
         case 'question':
           return `来自${this.answer.realname}的回答`;
         case 'help':
-          return `来自${this.answer.realname}的询问`;
+          return `来自${this.answer.realname}的咨询`;
         case 'service':
-          return `来自${this.answer.realname}的询问`;
+          return `来自${this.answer.realname}的咨询`;
 
       }
     }
@@ -159,7 +159,7 @@ export class AnswerComponent implements OnInit {
   }
 
   content(a) {
-    switch(a.type) {
+    switch (a.type) {
       case 'price':
         return `出价: ${a.points}积分。
 如果同意这个价格，请点击本对话进行确认！

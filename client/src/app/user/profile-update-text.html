@@ -1,0 +1,10 @@
+<v-page>
+  <v-header slot="header" [showBack]="false">
+    <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
+    <span>{{ title }}</span>
+    <div class="ngv-header-button" slot="right" (click)="submit()">确定</div>
+  </v-header>
+  <single-input [(text)]="value">
+    {{ meta }}
+  </single-input>
+</v-page>

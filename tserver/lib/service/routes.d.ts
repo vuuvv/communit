@@ -11,6 +11,7 @@ export declare class ServiceController {
     list(ctx: any): Promise<Response>;
     listHelp(ctx: any): Promise<Response>;
     search(ctx: any): Promise<Response>;
+    searchAnswers(ctx: any): Promise<Response>;
     item(ctx: any): Promise<Response>;
     add(ctx: any): Promise<Response>;
     users(ctx: any): Promise<Response>;
