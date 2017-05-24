@@ -6,12 +6,6 @@
       <v-cell label="店铺名称">
         <input class="weui-input" type="text" name="name" placeholder="店铺名称" required [(ngModel)]="store.name">
       </v-cell>
-      <v-cell label="法人姓名">
-        <input class="weui-input" type="text" name="legalRepresentative" placeholder="法人代表姓名" required [(ngModel)]="store.legalRepresentative">
-      </v-cell>
-      <v-cell label="法人手机">
-        <input class="weui-input" type="text" name="legalRepresentativeTel" placeholder="法人代表手机号" required [(ngModel)]="store.legalRepresentativeTel">
-      </v-cell>
       <v-cell label="经营范围">
         <input class="weui-input" type="text" name="businessScope" placeholder="经营范围" required [(ngModel)]="store.businessScope">
       </v-cell>
@@ -24,12 +18,12 @@
     </v-group>
     <v-box title="店铺简介">
       <v-cell>
-        <textarea class="weui-textarea" placeholder="店铺简介" rows="3" [(ngModel)]="store.description" name="description"></textarea>
+        <textarea class="weui-textarea" placeholder="店铺简介(选填)" rows="3" [(ngModel)]="store.description" name="description"></textarea>
       </v-cell>
     </v-box>
     <v-box title="店铺地址">
       <v-cell>
-        <textarea class="weui-textarea" placeholder="店铺地址" rows="3" [(ngModel)]="store.address" name="address"></textarea>
+        <textarea class="weui-textarea" placeholder="店铺地址(选填)" rows="3" [(ngModel)]="store.address" name="address"></textarea>
       </v-cell>
     </v-box>
     <v-box title="上传证照资料">

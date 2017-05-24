@@ -8,12 +8,6 @@ const validMessages = {
   name: {
     required: '请填写店铺名称',
   },
-  legalRepresentative: {
-    required: '请填写法人代表',
-  },
-  legalRepresentativeTel: {
-    required: '请填写法人代表手机',
-  },
   businessScope: {
     required: '请填写经营范围',
   },
@@ -22,12 +16,6 @@ const validMessages = {
   },
   tel: {
     required: '请填写联系方式',
-  },
-  description: {
-    required: '请填写店铺简介',
-  },
-  address: {
-    required: '请填写店铺地址',
   },
 };
 

@@ -62,4 +62,21 @@ export class QuestionComponent implements OnInit {
       this.router.navigate(['/bank/question/' + this.question.id + '/answer', {answerId: a.id}])
     }
   }
+
+  get title() {
+    if (!this.question) {
+      return '';
+    }
+
+    switch (this.question.category) {
+      case 'question':
+        return `来自${this.question.realname}的提问`;
+      case 'help':
+        return `来自${this.question.realname}的求助`;
+      case 'service':
+        return `${this.question.realname}提供的服务`;
+    }
+
+    return '';
+  }
 }

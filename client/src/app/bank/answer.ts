@@ -59,7 +59,7 @@ export class AnswerComponent implements OnInit {
       this.answer = resp.answer;
       this.question = resp.question;
       if (!this.answerId && this.answer) {
-        this.answerId = this.answer;
+        this.answerId = this.answer.id;
       }
       if (this.isOwner && !this.answer) {
         this.location.back();

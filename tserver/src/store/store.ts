@@ -32,14 +32,6 @@ export async function getStoreModel(ctx) {
     throw new ResponseError('请填写联系人');
   }
 
-  if (!store.address) {
-    throw new ResponseError('请填写店铺地址');
-  }
-
-  if (!store.description) {
-    throw new ResponseError('请填写店铺简介');
-  }
-
   if (!store.businessLicense) {
     throw new ResponseError('请上传营业执照');
   }

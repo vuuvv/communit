@@ -52,6 +52,7 @@ export async function getUserBalance(communityId, userId) {
 }
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
+  points = +points;
   let td = new TransactionDetail();
   td.communityId = accountDetail.communityId;
   td.userId = accountDetail.userId;
@@ -64,6 +65,7 @@ async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, p
 }
 
 async function insertTransaction(trx: any, account: Account, transactionTypeId: string, points: number, id = null, orderId = null) {
+    points = +points;
     let accounts: Account[] = await Table.Account.transacting(trx).where({
       communityId: account.communityId,
       userId: account.userId,
@@ -156,6 +158,7 @@ export async function reverseTransaction(trx: any, transactionId: string) {
  * @param expiresIn 有效期限(天)
  */
 export async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180, orderId = null) {
+  points = +points;
   let account: Account = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -195,6 +198,7 @@ export async function addPoints(trx, communityId, userId, accountTypeId, transac
 }
 
 export async function deductPoints(trx, communityId, userId, transactionTypeId, points, orderId = null) {
+  points = +points;
   let accounts: Account[] = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -529,7 +533,7 @@ export async function getAnswerPay(trx, answerId, points, currentUserId) {
   if (done) {
     await Table.Order.transacting(trx).where('id', order.id).update({
       status: 'done',
-      orderTradeTime: new Date(),
+      tradeTime: new Date(),
     });
   }
 }

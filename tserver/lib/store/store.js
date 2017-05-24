@@ -27,12 +27,6 @@ async function getStoreModel(ctx) {
     if (!store.contact) {
         throw new routes_1.ResponseError('请填写联系人');
     }
-    if (!store.address) {
-        throw new routes_1.ResponseError('请填写店铺地址');
-    }
-    if (!store.description) {
-        throw new routes_1.ResponseError('请填写店铺简介');
-    }
     if (!store.businessLicense) {
         throw new routes_1.ResponseError('请上传营业执照');
     }

@@ -1,5 +1,5 @@
 <v-page class="page-question" *ngIf="question">
-  <v-header slot="header">来自<span>{{ question.realname }}</span>的提问</v-header>
+  <v-header slot="header">{{ title }}</v-header>
 
   <div class="answer-btn" [routerLink]="'/bank/question/' + question.id + '/answer'" *ngIf="canAnswer">
     <v-icon type="edit"></v-icon>
