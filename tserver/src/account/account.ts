@@ -1,12 +1,14 @@
 import * as _ from 'lodash';
 import { Table, db, raw, first } from '../db';
-import { uuid } from '../utils';
+import { uuid, validPoints } from '../utils';
 
 import {
    Account, AccountDetail, Transaction, TransactionDetail, Order,
    OrderDetail, OrderType, OrderStatus, SociallyActivityUserStatus,
    SociallyActivityUser, Question, Answer, AnswerSession,
 } from '../models';
+
+
 
 async function getWechatUser(officialAccountId, userId) {
   return await Table.WechatUser.where({officialAccountId, userId}).first();
@@ -52,7 +54,6 @@ export async function getUserBalance(communityId, userId) {
 }
 
 async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, points: number, transactionId: string) {
-  points = +points;
   let td = new TransactionDetail();
   td.communityId = accountDetail.communityId;
   td.userId = accountDetail.userId;
@@ -65,7 +66,6 @@ async function insertTransactionDetail(trx: any, accountDetail: AccountDetail, p
 }
 
 async function insertTransaction(trx: any, account: Account, transactionTypeId: string, points: number, id = null, orderId = null) {
-    points = +points;
     let accounts: Account[] = await Table.Account.transacting(trx).where({
       communityId: account.communityId,
       userId: account.userId,
@@ -158,7 +158,7 @@ export async function reverseTransaction(trx: any, transactionId: string) {
  * @param expiresIn 有效期限(天)
  */
 export async function addPoints(trx, communityId, userId, accountTypeId, transactionTypeId, points, expiresIn = 180, orderId = null) {
-  points = +points;
+  points = validPoints(points);
   let account: Account = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -198,7 +198,7 @@ export async function addPoints(trx, communityId, userId, accountTypeId, transac
 }
 
 export async function deductPoints(trx, communityId, userId, transactionTypeId, points, orderId = null) {
-  points = +points;
+  points = validPoints(points);
   let accounts: Account[] = await Table.Account.transacting(trx).where({
     communityId: communityId,
     userId: userId,
@@ -535,7 +535,89 @@ export async function getAnswerPay(trx, answerId, points, currentUserId) {
       status: 'done',
       tradeTime: new Date(),
     });
+
+    await Table.Answer.transacting(trx).where({
+      questionId: question.id,
+      status: 'submit',
+    }).update({
+      status: 'closed'
+    });
   }
+}
+
+export async function payAnswer(trx, answerId, userId) {
+  let answer: Answer = await Table.Answer.where('id', answerId).first();
+  if (!answer) {
+    throw new Error('无效的回答');
+  }
+
+  const question: Question = await Table.Question.transacting(trx).forUpdate().where('id', answer.questionId).first();
+
+  if (answer.status !== 'submit' || question.status !== 'online') {
+    throw new Error('不可支付');
+  }
+
+  let points = validPoints(answer.points);
+
+  let sellerId, buyerId, orderType, sellerTransactionType, buyerTransactionType;
+  switch (question.category) {
+    case 'help':
+      if (question.userId !== userId) {
+        throw new Error('不可支付');
+      }
+      sellerId = answer.userId;
+      buyerId = question.userId;
+      orderType = OrderType.Help;
+      sellerTransactionType = TransactionType.GetHelper;
+      buyerTransactionType = TransactionType.PayHelper;
+      break;
+    case 'service':
+      if (answer.userId !== userId) {
+        throw new Error('不可支付');
+      }
+      sellerId = question.userId;
+      buyerId = answer.userId;
+      orderType = OrderType.Service;
+      sellerTransactionType = TransactionType.GetService;
+      buyerTransactionType = TransactionType.PayService;
+      break;
+    default:
+      throw new Error('不可操作类型');
+  }
+
+  let order = new Order();
+  order.type = orderType;
+  order.communityId = question.communityId;
+  order.buyerId = buyerId;
+  order.sellerId = sellerId;
+  order.status = OrderStatus.Done;
+  order.amount = points;
+  order.orderTime = order.payTime = order.tradeTime = new Date();
+
+  let detail = new OrderDetail();
+  detail.orderId = order.id;
+  detail.type = orderType;
+  detail.productId = answer.id;
+  detail.data = JSON.stringify(answer);
+  detail.points = points;
+
+  order.buyerTradeTransactionId = await deductPoints(
+    trx, order.communityId, buyerId, buyerTransactionType, points, order.id);
+  order.sellerTradeTransactionId = await addPoints(
+    trx, order.communityId, sellerId, AccountType.Normal, sellerTransactionType, points, undefined, order.id);
+
+  await Table.Order.transacting(trx).insert(order);
+  await Table.OrderDetail.transacting(trx).insert(detail);
+
+  await Table.Answer.where('id', answer.id).transacting(trx).update({
+    orderId: order.id,
+    status: 'done',
+    points: points,
+  });
+
+  await Table.Question.where('id', question.id).transacting(trx).update({
+    latestAnswerTime: new Date(),
+  });
 }
 
 export async function confirmAnswerSession(trx, sessionId, currentUserId) {

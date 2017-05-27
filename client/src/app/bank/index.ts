@@ -9,20 +9,15 @@ import { SharedModule, AuthorizeGuard } from '../shared';
 
 import { BankComponent } from './bank';
 import { ServiceComponent } from './service';
-import { ServiceJoinComponent } from './service-join';
-import { ServiceListComponent } from './service-list';
 import { ActivityComponent } from './activity';
 import { ActivityListComponent } from './activity-list';
-import { WorkerComponent } from './worker';
-import { WorkerAddComponent } from './worker-add';
-import { OrganizationComponent } from './organization';
-import { OrganizationDetailComponent } from './organization-detail';
 import { BankChildComponent } from './bank-child';
 import { QuestionComponent } from './question';
 import { AnswerComponent } from './answer';
 import { ConfirmAnswerComponent } from './confirm-answer';
 import { RankAnswerComponent } from './answer-rank';
 import { BidComponent } from './bid';
+import { AddAnswerComponent } from './answer-add';
 
 const routes: Routes = [
   {
@@ -45,6 +40,7 @@ const routes: Routes = [
       },
       {
         path: 'question/:id',
+        canActivate: [AuthorizeGuard],
         pathMatch: 'full',
         component: QuestionComponent,
       },
@@ -72,36 +68,15 @@ const routes: Routes = [
         component: BidComponent,
       },
       {
+        path: 'question/:id/answer/add',
+        canActivate: [AuthorizeGuard],
+        pathMatch: 'full',
+        component: AddAnswerComponent,
+      },
+      {
         path: 'service/:id',
         pathMatch: 'full',
         component: ServiceComponent,
-      },
-      {
-        path: 'service/:id/join',
-        canActivate: [AuthorizeGuard],
-        pathMatch: 'full',
-        component: ServiceJoinComponent,
-      },
-      {
-        path: 'services',
-        pathMatch: 'full',
-        component: ServiceListComponent,
-      },
-      {
-        path: 'worker/add/:id',
-        canActivate: [AuthorizeGuard],
-        pathMatch: 'full',
-        component: WorkerAddComponent,
-      },
-      {
-        path: 'organization/detail/:id',
-        pathMatch: 'full',
-        component: OrganizationDetailComponent,
-      },
-      {
-        path: 'worker',
-        pathMatch: 'full',
-        component: OrganizationComponent,
       },
       {
         path: 'activity/:id',
@@ -127,20 +102,15 @@ const routes: Routes = [
   declarations: [
     BankComponent,
     ServiceComponent,
-    ServiceListComponent,
     ActivityComponent,
     ActivityListComponent,
-    WorkerComponent,
-    WorkerAddComponent,
-    OrganizationComponent,
-    OrganizationDetailComponent,
-    ServiceJoinComponent,
     BankChildComponent,
     QuestionComponent,
     AnswerComponent,
     ConfirmAnswerComponent,
     RankAnswerComponent,
     BidComponent,
+    AddAnswerComponent,
   ]
 })
 export class BankModule {

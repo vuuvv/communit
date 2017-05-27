@@ -8,7 +8,7 @@
   <empty-page *ngIf="!services || !services.length">暂无该类项目</empty-page>
   <div>
     <ng-container *ngIf="this.type === '0'">
-      <question-list-item class="ngv-1pxd-tb" [question]="s" [userId]="userId" *ngFor="let s of services">
+      <question-list-item class="ngv-1pxd-tb" [question]="s" [userId]="userId" [showUser]="false" *ngFor="let s of services">
       </question-list-item>
     </ng-container>
     <ng-container *ngIf="this.type === '1'">

@@ -22,8 +22,8 @@ export class QuestionComponent implements OnInit {
 
   tabs = {
     question: ['我的提问', '我的回答'],
-    help: ['我的求助', '我的咨询'],
-    service: ['我的服务', '我的咨询'],
+    help: ['我的求助', '我的帮助'],
+    service: ['我的服务', '我的请求'],
   };
   currentTabs;
   category;

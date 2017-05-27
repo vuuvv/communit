@@ -35,7 +35,7 @@ export class RankAnswerComponent implements OnInit {
   ngOnInit() {
     this.overlayService.loading();
     this.route.params.concatMap((params: Params) => {
-      return this.http.get(`/service/answer/${params['id']}`)
+      return this.http.get(`/service/answer/${params['id']}`);
     }).subscribe((v: any) => {
       this.overlayService.hideToast();
       this.answer = v.answer;

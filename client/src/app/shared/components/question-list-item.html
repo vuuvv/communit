@@ -7,9 +7,11 @@
       </ng-container>
       <ng-container *ngSwitchCase="'help'">
         <v-icon type="help"></v-icon>
+        <span class="question-points">{{ question.points }}积分</span>
       </ng-container>
       <ng-container *ngSwitchCase="'service'">
         <v-icon type="service"></v-icon>
+        <span class="question-points">{{ question.points }}积分</span>
       </ng-container>
     </ng-container>
     <span>{{question.title}}</span>
@@ -20,26 +22,19 @@
     <span class="question-time">{{ question.createdAt | time: 'minite' }}</span>
   </div>
 </div>
-<div class="question-sessions" *ngIf="sessions; else noSessions">
-  <div class="question-session" *ngFor="let s of sessions" (click)="gotoSession($event, s)">
-    <div class="question-session-user">{{ s.realname }}：</div>
-    <div class="question-session-content">{{ content(s) }}</div>
-    <div class="question-session-time">{{ s.updatedAt | time: 'minite' }}</div>
+
+<div class="question-bottom" (click)="gotoQuestion()">
+  <div class="question-user">
+    <v-image [src]="question.headimgurl" [block]="false" *ngIf="showUser"></v-image>
+    <span *ngIf="showUser">{{ isOwner ? '我' : question.realname }}</span>
+  </div>
+  <div class="question-answer">
+    <div class="question-answers">{{ question.answerCount }}个{{ actionLabel }}</div>
+    <div class="question-status" *ngIf="question.payedPoints && isOwner">{{ question.payedPoints===question.points ? '已解决' : '已付' + question.payedPoints + '积分' }}</div>
+    <div class="question-answer-action ngv-1px-l" *ngIf="!isOwner" (click)="answer()">
+      <v-icon type="edit"></v-icon>
+      <span>{{ actionLabel }}</span>
+    </div>
   </div>
 </div>
 
-<ng-template #noSessions>
-  <div class="question-bottom" (click)="gotoQuestion()">
-    <div class="question-user">
-      <v-image [src]="question.headimgurl" [block]="false"></v-image>
-      <span>{{ question.realname }}</span>
-    </div>
-    <div class="question-answer">
-      <div class="question-answers ngv-1px-r">{{ question.answerCount }}人回答</div>
-      <div class="question-answer-action" [class.disable]="isDisable" (click)="answer()">
-        <v-icon type="edit"></v-icon>
-        <span>{{ question.category === 'question' ? '回答' : '咨询' }}</span>
-      </div>
-    </div>
-  </div>
-</ng-template>

@@ -1,0 +1,45 @@
+<v-page class="page-answer-add" *ngIf="question">
+  <v-header slot="header" [showBack]="false">
+    <div class="ngv-header-button" slot="left" (click)="back()">取消</div>
+    <span>{{ title }}</span>
+    <div class="ngv-header-button" slot="right" (click)="submit()">提交</div>
+  </v-header>
+
+  <div class="question-wrapper">
+    <div class="question">
+      <div class="question-title">
+        <ng-container [ngSwitch]="question.category">
+          <ng-container *ngSwitchCase="'question'">
+            <v-icon type="question"></v-icon>
+            <span class="question-points">{{ question.points }}积分</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="'help'">
+            <v-icon type="help"></v-icon>
+            <span class="question-points">{{ question.points }}积分</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="'service'">
+            <v-icon type="service"></v-icon>
+            <span class="question-points">{{ question.points }}积分</span>
+          </ng-container>
+        </ng-container>
+        <span>{{ question.title }}</span>
+      </div>
+      <div class="question-info">
+        <div class="question-answers">{{ question.answerCount }}个{{ label }}</div>
+        <div class="question-time">{{ question.createdAt | time: 'minite' }}</div>
+      </div>
+    </div>
+    <div class="question-types ngv-1px-t">
+      <v-icon type="tag"></v-icon>
+      <span>{{ question.mainType }}－{{ question.type }}</span>
+    </div>
+
+    <div class="gutter"></div>
+
+    <v-cell class="question-title" *ngIf="question.category === 'help'" [class.first-cell]="question.category === 'help'">
+      <input class="weui-input" placeholder="请输入你需要的积分" name="points" [(ngModel)]="answer.points" type="number">
+    </v-cell>
+    <div class="ngv-1px-t"></div>
+    <textarea class="weui-textarea answer-content" placeholder="{{ contentPlaceholder }}" rows="6" [(ngModel)]="answer.content" name="content"></textarea>
+  </div>
+</v-page>

@@ -82,7 +82,7 @@ export class QuestionComponent implements OnInit {
     this.http.json('/service/question/add', this.question).subscribe(() => {
       this.authorizeService.update().subscribe(() => {
         this.overlayService.hideToast();
-        this.router.navigate(['/bank']);
+        this.router.navigate([`/user/service/question/0`]);
       });
     });
   }

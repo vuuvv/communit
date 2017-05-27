@@ -18,9 +18,11 @@
           <option [value]="t.key" *ngFor="let t of subTypes">{{ t.value }}</option>
         </select>
       </v-cell>
-      <v-cell class="question-content">
-        <textarea class="weui-textarea" placeholder="求助内容" rows="1" [(ngModel)]="help.title" name="title"></textarea>
+      <v-cell class="question-title">
+        <input class="weui-input" placeholder="悬赏积分, 您还有{{ balance }}积分" name="points" [(ngModel)]="help.points" type="number">
       </v-cell>
+      <div class="ngv-1px-t"></div>
+      <textarea class="weui-textarea question-content" placeholder="求助内容" rows="1" [(ngModel)]="help.title" name="title"></textarea>
     </v-group>
   </form>
 </v-page>

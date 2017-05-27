@@ -29,6 +29,14 @@ export declare class Answer extends BaseModel {
      */
     orderId: string;
     /**
+     * 商家备注
+     */
+    memo: string;
+    /**
+     * 商家备注时间
+     */
+    memoTime: Date;
+    /**
      * 最后一条answer_session插入的时间
      */
     latestAnswerTime: Date;

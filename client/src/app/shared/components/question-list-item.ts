@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class QuestionListItemComponent {
   @Input() question: any;
   @Input() userId: string;
+  @Input() showUser = true;
 
   get sessions() {
     if (this.question && this.question.sessions) {
@@ -29,33 +30,23 @@ export class QuestionListItemComponent {
     return this.userId && this.question.userId && this.userId === this.question.userId;
   }
 
-  get isDisable() {
-    return !this.userId || this.isOwner;
-  }
-
   answer() {
-    if (!this.isDisable) {
-      this.router.navigate([`/bank/question/${this.question.id}/answer`]);
-    }
-  }
-
-  content(a) {
-    switch (a.type) {
-      case 'price':
-        return `出价: ${a.content}积分。 `;
-      case 'confirm':
-        return `交易确认: ${a.content}积分。 `;
-      default:
-        return a.content;
-    }
-  }
-
-  gotoSession(ev, s) {
-    ev.stopPropagation();
-    this.router.navigate(['/bank/question/' + this.question.id + '/answer', {answerId: s.answerId}]);
+    this.router.navigate([`/bank/question/${this.question.id}/answer/add`]);
   }
 
   gotoQuestion() {
-    this.router.navigate(['/bank/question/' + this.question.id]);
+    if (!this.isOwner) {
+      this.router.navigate(['/bank/question/' + this.question.id + '/answer/add']);
+    } else {
+      this.router.navigate([`/bank/question/${this.question.id}`]);
+    }
+  }
+
+  get actionLabel() {
+    return {
+      question: '回答',
+      help: '帮助',
+      service: '请求',
+    }[this.question.category] || '';
   }
 }

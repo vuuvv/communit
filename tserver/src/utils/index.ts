@@ -21,3 +21,24 @@ export function checkSignature(secret: string, plan: string, target: string) {
 export function isInteger(value) {
   return !isNaN(value) && parseInt(Number(value) + '', 10) == value && !isNaN(parseInt(value, 10));
 }
+
+export function validPoints(points) {
+  if (points == null) {
+    throw new Error('积分必须为正整数');
+  }
+
+  if (typeof points !== 'string' && typeof points !== 'number') {
+    throw new Error('积分必须为正整数');
+  }
+
+  if (!/^[+]?\d+$/.test(points.toString())) {
+    throw new Error('积分必须为正整数');
+  }
+
+  let ret = +points;
+  if (ret <= 0) {
+    throw new Error('积分必须大于1');
+  }
+
+  return ret;
+}

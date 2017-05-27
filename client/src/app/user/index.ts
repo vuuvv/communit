@@ -21,6 +21,7 @@ import { HelpComponent } from './help';
 import { ProfileComponent } from './profile';
 import { ProfileUpdateTextComponent } from './profile-update-text';
 import { QuestionComponent } from './question';
+import { EditAnswerComponent } from './answer-edit';
 
 const routes: Routes = [
   {
@@ -108,6 +109,12 @@ const routes: Routes = [
         canActivate: [AuthorizeGuard],
         component: QuestionComponent,
       },
+      {
+        path: 'answer/:id/edit',
+        pathMatch: 'full',
+        canActivate: [AuthorizeGuard],
+        component: EditAnswerComponent,
+      },
     ],
   },
 ];
@@ -136,6 +143,7 @@ const routes: Routes = [
     ProfileComponent,
     ProfileUpdateTextComponent,
     QuestionComponent,
+    EditAnswerComponent,
   ]
 })
 export class UserModule {

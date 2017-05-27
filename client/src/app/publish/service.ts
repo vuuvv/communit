@@ -11,6 +11,8 @@ import { DialogService, OverlayService } from '../../components';
 const rules: FieldRule[] = [
   { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
   { typeId: { strategy: ['required'], error: '请选择小类' } },
+  { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+  { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
   { title: { strategy: ['required'], error: '请填写提供服务的内容' } },
 ];
 
@@ -77,7 +79,7 @@ export class ServiceComponent implements OnInit {
     this.http.json('/service/service/add', this.service).subscribe(() => {
       this.authorizeService.update().subscribe(() => {
         this.overlayService.hideToast();
-        this.router.navigate(['/bank']);
+        this.router.navigate([`/user/service/service/0`]);
       });
     });
   }

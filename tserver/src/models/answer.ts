@@ -44,6 +44,18 @@ export class Answer extends BaseModel {
   orderId: string;
 
   /**
+   * 商家备注
+   */
+  @property()
+  memo: string;
+
+  /**
+   * 商家备注时间
+   */
+  @property()
+  memoTime: Date;
+
+  /**
    * 最后一条answer_session插入的时间
    */
   @property()

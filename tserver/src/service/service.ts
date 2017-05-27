@@ -17,6 +17,7 @@ JOIN weixin_bank_menu AS wbm2 ON wbm2.id = q.typeId
 JOIN t_wechat_user AS wu ON wu.officialAccountId = q.communityId AND wu.userId = q.userId
 WHERE
   q.communityId = :communityId and
+  q.status = 'online' and
   <% if (query.category) { %>
   category = :category
   <% } else { %>

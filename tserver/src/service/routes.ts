@@ -3,9 +3,9 @@ import * as ejs from 'ejs';
 
 import { router, get, post, all, success, Response, ResponseError, login, wechat } from '../routes';
 import { Table, db, raw, first } from '../db';
-import { create, getJsonBody, validate, FieldRule, isInteger } from '../utils';
+import { create, getJsonBody, validate, FieldRule, validPoints } from '../utils';
 import { Service, ServiceUser, Order, OrderType, OrderStatus, OrderDetail, ServiceCategories, Question, Answer, AnswerSession } from '../models';
-import { refundOrder, deductPoints, TransactionType, PayAnswer, getAnswerPay, getUserBalance, confirmAnswerSession } from '../account';
+import { refundOrder, deductPoints, TransactionType, PayAnswer, getAnswerPay, getUserBalance, confirmAnswerSession, payAnswer } from '../account';
 
 import { searchQuestion, getQuestion, getAnswer } from './service';
 
@@ -39,6 +39,7 @@ const questionRules: FieldRule[] = [
 
 const answerRules: FieldRule[] = [
   { content: { strategy: ['required'], error: '请填写内容' } },
+  { points: { strategy: ['isInteger'], error: '积分须为整数' } },
 ];
 
 const payAnswerRules: FieldRule[] = [
@@ -238,30 +239,10 @@ export class ServiceController {
 
     let sql = `
       select
-        s.*, t.name as mainType, t1.name as type, wu.realname, wu.headimgurl, a.orderId, a.id as answerId, a.userId as answerUserId,
-        (
-          select
-            concat(
-              '[',
-              group_concat(
-                json_object(
-                  'id', ans.id,
-                  'userId', ans.userId,
-                  'answerId', ans.answerId,
-                  'content', ans.content,
-                  'type', ans.type,
-                  'realname', wu1.realname,
-                  'updatedAt', ans.updatedAt
-                )
-              ),
-              ']'
-            )
-          from t_answer_session as ans
-          join t_wechat_user as wu1 on wu1.officialAccountId = ans.communityId and wu1.userId = ans.userId
-          where ans.answerId = a.id
-          order by ans.updatedAt
-          limit 5
-        ) as sessions
+        s.*, t.name as mainType, t1.name as type, wu.realname, wu.headimgurl,
+        a.content as answerContent, a.createdAt as answerTime, a.points as answerPoints, a.status as answerStatus,
+        a.memo as answerMemo, a.memoTime as answerMemoTime,
+        a.orderId, a.id as answerId
       from t_question as s
       join t_answer as a on s.id = a.questionId
       join t_service_category as c on s.category = c.id
@@ -271,17 +252,12 @@ export class ServiceController {
       where
         s.communityId = :communityId and a.userId = :userId and
         <% if (query.categoryId) { %> s.category = :categoryId <% } else { %> 1 = 1 <% } %>
-      order by a.latestAnswerTime desc
+      order by a.updatedAt desc
     `;
 
     sql = ejs.render(sql, ctx);
 
-    let ret;
-
-    await db.transaction(async (trx) => {
-      await raw('SET SESSION group_concat_max_len = 1000000', [], trx);
-      ret = await raw(sql, Object.assign({communityId, userId}, ctx.query), trx);
-    });
+    let ret = await raw(sql, Object.assign({communityId, userId}, ctx.query));
 
     return success(ret);
   }
@@ -370,7 +346,7 @@ export class ServiceController {
     service.content = JSON.stringify(model);
     service.mainTypeId = model.type;
     service.typeId = model.childType;
-    service.points = model.points;
+    service.points = validPoints(model.points);
 
     await Table.Service.insert(service);
 
@@ -483,79 +459,6 @@ export class ServiceController {
     return success();
   }
 
-
-  @post('/:id/accept')
-  @login
-  async accept(ctx) {
-    let serviceId = ctx.params.id;
-
-    let ids: string[] = await getJsonBody(ctx);
-    if (!ids || !ids.length) {
-      return success();
-    }
-
-    await db.transaction(async (trx) => {
-      let service: Service = await Table.Service.transacting(trx).forUpdate().where('id', serviceId).first();
-      if (!service || service.status === 'closed') {
-        throw new Error('服务不存在或服务已关闭');
-      }
-
-      for (let id of ids) {
-        let user: ServiceUser = await Table.ServiceUser.transacting(trx).forUpdate().where('id', id).first();
-        if (!user || user.status !== 'submit') {
-          throw new Error('所选的用户并未参与，或状态不对, 请重新选择');
-        }
-
-        if (user.serviceId !== serviceId) {
-          throw new Error('所选报价与服务不匹配');
-        }
-
-        let order = new Order();
-        order.type = OrderType.Service;
-        order.communityId = service.communityId;
-        order.sellerId = service.categoryId === ServiceCategories.Service ? service.userId : user.userId;
-        order.buyerId = service.categoryId === ServiceCategories.Service ? user.userId : service.userId;
-        order.status = OrderStatus.Payed;
-        order.amount = user.points;
-        order.orderTime = order.payTime = new Date();
-
-        let detail = new OrderDetail();
-        detail.orderId = order.id;
-        detail.type = OrderType.Service;
-        detail.productId = user.id;
-        detail.data = JSON.stringify(service);
-        detail.points = user.points;
-
-        order.buyerTradeTransactionId = await deductPoints(
-          trx, service.communityId, order.buyerId, TransactionType.PayService, order.amount, order.id
-        );
-
-        await Table.Order.transacting(trx).insert(order);
-        await Table.OrderDetail.transacting(trx).insert(detail);
-        await Table.ServiceUser.transacting(trx).where('id', id).update({
-          payedPoints: user.points,
-          orderId: order.id,
-          status: 'accept',
-        });
-      }
-
-    });
-
-    return success();
-  }
-
-  @get('/help/search')
-  @wechat
-  async searchHelp(ctx) {
-    return success([]);
-  }
-
-  @get('/service/search')
-  @wechat
-  async searchService(ctx) {
-    return success([]);
-  }
-
   @get('/question/search')
   @wechat
   async searchQuestion(ctx) {
@@ -581,6 +484,7 @@ export class ServiceController {
       throw new Error('无效的服务种类');
     }
     validate(model, r);
+    model.points = validPoints(model.points);
 
     let q = create(Question, model);
     q.communityId = ctx.session.communityId;
@@ -612,7 +516,15 @@ export class ServiceController {
     if (!answer) {
       throw new Error('无效的回答');
     }
-    let question = await Table.Question.where('id', answer.questionId).first();
+
+    let question = await first(`
+    select q.*, wu.realname, wu.headimgurl, t.name as mainType, t1.name as type
+    from t_question as q
+    join t_wechat_user as wu on wu.officialAccountId=q.communityId and wu.userId=q.userId
+    join weixin_bank_menu as t on q.mainTypeId = t.id
+    join weixin_bank_menu as t1 on q.typeId = t1.id
+    where q.id=:questionId
+    `, { questionId: answer.questionId });
 
     let userId = ctx.session.userId;
     let communityId = ctx.session.communityId;
@@ -632,8 +544,19 @@ export class ServiceController {
     const model = await getJsonBody(ctx);
     validate(model, payAnswerRules);
 
+    model.points = validPoints(model.points);
+
     await db.transaction(async (trx) => {
       await getAnswerPay(trx, ctx.params.id, model.points, ctx.session.userId);
+    });
+    return success();
+  }
+
+  @post('/answer/:id/bid')
+  @login
+  async payAnswer(ctx) {
+    await db.transaction(async (trx) => {
+      await payAnswer(trx, ctx.params.id, ctx.session.userId);
     });
     return success();
   }
@@ -712,70 +635,111 @@ export class ServiceController {
     const questionId = ctx.params.id;
     const communityId = ctx.session.communityId;
     const userId = ctx.session.userId;
-    const answerId = model.answerId;
-    delete model.answerId;
-    const type = model.type || 'text';
-    delete model.type;
-
-    if (type === 'price') {
-      if (!isInteger(model.content)){
-        throw new Error('出价的积分需为整数');
-      }
-      model.points = +model.content;
-      if (model.points <= 0) {
-        throw new Error('出价至少1个积分');
-      }
-    }
 
     let question: Question = await Table.Question.where('id', questionId).first();
     if (!question) {
       throw new Error('无效的问题');
     }
 
-    let answer: Answer = null;
-    if (answerId) {
-      answer = await Table.Answer.where('id', answerId).first();
-      if (!answer) {
-        throw new Error('无效的回答');
+    if (question.userId === userId) {
+      throw new Error('不能回答自己的问题');
+    }
+
+    if (question.category === 'help') {
+      model.points = validPoints(model.content);
+      if (model.points <= 0) {
+        throw new Error('积分必须大于1');
       }
-      // 对指定回答出价，但是该回答已经完成交易的情况，报错
-      if (type === 'price' && answer.orderId) {
-        throw new Error('不可进行出价操作');
-      }
-    } else {
-      let answers: any[] = await Table.Answer.where({questionId, communityId, userId});
-      // 如果没有回答，或者所有的回答都已经交易了，就新增一个
-      if (answers.length === 0 || _.every(answers, (v) => v.orderId)) {
-        if (question.userId === userId) {
-          throw new Error('不能回答自己的问题');
+    }
+
+    if (question.category === 'service') {
+      model.points = question.points;
+    }
+
+    let answer = new Answer();
+    answer.communityId = communityId;
+    answer.userId = userId;
+    answer.questionId = questionId;
+    answer.points = model.points || 0;
+    answer.content = model.content;
+
+    if (question.category === 'help') {
+      await db.transaction(async (trx) => {
+        let a = Table.Answer.transacting(trx).forUpdate().where('questionId', question.id).first();
+        if (a) {
+          throw new Error('不可重复申请');
         }
-        answer = new Answer();
-        answer.communityId = communityId;
-        answer.userId = userId;
-        answer.questionId = questionId;
-        await Table.Answer.insert(answer);
-      }
+        await Table.Answer.transacting(trx).insert(a);
+      });
+    } else {
+      await Table.Answer.insert(answer);
     }
-
-    if ([answer.userId, question.userId].indexOf(userId) === -1) {
-      throw new Error('你不能参与此对话');
-    }
-
-    let session  = create(AnswerSession, model);
-    session.communityId = communityId;
-    session.userId = userId;
-    session.answerId = answer.id;
-    session.type = type;
-    await Table.AnswerSession.insert(session);
-
-    await Table.Answer.where('id', answer.id).update({
-      latestAnswerTime: new Date()
-    });
-
-    await Table.Question.where('id', question.id).update({
-      latestAnswerTime: new Date()
-    })
 
     return success(answer);
+  }
+
+  @post('/answer/:id/edit')
+  @login
+  async editAnswer(ctx) {
+    let model = await getJsonBody(ctx);
+    validate(model, answerRules);
+
+    model.points = validPoints(model.points);
+
+    let answer = await Table.Answer.where('id', ctx.params.id).first();
+    if (!answer) {
+      throw new Error('无效的回答');
+    }
+
+    if (answer.status !== 'submit') {
+      throw new Error('不可编辑');
+    }
+
+    let question = await Table.Question.where('id', answer.questionId).first();
+
+    if (['help', 'service'].indexOf(question.category) === -1) {
+      throw new Error('不可编辑的类型');
+    }
+
+    if (answer.status !== 'submit' || question.status !== 'online') {
+      throw new Error('不可编辑');
+    }
+
+    let data: any = { points: model.points };
+
+    if (question.category === 'service') {
+      data.memo = model.content;
+    } else {
+      data.content = model.content;
+    }
+
+    await Table.Answer.where('id', answer.id).update(data);
+    await Table.Question.where('id', answer.questionId).update({
+      updatedAt: new Date(),
+    });
+
+    return success();
+  }
+
+  @post('/answer/:id/reject')
+  @login
+  async rejectAnswer(ctx) {
+    let answer = await Table.Answer.where('id', ctx.params.id).first();
+    if (!answer) {
+      throw new Error('无效的回答');
+    }
+
+    let question = await Table.Question.where('id', answer.questionId).first();
+
+    if (['help', 'service'].indexOf(question.category) === -1) {
+      throw new Error('不可编辑的类型');
+    }
+
+    await Table.Answer.where('id', answer.id).update({
+      status: 'reject',
+    });
+    await Table.Question.where('id', answer.questionId).update({
+      updatedAt: new Date(),
+    });
   }
 }

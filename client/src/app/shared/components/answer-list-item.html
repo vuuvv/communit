@@ -1,18 +1,14 @@
-<div class="question-bottom ngv-1px-b" (click)="gotoQuestion()" style="padding-top: 0; padding-bottom: 8px;">
+<div class="question-bottom" style="padding-top: 0; padding-bottom: 8px;">
   <div class="question-user">
     <v-image [src]="question.headimgurl" [block]="false"></v-image>
     <span>{{ question.realname }}</span>
   </div>
   <div class="question-answer">
-    <div class="question-answers ngv-1px-r">{{ isConfirm ? '已完成' : '未完成'}}</div>
-    <div class="question-answer-action" (click)="isConfirm ? rank() : answer()" *ngIf="isConfirm && canRank">
-      <v-icon type="edit"></v-icon>
-      <span>{{ actionLabel }}</span>
-    </div>
+    <div class="question-answer-status">{{ answerStatus }}</div>
   </div>
 </div>
 <div class="question-body">
-  <div class="question-title" (click)="gotoQuestion()">
+  <div class="question-title">
     <ng-container [ngSwitch]="question.category">
       <ng-container *ngSwitchCase="'question'">
         <v-icon type="question"></v-icon>
@@ -27,16 +23,36 @@
     </ng-container>
     <span>{{question.title}}</span>
   </div>
-  <div class="question-meta ngv-1px-b" (click)="gotoQuestion()">
+  <div class="question-meta">
     <v-icon type="tag"></v-icon>
     <span class="question-type ngv-1px-r">{{ question.mainType }}－{{ question.type }}</span>
     <span class="question-time">{{ question.createdAt | time: 'minite' }}</span>
   </div>
 </div>
-<div class="question-sessions">
-  <div class="question-session" *ngFor="let s of sessions" (click)="gotoSession($event, s)">
-    <div class="question-session-user">{{ username(s) }}：</div>
-    <div class="question-session-content">{{ content(s) }}</div>
-    <div class="question-session-time">{{ s.updatedAt | time: 'minite' }}</div>
+<div class="question-sessions ngv-1px-t" *ngIf="question.category !== 'question'">
+  <div class="question-session">
+    <div class="question-session-user">价格：</div>
+    <div class="question-session-content">{{ question.answerPoints }}积分</div>
+  </div>
+  <div class="question-session" *ngIf="question.answerContent">
+    <div class="question-session-user">我的留言：</div>
+    <div class="question-session-content">{{ question.answerContent }}</div>
+    <div class="question-session-time">{{ question.answerTime | time: 'minite' }}</div>
+  </div>
+  <div class="question-session" *ngIf="question.answerMemo">
+    <div class="question-session-user">对方留言：</div>
+    <div class="question-session-content">{{ question.answerMemo }}</div>
+    <div class="question-session-time">{{ question.answerMemoTime | time: 'minite' }}</div>
+  </div>
+</div>
+<div class="question-sessions ngv-1px-t" *ngIf="question.category === 'question'">
+  <div class="question-session">
+    <div class="question-session-content">{{ question.answerContent }}</div>
+  </div>
+</div>
+<div class="answer-actions" *ngIf="actions.length">
+  <div class="answer-action" (click)="this[a]()" *ngFor="let a of actions">
+    <v-icon [type]="a"></v-icon>
+    <span>{{ actionLabel(a) }}</span>
   </div>
 </div>

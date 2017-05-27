@@ -22,7 +22,7 @@
       <span>{{ question.title }}</span>
     </div>
     <div class="question-info">
-      <div class="question-answers">{{ question.answerCount }}人回答</div>
+      <div class="question-answers">{{ question.answerCount }}个{{ label }}</div>
       <div class="question-time">{{ question.createdAt | time: 'minite' }}</div>
     </div>
   </div>
@@ -34,7 +34,7 @@
   <div class="gutter"></div>
 
   <div class="comment-list">
-    <div class="comment ngv-1px-b" *ngFor="let a of question.answers" (click)="gotoAnswer(a)">
+    <div class="comment" *ngFor="let a of question.answers">
       <div class="comment-header">
         <div class="comment-header-left">
           <v-image [src]="a.headimgurl"></v-image>
@@ -43,26 +43,33 @@
           <div class="comment-user">{{ a.realname }}</div>
           <div class="comment-time">{{ a.createdAt | time: 'minite' }}</div>
         </div>
-        <ng-container *ngIf="needHide(a); else showAll">
-          <div class="comment-header-right" *ngIf="a.points">
-            <span>已完成</span>
-          </div>
-          <div class="comment-header-right" *ngIf="!a.points">
-            <span>未完成</span>
-          </div>
-        </ng-container>
-        <ng-template #showAll>
-          <div class="comment-header-right" *ngIf="a.points">
-            <v-icon type="jinlingyingcaiwangtubiao07"></v-icon>
-            <span class="answer-points">{{ a.points }}</span>
-          </div>
-          <div class="comment-header-right" *ngIf="!a.points">
-            <span>未完成</span>
-          </div>
-        </ng-template>
+        <div class="comment-header-right" *ngIf="a.orderId">
+          <span>{{ answerStatus(a) }}</span>
+        </div>
       </div>
-      <pre class="comment-body" *ngIf="!needHide(a)">{{ answerContent(a) }}</pre>
-      <div class="comment-meta">{{ a.answerCount }}次对话</div>
+      <pre class="comment-body" *ngIf="question.category === 'question'">{{ a.content }}</pre>
+      <div class="question-sessions ngv-1px-t" *ngIf="question.category !== 'question'">
+        <div class="question-session">
+          <div class="question-session-user">价格：</div>
+          <div class="question-session-content">{{ a.points }}积分</div>
+        </div>
+        <div class="question-session" *ngIf="a.content">
+          <div class="question-session-user">对方留言：</div>
+          <div class="question-session-content">{{ a.content }}</div>
+          <div class="question-session-time">{{ a.createdAt | time: 'minite' }}</div>
+        </div>
+        <div class="question-session" *ngIf="a.memo">
+          <div class="question-session-user">我的留言：</div>
+          <div class="question-session-content">{{ a.memo }}</div>
+          <div class="question-session-time">{{ a.memoTime | time: 'minite' }}</div>
+        </div>
+      </div>
+      <div class="answer-actions ngv-1px-t" *ngIf="actions(a).length">
+        <div class="answer-action" (click)="this[act](a)" *ngFor="let act of actions(a)">
+          <v-icon [type]="act"></v-icon>
+          <span>{{ actionLabel(act) }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </v-page>

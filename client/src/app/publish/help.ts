@@ -11,6 +11,8 @@ import { DialogService, OverlayService } from '../../components';
 const rules: FieldRule[] = [
   { mainTypeId: { strategy: ['required'], error: '请选择大类' } },
   { typeId: { strategy: ['required'], error: '请选择小类' } },
+  { points: { strategy: ['required'], error: '请填写悬赏积分' } },
+  { points: { strategy: ['isInteger'], error: '积分必须为整数' } },
   { title: { strategy: ['required'], error: '请填写求助内容' } },
 ];
 
@@ -40,6 +42,7 @@ export class HelpComponent implements OnInit {
   ngOnInit() {
     Observable.forkJoin(
       this.http.get('/service/types/0'),
+      this.http.get('/account/balance'),
     ).subscribe((values: any) => {
       this.types = values[0].map((type) => {
         return {
@@ -79,7 +82,7 @@ export class HelpComponent implements OnInit {
     this.http.json('/service/help/add', this.help).subscribe(() => {
       this.authorizeService.update().subscribe(() => {
         this.overlayService.hideToast();
-        this.router.navigate(['/bank']);
+        this.router.navigate([`/user/service/help/0`]);
       });
     });
   }

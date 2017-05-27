@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ViewEncapsulation, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { BScrollDirective } from '../base';
 
 @Component({
@@ -10,7 +10,7 @@ import { BScrollDirective } from '../base';
     '[class.ngv-slider-vertical]': 'isVertical',
   }
 })
-export class SliderComponent implements AfterViewInit {
+export class SliderComponent implements AfterViewInit, OnDestroy {
   @Input() speed: number = 400;
   @Input() auto: number = 0;
   @Input() indicator: boolean = true;
@@ -28,6 +28,12 @@ export class SliderComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.reload();
+  }
+
+  ngOnDestroy() {
+    if (this.autoTimer) {
+      clearInterval(this.autoTimer);
+    }
   }
 
   reload() {

@@ -55,8 +55,14 @@ export class ConfirmAnswerComponent implements OnInit {
       return;
     }
 
-    this.http.json(`/service/answer/${this.answer.id}/pay`, data).subscribe(() => {
-      this.location.back();
+    this.dialogService.confirm('确认采纳该回答').ok((comp) => {
+      comp.close();
+      this.overlayService.loading();
+      this.http.json(`/service/answer/${this.answer.id}/pay`, data).subscribe(() => {
+        this.overlayService.hideToast();
+        this.location.back();
+      });
     });
+
   }
 }

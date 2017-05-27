@@ -1,6 +1,14 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Http } from '../services';
+import { DialogService, OverlayService } from '../../../components';
+
+const status = {
+  submit: '待确认',
+  done: '已完成',
+};
+
 @Component({
   selector: 'answer-list-item',
   templateUrl: './answer-list-item.html',
@@ -23,6 +31,9 @@ export class AnswerListItemComponent {
 
   constructor(
     private router: Router,
+    private dialogService: DialogService,
+    private overlayService: OverlayService,
+    private http: Http,
   ) {}
 
   get isOwner() {
@@ -33,61 +44,113 @@ export class AnswerListItemComponent {
     return !this.userId || this.isOwner;
   }
 
-  answer() {
-    if (!this.isDisable) {
-      this.router.navigate([`/bank/question/${this.question.id}/answer`]);
-    }
-  }
-
-  rank() {
-    this.router.navigate([`/bank/rank/answer/${this.question.answerId}`]);
-  }
-
-  canRank() {
-    if (this.question) {
-      return false;
-    }
-    if (this.question.category === 'help') {
-      return this.question.userId === this.userId;
-    } else if (this.question.category === 'service') {
-      return this.question.answerUserId === this.userId;
-    }
-
-    return false;
-  }
-
-  get isConfirm() {
-    return this.question && this.question.orderId;
-  }
-
-  get actionLabel() {
-    if (this.isConfirm) {
-      return '评价';
-    }
-    return this.question.category === 'question' ? '回答' : '咨询';
-  }
 
   content(a) {
-    switch (a.type) {
-      case 'price':
-        return `出价: ${a.content}积分。 `;
-      case 'confirm':
-        return `交易确认: ${a.content}积分。 `;
-      default:
-        return a.content;
-    }
+    return a.content;
   }
 
   username(s) {
     return s.userId === this.userId ? '我' : s.realname;
   }
 
-  gotoSession(ev, s) {
-    ev.stopPropagation();
-    this.router.navigate(['/bank/question/' + this.question.id + '/answer', {answerId: s.answerId}]);
+  get answerStatus() {
+    if (!this.question) {
+      return '';
+    }
+
+    if (this.question.answerStatus === 'closed') {
+      return '已关闭';
+    }
+
+    switch (this.question.category) {
+      case 'question':
+        switch (this.question.answerStatus) {
+          case 'submit':
+            return '待采纳';
+          case 'done':
+            return `已采纳, 获${this.question.answerPoints}积分`;
+        }
+        break;
+      case 'help':
+        switch (this.question.answerStatus) {
+          case 'submit':
+            return '待付款';
+          case 'done':
+            return `已完成, 获${this.question.answerPoints}积分`;
+        }
+        break;
+      case 'service':
+        switch (this.question.answerStatus) {
+          case 'submit':
+            return '待付款';
+          case 'done':
+            return `已完成, 付${this.question.answerPoints}积分`;
+        }
+        break;
+    }
+    return '';
   }
 
-  gotoQuestion() {
-    this.router.navigate(['/bank/question/' + this.question.id]);
+  get actions() {
+    if (!this.question) {
+      return [];
+    }
+    switch (this.question.category) {
+      case 'question':
+        return [];
+      case 'help':
+        switch (this.question.answerStatus) {
+          case 'submit':
+            return ['edit', 'reject'];
+          default:
+            return [];
+        }
+      case 'service':
+        switch (this.question.answerStatus) {
+          case 'submit':
+            return ['pay'];
+          case 'done':
+            if (this.question.answerRanked) {
+              return [];
+            } else {
+              return ['rank'];
+            }
+        }
+        break;
+    }
+    return [];
+  }
+
+  actionLabel(a) {
+    return {
+      edit: '编辑',
+      pay: '付款',
+      rank: '评价',
+      reject: '拒绝',
+    }[a] || '';
+  }
+
+  edit() {
+    if (!this.question) {
+      return;
+    }
+    this.router.navigate([`/user/answer/${this.question.answerId}/edit`]);
+  }
+
+  pay() {
+    if (!this.question) {
+      return;
+    }
+
+    if (this.question.category === 'service') {
+      this.dialogService.confirm(`确认向该用户支付${this.question.answerPoints}积分`).ok((comp) => {
+        comp.close();
+        this.overlayService.loading();
+        this.http.post(`/service/answer/${this.question.answerId}/bid`).subscribe(() => {
+          this.overlayService.hideToast();
+          this.router.navigate(['/user/service/service/1']);
+        });
+      });
+    }
   }
 }

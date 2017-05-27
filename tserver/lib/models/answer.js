@@ -38,6 +38,14 @@ __decorate([
 ], Answer.prototype, "orderId", void 0);
 __decorate([
     utils_1.property(),
+    __metadata("design:type", String)
+], Answer.prototype, "memo", void 0);
+__decorate([
+    utils_1.property(),
+    __metadata("design:type", Date)
+], Answer.prototype, "memoTime", void 0);
+__decorate([
+    utils_1.property(),
     __metadata("design:type", Date)
 ], Answer.prototype, "latestAnswerTime", void 0);
 exports.Answer = Answer;
